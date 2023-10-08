@@ -1,4 +1,4 @@
-const patientModel = require('../Models/patients.js');
+const patientModel = require('../Models/patients');
 
 
 
@@ -48,4 +48,3 @@ try {
   
 
 
-module.exports = { getPatient, updatePatient, deletePatient};

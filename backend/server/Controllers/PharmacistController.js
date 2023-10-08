@@ -1,4 +1,4 @@
-const pharmacistModel = require('../Models/pharmacists.js');
+const pharmacistModel = require('../Models/pharmacists');
 const { default: mongoose } = require('mongoose');
 
 exports.createPharmacist = async(req,res) => {
@@ -21,22 +21,18 @@ exports.getPharmacist = async (req, res) => {
   };
   
 
-
-
-
-// const updatedPharmacist = async (req, res) => {
-   
-//    const phamacistid = req.params.pharmacistid;
-//   const updatedPharmacistData = req.body;
-//   User.findByIdAndUpdate(Name, updatedPatientData, { pharmacistid: phamacistid })
-//   .then(updatedPharmacist => {
-//     res.json(updatedPharmacist);
-//   })
-//   .catch(error => {
-//    res.status(400).json({ error:error.message });
-//  });
-// }
-
+exports.updatedPharmacist = async (req, res) => {
+    try {
+      const updated = await pharmacistModel.findByIdAndUpdate(
+        req.params.userid,
+        req.body,
+        { new: true }
+      );
+      res.status(200).json(updated);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
 
   
 exports.deletePharmacist = async (req, res) => {
@@ -49,4 +45,3 @@ exports.deletePharmacist = async (req, res) => {
   };
 
 
-// module.exports = {updatedPharmacist};
