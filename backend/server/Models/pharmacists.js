@@ -2,12 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const pharmacistSchema = new Schema({
-  userid: {
-    type: Number,
-    required: true,
-  },
-  pharmacistid: {
-    type: Number,
+  
+  username: {
+    type: String,
     required: true
   },
   nationalid: {
