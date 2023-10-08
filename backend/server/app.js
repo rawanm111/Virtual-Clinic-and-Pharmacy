@@ -2,12 +2,14 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const healthPackageRoutes = require('./Routes/HealthPackageRoutes'); // Use require here
+const UserRoutes = require('./Routes/UserRoutes');
 
 const app = express();
 
 app.use(express.json());
 
 app.use('/health-packages', healthPackageRoutes);
+app.use('/users', UserRoutes);
 
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
