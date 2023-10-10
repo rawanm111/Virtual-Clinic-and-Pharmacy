@@ -1,23 +1,29 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const medsRoutes = require('./Routes/medsroutes'); 
-const healthPackageRoutes = require('./Routes/HealthPackageRoutes'); // Use require here
-const UserRoutes = require('./Routes/UserRoutes');
-const pharmcistReqRoutes = require('./routes/pharmcistReqRoutes');
-const PharmacistRoutes = require('./Routes/PharmacistRoutes'); 
-const PatientRoutes = require('./Routes/PatientRoutes'); 
+const cors = require('cors');
 
 const app = express();
+
+// Configure CORS with options
+const allowedOrigins = ['http://localhost:3000'];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+// Use the cors middleware with options BEFORE defining routes
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
 app.use('/meds', medsRoutes);
-app.use('/health-packages', healthPackageRoutes);
-app.use('/users', UserRoutes);
-app.use( '/api/pharmcistReq',pharmcistReqRoutes);
-app.use('/patients', PatientRoutes);
-app.use('/pharmacists', PatientRoutes);
 
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
@@ -34,5 +40,5 @@ db.once('open', () => {
 // Start the server on port
 const PORT = 2002;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log('Server is running on port ${PORT}');
 });

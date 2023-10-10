@@ -40,3 +40,52 @@ exports.deletemeds = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
+// Update medication description
+exports.updateDescription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { description } = req.body;
+
+    // Find the medication by ID and update its description
+    const updatedmed = await meds.findByIdAndUpdate(
+      id,
+      { description },
+      { new: true }
+    );
+
+    if (!updatedmed) {
+      return res.status(404).json({ message: 'Medication not found' });
+    }
+
+    res.status(200).json(updatedmed);
+  } catch (err) {
+    console.error('Error updating description:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+// Update medication price
+exports.updatePrice = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { price } = req.body;
+
+    // Find the medication by ID and update its price
+    const updatedmed = await meds.findByIdAndUpdate(
+      id,
+      { price },
+      { new: true }
+    );
+
+    if (!updatedmed) {
+      return res.status(404).json({ message: 'Medication not found' });
+    }
+
+    res.status(200).json(updatedmed);
+  } catch (err) {
+    console.error('Error updating price:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
