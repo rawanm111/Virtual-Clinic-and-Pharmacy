@@ -1,5 +1,5 @@
-const pharmcistReqModel = require('../../models/pharmcistReqModel')
-const PharmcistReq = require('../../models/pharmcistReqModel')
+const pharmcistReqModel = require('../Models/pharmcistReqModel')
+const PharmcistReq = require('../Models/pharmcistReqModel')
 const mongoose = require('mongoose')
 
 //submit a new pahrmcist req
