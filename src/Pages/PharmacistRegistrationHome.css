@@ -1,0 +1,104 @@
+
+.container {
+    margin-top: 10px;
+  }
+  
+  .title {
+    margin-bottom: 1rem;
+    color: #333; /* Text color */
+  }
+  
+  .paper {
+    padding: 1.5rem;
+    background-color: #0cbdf3; /* Background color for the paper */
+  }
+  
+  .text-field {
+    margin-bottom: 1rem;
+  }
+  
+  .text-field label {
+    color: hsl(180, 5%, 24%); /* Label text color */
+  }
+  
+  .text-field input {
+    background-color: #fff; /* Input field background color */
+  }
+  /* TextFieldSpacing.css */
+.text-field-container {
+    margin-top: 20rem; /* Adjust the top margin as needed to move the text fields downwards */
+  }
+
+  .title-text {
+  
+    margin-top: -630px; /* space between title and anything below */
+    margin-left: 10px; /* move it to the right */
+    
+    font-size: 50px; /* Adjust the text size */
+    color: #008fb3; /* Adjust the text color */
+    /* ... other styles ... */
+  }
+
+  .button-container {
+    position: absolute; /* Set the position to absolute */
+    top: 750px; /* Adjust the top position as needed */
+    left: 830px; /* Adjust the left position as needed */
+  }
+  
+  /* Apply styles to the contained button */
+  .button-container Button {
+    background-color: #007bffd5; /* Set the background color */
+    color: #fff; /* Set the text color */
+    width: 100px; /* Set the width of the button */
+    height: 35px; /* Set the height of the button */
+    font-size: 16px; /* Set the font size */
+    border: none; /* Remove the border */
+    border-radius: 3px; /* Add rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+  }
+  
+  /* Apply hover styles to the button */
+  .button-container Button:hover {
+    background-color: #0057b3; /* Change background color on hover */
+  }
+
+  .button-container-1 {
+    position: absolute; /* Set the position to absolute */
+    top: 750px; /* Adjust the top position as needed */
+    left: 990px; /* Adjust the left position as needed */
+  }
+  
+  /* Apply styles to the contained button */
+  .button-container-1 Button {
+    background-color: #007bffd5; /* Set the background color */
+    color: #fff; /* Set the text color */
+    width: 100px; /* Set the width of the button */
+    height: 35px; /* Set the height of the button */
+    font-size: 16px; /* Set the font size */
+    border: none; /* Remove the border */
+    border-radius: 3px; /* Add rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+  }
+  
+  /* Apply hover styles to the button */
+  .button-container-1 Button:hover {
+    background-color: #0057b3; /* Change background color on hover */
+  }
+
+
+
+  .adjustable-image {
+    width: 30%; /* Increase the width to make the image larger */
+    max-height: 100vh; /* Set the maximum height to the viewport height */
+    
+    
+    margin-left: 610px; /* Adjust the left margin as needed */
+    margin-top: -200px;
+  }
+
+
+
+
+  
