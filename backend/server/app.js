@@ -4,6 +4,7 @@ const medsRoutes = require('./Routes/medsroutes');
 const DoctorRoutes = require('./Routes/DoctorRoutes');
 const PharmacistRoutes = require('./Routes/PharmacistRoutes');
 const PatientRoutes = require('./Routes/PatientRoutes');
+const AppsRoutes= require('./Routes/appointementsrouter')
 
 
 const cors = require('cors');
@@ -30,6 +31,7 @@ app.use('/meds', medsRoutes);
 app.use('/doctors', DoctorRoutes);
 app.use('/pharmacists', PharmacistRoutes);
 app.use('/patients', PatientRoutes);
+app.use('/apps', AppsRoutes);
 
 
 // MongoDB Configuration
