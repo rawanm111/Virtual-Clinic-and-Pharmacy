@@ -24,7 +24,9 @@ import AdminHome from  "./Pages/AdminHome";
 import PatientsTable from "./Pages/PatientsTable";
 import DoctorsTable from "./Pages/DoctorsTable";
 import UserManagement from "./Pages/UserManagement";
-
+import HealthPackages from "./Pages/HealthPackagesPage";
+import NewPackage from "./Pages/NewPackagePage";
+import UpdatePackage from "./Pages/UpdatePackage";
 
 export default function Paths() {
   return (
@@ -52,13 +54,12 @@ export default function Paths() {
         <Route path="/update-patient/:username" element={<UpdatePatient />} />
         <Route path="/update-doctor/:username" element={<UpdateDoctor />} />
         <Route path="/update-pharmacist/:username" element={<UpdatePharmacist />} />
-
-
-
         <Route path="/doctorsTable" element={<DoctorsTable />} />
         <Route path="/patientsTable" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
-
+        <Route path="/health-packages" element={<HealthPackages />} />
+        <Route path="/new-package" element={<NewPackage />} />
+        <Route path="/update-package/:id" element={<UpdatePackage />} /> 
 
       </Routes>
     </Router>

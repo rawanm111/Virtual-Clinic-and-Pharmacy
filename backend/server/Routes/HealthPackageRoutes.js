@@ -7,5 +7,5 @@ router.post('/', healthPackageController.createHealthPackage);
 router.get('/', healthPackageController.getAllHealthPackages);
 router.put('/:id', healthPackageController.updateHealthPackage);
 router.delete('/:id', healthPackageController.deleteHealthPackage);
-
+router.get('/:id', healthPackageController.getHealthPackages);
 module.exports = router;

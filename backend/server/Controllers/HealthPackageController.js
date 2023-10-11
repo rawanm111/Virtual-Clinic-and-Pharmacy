@@ -44,3 +44,12 @@ exports.deleteHealthPackage = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+exports.getHealthPackages = async (req, res) => {
+  try {
+    const packages = await HealthPackage.findById(req.params.id);
+    res.status(200).json(packages);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
