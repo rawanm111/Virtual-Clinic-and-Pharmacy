@@ -1,4 +1,4 @@
-import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
+import Appbar from '../Components/Appbar/AppbarPharmacist';
 import './AdminMedsPage.css'
 import PharmacistMedicationTable from '../Components/PharmacistMedicationTable'
 import React, { useEffect, useState } from 'react';
@@ -7,7 +7,7 @@ function PharmacistMedsPage() {
   
   return (
     <div > 
-      <AppbarAdmin userName="Gera"></AppbarAdmin>
+      <Appbar userName="Gera"></Appbar>
       <p className="centered-text">Available Medications</p>
       <PharmacistMedicationTable /> 
     </div>

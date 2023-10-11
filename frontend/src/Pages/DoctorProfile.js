@@ -4,7 +4,6 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppbarDoctor from './Components/Appbar/AppbarDoctor';
 import { useNavigate } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
@@ -26,7 +25,7 @@ const HeaderContainer = styled('div')({
 const CardsContainer = styled('div')({
   display: 'flex',
   justifyContent: 'space-between',
-  flexWrap: 'wrap', // Add this to wrap cards to the next row
+  flexWrap: 'wrap',
 });
 
 const CardWrapper = styled(Card)({
@@ -66,7 +65,7 @@ const UpdatePackage = (id) => {
 
   useEffect(() => {
     axios
-      .get('http://localhost:2002/doctors') // Adjust the URL as needed
+      .get('http://localhost:3000/doctors') 
       .then((response) => {
         setDoctorProfile(response.data);
       })
@@ -79,44 +78,32 @@ const UpdatePackage = (id) => {
   };
   return (
     <div>     
-      <AppbarDoctor />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            DoctorProfile
+            My Profile
           </Typography>
         </HeaderContainer>
         <CardsContainer>
           {DoctorProfile.map((DoctorProfile) => (
             <CardWrapper key={DoctorProfile.username} variant="outlined">
               <CardContent>
-                <NameTypography variant="h5" component="div">
-                 Username: {DoctorProfile.username}
-                </NameTypography>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    Name:{DoctorProfile.name}
-                  </DataTypography>
-                  <DataTypography variant="body2">
-                  Email: {DoctorProfile.email}
-                  </DataTypography>
-                  <DataTypography variant="body2">
-                  password:  {DoctorProfile.password}
-                  </DataTypography>
-                  <DataTypography variant="body2">
-                  hourlyRate : {DoctorProfile.hourly_rate}
-                  </DataTypography>
-                  <DataTypography variant="body2">
-                  educational_bg: {DoctorProfile.educational_bg}
-                  </DataTypography>
-                  <Button onClick={() => handleUpdatePackage(DoctorProfile.username)}>
-                   Update
-                  </Button>
-                </div>
-              </CardContent>
+  <NameTypography variant="h5" component="div">
+    {DoctorProfile.username}
+  </NameTypography>
+  <div>  <DataTypography variant="body2">Name: {DoctorProfile.fullName}</DataTypography>  </div>
+  <div> <DataTypography variant="body2">Email: {DoctorProfile.email}</DataTypography>  </div>
+  <div> <DataTypography variant="body2">Password: {DoctorProfile.password}</DataTypography>  </div>
+  <div>
+    <DataTypography variant="body2">
+      Date of Birth: {DoctorProfile.dateOfBirth}
+    </DataTypography>
+  </div>
+  <div>  <DataTypography variant="body2">Hourly Rate: {DoctorProfile.hourlyRate}</DataTypography>  </div>
+  <div>  <DataTypography variant="body2">Speciality: {DoctorProfile.speciality}</DataTypography>  </div>
+  <div>  <DataTypography variant="body2">Educational Background: {DoctorProfile.educationalBackground}</DataTypography>  </div>
+  <div>  <Button onClick={() => handleUpdatePackage(DoctorProfile.username)}>Update</Button>  </div>
+</CardContent>
             </CardWrapper>
           ))}
         </CardsContainer>

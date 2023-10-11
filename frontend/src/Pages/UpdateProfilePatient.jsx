@@ -3,71 +3,41 @@ import axios from 'axios';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 
-export default function UpdatePackage() {
-  const { username} = useParams();
+export default function UpdatePatient() {
+  const { username } = useParams();
 
   const [formData, setFormData] = useState({
-            username:'',
-            email:'',
-            fullName:'',
-            password:'',
-            emergencyfullName:'',
-            emergencyContactMobileNumber:'',
-            emergencyContactRelationToPatient:'',
-            mobileNumber:'',
-            gender:'',
-            dateOfBirth:'',
+    username: '',
+    email: '',
+    fullName: '',
+    password: '',
+    dateOfBirth: '',
+    gender: '',
+    mobileNumber: '',
+    emergencyContactFullName: '',
+    emergencyContactMobileNumber: '',
+    emergencyContactRelationToPatient: '',
   });
 
   useEffect(() => {
-   
-    if (id) {
-      axios
-        .get(`http://localhost:3000/'/patients'/${id}`)
-        .then((response) => {
-          // Verify the response structure and field names
-          const {
-            username,
-            email,
-            fullName,
-            password,
-            emergencyfullName,
-            emergencyContactMobileNumber,
-            emergencyContactRelationToPatient,
-            mobileNumber,
-            gender,
-            dateOfBirth,
-          } = response.data;
-
-          // Update formData state with fetched data
-          setFormData({
-            username,
-            email,
-            fullName,
-            password,
-            emergencyfullName,
-            emergencyContactMobileNumber,
-            emergencyContactRelationToPatient,
-            mobileNumber,
-            gender,
-            dateOfBirth,
-          });
-        })
-        .catch((error) => {
-          console.error('Error fetching patient profile:', error);
-        });
-    }
-  }, [id]);
-
-  const handleSubmit = () => {
-    // Use a PUT request to update the health package
     axios
-      .put(`http://localhost:3000/health-packages/${id}`, formData)
+      .get(`http://localhost:3000/patients/${username}`)
       .then((response) => {
-        console.log('Updated health package:', response.data);
+        setFormData(response.data);
       })
       .catch((error) => {
-        console.error('Error updating health package:', error);
+        console.error('Error fetching patient profile:', error);
+      });
+  }, [username]);
+
+  const handleSubmit = () => {
+    axios
+      .put(`http://localhost:3000/patients/${username}`, formData)
+      .then((response) => {
+        console.log('Updated patient:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error updating patient:', error);
       });
   };
 
@@ -94,112 +64,111 @@ export default function UpdatePackage() {
           borderRadius: '15px',
         }}
       >
-         <Typography variant="h4" gutterBottom align="center">
-          UpdatePatient 
+        <Typography variant="h4" gutterBottom align="center">
+          Update Patient
         </Typography>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="username"
+            label="Username"
             variant="outlined"
             name="username"
-            value={Patient.username}
+            value={formData.username}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="password"
+            label="Password"
             variant="outlined"
             name="password"
-            value={Patient.password}
+            value={formData.password}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="fullName"
+            label="Full Name"
             variant="outlined"
             name="fullName"
-            value={Patient.fullName}
+            value={formData.fullName}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="email"
+            label="Email"
             variant="outlined"
             name="email"
-            value={Patient.email}
+            value={formData.email}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="dateOfBirth"
+            label="Date of Birth"
             variant="outlined"
             name="dateOfBirth"
-            value={Patient.dateOfBirth}
+            value={formData.dateOfBirth}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="gender"
+            label="Gender"
             variant="outlined"
             name="gender"
-            value={Patient.gender}
+            value={formData.gender}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="mobileNumber"
+            label="Mobile Number"
             variant="outlined"
             name="mobileNumber"
-            value={Patient.mobileNumber}
+            value={formData.mobileNumber}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="emergencyufullName"
+            label="Emergency Contact Full Name"
             variant="outlined"
-            name="emergencyfullName"
-            value={Patient.emergencyfullName}
+            name="emergencyContactFullName"
+            value={formData.emergencyContactFullName}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="emergencyContactMobileNumber"
+            label="Emergency Contact Mobile Number"
             variant="outlined"
             name="emergencyContactMobileNumber"
-            value={Patient.emergencyContactMobileNumber}
+            value={formData.emergencyContactMobileNumber}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="emergencyContactRelationToPatient"
+            label="Emergency Contact Relation to Patient"
             variant="outlined"
             name="emergencyContactRelationToPatient"
-            value={Patient.emergencyContactRelationToPatien}
+            value={formData.emergencyContactRelationToPatient}
             onChange={handleInputChange}
           />
         </div>
-        
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          UpdatePatient
+          Update
         </Button>
       </Container>
     </Box>

@@ -1,27 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import { useParams } from 'react-router-dom';
 
+export default function UpdateDoctor() {
+  const { username } = useParams();
 
-export default function AddMed() {
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    price: 0,
-    sales: '',
-    availableQuantity: 0,
-    medicalUse: '',
-    picture: '',
+    username: '',
+    email: '',
+    fullName: '',
+    password: '',
+    hourlyRate: 0,
+    affiliation: '',
+    educationalBackground: '',
+    speciality: '',
+    dateOfBirth: '',
   });
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/pharmacists/${username}`)
+      .then((response) => {
+        setFormData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching doctor profile:', error);
+      });
+  }, [username]);
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:2002/meds/', formData)
+      .put(`http://localhost:3000/pharmacists/${username}`, formData)
       .then((response) => {
-        console.log('Response:', response.data);
+        console.log('Updated doctor:', response.data);
       })
       .catch((error) => {
-        console.error('Error:', error);
+        console.error('Error updating doctor:', error);
+        console.log({username});
       });
   };
 
@@ -33,7 +49,7 @@ export default function AddMed() {
   return (
     <Box
       style={{
-        backgroundColor: 'lightblue', 
+        backgroundColor: 'lightblue',
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -49,85 +65,90 @@ export default function AddMed() {
         }}
       >
         <Typography variant="h4" gutterBottom align="center">
-          Add Medication
+          Update Pharmacist
         </Typography>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Name"
+            label="Username"
             variant="outlined"
-            name="name"
-            value={formData.name}
+            name="username"
+            value={formData.username}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Description"
+            label="Password"
             variant="outlined"
-            name="description"
-            value={formData.description}
+            name="password"
+            value={formData.password}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Price"
+            label="Full Name"
             variant="outlined"
-            type="number"
-            name="price"
-            value={formData.price}
+            name="fullName"
+            value={formData.fullName}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Sale"
+            label="Email"
             variant="outlined"
-            type="number"
-            name="sales"
-            value={formData.sales}
+            name="email"
+            value={formData.email}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Available Quantity"
+            label="Hourly Rate"
             variant="outlined"
-            type="number"
-            name="availableQuantity"
-            value={formData.availableQuantity}
+            name="hourlyRate"
+            value={formData.hourlyRate}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Medical Use"
+            label="Affiliation"
             variant="outlined"
-            type="String"
-            name="medicalUse"
-            value={formData.medicalUse}
+            name="affiliation"
+            value={formData.affiliation}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Picture"
+            label="Educational Background"
             variant="outlined"
-            type="String"
-            name="picture"
-            value={formData.picture}
+            name="educationalBackground"
+            value={formData.educationalBackground}
             onChange={handleInputChange}
           />
         </div>
-        <Button variant="contained" color="primary"  onClick={handleSubmit}>
-          Create Medication
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Date of birth"
+            variant="outlined"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleInputChange}
+          />
+        </div>
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          Update
         </Button>
       </Container>
     </Box>

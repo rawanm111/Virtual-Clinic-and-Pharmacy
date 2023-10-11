@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
+import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import Link, useLocation, and useNavigate
 import Logo from './Logo.png';
 
 const theme = createTheme({
@@ -17,7 +17,8 @@ const theme = createTheme({
 });
 
 function AppBarComponent({ userName }) {
-  const location = useLocation(); 
+  const location = useLocation();
+  const navigate = useNavigate(); // Use useNavigate to access the navigation function
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -68,16 +69,20 @@ function AppBarComponent({ userName }) {
     backgroundColor: theme.palette.secondary.main,
   };
 
+  const handleAvatarClick = () => {
+    navigate('/doc-profile');
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
-          <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', marginLeft: '20px' }}>
+          <Link to="/doctor-profile" onClick={handleAvatarClick}>
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
-            <Typography variant="h6" component="div" color="primary" style={nameStyle}>
-              {/* {userName} will be later on edited depending on logged in user*/} Zeina Elmofty
-            </Typography>
-          </div>
+          </Link>
+          <Typography variant="h6" component="div" color="primary" style={nameStyle}>
+            {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
+          </Typography>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>
         <div style={tabContainerStyle}>
@@ -92,16 +97,16 @@ function AppBarComponent({ userName }) {
             <Tab
               label="Home"
               sx={tabStyle}
-              component={Link} 
-              to="/admin-home" 
-              selected={location.pathname === '/admin-home'} 
+              component={Link}
+              to="/doc-home"
+              selected={location.pathname === '/doc-home'}
             />
             <Tab
               label="Appointments"
               sx={tabStyle}
-              component={Link} 
-              to="/appointments" 
-              selected={location.pathname === '/appointments'} 
+              component={Link}
+              to="/appointments"
+              selected={location.pathname === '/appointments'}
             />
             <Tab
               label="Patients"

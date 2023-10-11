@@ -75,7 +75,7 @@ function AppBarComponent({ userName }) {
           <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', marginLeft: '20px' }}>
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
             <Typography variant="h6" component="div" color="primary" style={nameStyle}>
-              {/* {userName} will be later on edited depending on logged in user*/} Zeina Elmofty
+              {/* {userName} will be later on edited depending on the logged-in user*/} Zeina Elmofty
             </Typography>
           </div>
           <img src={Logo} style={imgStyle} alt="Logo" />
@@ -102,6 +102,13 @@ function AppBarComponent({ userName }) {
               component={Link} 
               to="/pharm-meds" 
               selected={location.pathname === '/pharm-meds'} 
+            />
+            <Tab
+              label="Profile"
+              sx={tabStyle}
+              component={Link} 
+              to="/pharmacist/profile" 
+              selected={location.pathname === '/pharmacist/profile'} 
             />
           </Tabs>
         </div>

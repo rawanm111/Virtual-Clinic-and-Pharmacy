@@ -18,7 +18,7 @@ function PharmacistMedicationTable() {
 
     const fetchMedicationData = async () => {
       try {
-        const response = await axios.get('http://localhost:2002/meds/', {
+        const response = await axios.get('http://localhost:3000/meds/', {
           params: queryParameters,
         });
         const responseData = response.data;

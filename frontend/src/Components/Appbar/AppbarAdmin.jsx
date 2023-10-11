@@ -128,8 +128,8 @@ function AppBarComponent({ userName }) {
               label="Medications"
               sx={tabStyle}
               component={Link}
-              to="/medications"
-              selected={location.pathname === '/medications'}
+              to="/admin-meds"
+              selected={location.pathname === '/admin-meds'}
             />
           </Tabs>
         </div>

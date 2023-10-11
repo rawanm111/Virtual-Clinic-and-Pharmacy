@@ -4,10 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppbarPharmacist from './Components/Appbar/AppbarPharmacist';
 import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
-import { Navigate } from 'react-router-dom';
+import { Button } from '@mui/material';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -25,7 +23,7 @@ const HeaderContainer = styled('div')({
 const CardsContainer = styled('div')({
   display: 'flex',
   justifyContent: 'space-between',
-  flexWrap: 'wrap', // Add this to wrap cards to the next row
+  flexWrap: 'wrap',
 });
 
 const CardWrapper = styled(Card)({
@@ -57,71 +55,87 @@ const DataTypography = styled(Typography)({
   marginLeft: '0.5rem',
 });
 
-export default function PharmacistProfile() {
-  const [PharmacistProfile, setPharmacistProfile] = useState([]);
-  const Navigate = useNavigate();
+export default function PatientProfile() {
+  const [PatientProfile, setPatientProfile] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get('http://localhost:2002/pharmacists') // Adjust the URL as needed
+      .get('http://localhost:3000/patients')
       .then((response) => {
-        setPharmacistProfile(response.data);
-        console.log(response.data);
+        setPatientProfile(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching PharmacistProfiles:', error);
+        console.error('Error fetching Profiles:', error);
       });
   }, []);
 
   const handleUpdatePackage = (username) => {
-    Navigate(`/update-pharmacist/${username}`);
+    navigate(`/update-patient/${username}`);
   };
 
   return (
     <div>
-      <AppbarPharmacist />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            PharmacistProfile
+            My Profile
           </Typography>
         </HeaderContainer>
         <CardsContainer>
-          {PharmacistProfile.map((PharmacistProfile) => (
-            <CardWrapper key={PharmacistProfile.username} variant="outlined">
+          {PatientProfile.map((PatientProfile) => (
+            <CardWrapper key={PatientProfile._id} variant="outlined">
               <CardContent>
                 <NameTypography variant="h5" component="div">
-                  username: {PharmacistProfile.username}
+                  {PatientProfile.username}
                 </NameTypography>
                 <div>
-                  <SubtitleTypography variant="subtitle1"></SubtitleTypography>
                   <DataTypography variant="body2">
-                    password: {PharmacistProfile.password}
+                    Password: {PatientProfile.password}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    educationalBackground: {PharmacistProfile.educationalBackground}
+                    Email: {PatientProfile.email}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    password: {PharmacistProfile.password}
+                    Full Name: {PatientProfile.fullName}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    fullname: {PharmacistProfile.fullname}
+                    Date of Birth: {PatientProfile.dateOfBirth}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    email: {PharmacistProfile.email}
+                    Gender: {PatientProfile.gender}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    dateOfBirth: {PharmacistProfile.dateOfBirth}
+                    Mobile Number: {PatientProfile.mobileNumber}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    hourlyRate: {PharmacistProfile.hourlyRate}
+                    Emergency Contact Full Name: {PatientProfile.emergencyContactFullName}
                   </DataTypography>
+                </div>
+                <div>
                   <DataTypography variant="body2">
-                    affiliation: {PharmacistProfile.affiliation}
+                    Emergency Contact Mobile Number: {PatientProfile.emergencyContactMobileNumber}
                   </DataTypography>
-                  <Button onClick={() => handleUpdatePackage(PharmacistProfile.username)}>
-                    Update
-                  </Button>
+                </div>
+                <div>
+                  <DataTypography variant="body2">
+                    Emergency Contact Relation to Patient: {PatientProfile.emergencyContactRelationToPatient}
+                  </DataTypography>
+                </div>
+                <div>
+                  <Button onClick={() => handleUpdatePackage(PatientProfile.username)}>Update</Button>
                 </div>
               </CardContent>
             </CardWrapper>
