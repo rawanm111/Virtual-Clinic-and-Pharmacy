@@ -112,7 +112,7 @@ function AppBarComponent({ userName }) {
               label="Patients"
               sx={tabStyle}
               component={Link}
-              to="/patients"
+              to="/patientsTable"
               selected={location.pathname === '/patients'}
             />
             <Tab

@@ -21,6 +21,10 @@ import PatientHomeClinic from  "./Pages/PatientHomeClinic";
 import PatientHomePharmacy from "./Pages/PatientHomePharmacy";
 import PharmacistHome from "./Pages/PharmacistHome";
 import AdminHome from  "./Pages/AdminHome";
+import PatientsTable from "./Pages/PatientsTable";
+import DoctorsTable from "./Pages/DoctorsTable";
+import UserManagement from "./Pages/UserManagement";
+
 
 export default function Paths() {
   return (
@@ -48,6 +52,14 @@ export default function Paths() {
         <Route path="/update-patient/:username" element={<UpdatePatient />} />
         <Route path="/update-doctor/:username" element={<UpdateDoctor />} />
         <Route path="/update-pharmacist/:username" element={<UpdatePharmacist />} />
+
+
+
+        <Route path="/doctorsTable" element={<DoctorsTable />} />
+        <Route path="/patientsTable" element={<PatientsTable />} />
+        <Route path="/userManagement" element={<UserManagement />} />
+
+
       </Routes>
     </Router>
   );

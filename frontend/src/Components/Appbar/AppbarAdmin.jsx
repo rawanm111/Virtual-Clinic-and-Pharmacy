@@ -114,7 +114,7 @@ function AppBarComponent({ userName }) {
               label="User Management"
               sx={tabStyle}
               component={Link}
-              to="/user-management"
+              to="/userManagement"
               selected={location.pathname === '/user-management'}
             />
             <Tab
