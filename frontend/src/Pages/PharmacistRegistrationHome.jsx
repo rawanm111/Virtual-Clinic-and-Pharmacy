@@ -1,29 +1,45 @@
-import React, { useState } from 'react';
+//import React from 'react';
+//import './LoginPagepharmacy.css';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
+//import TextField from '@mui/material/TextField'; // Import TextField
+import React from 'react';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
+import Paper from '@mui/material/Paper';
+import './PharmacistRegistrationHome.css';
 import Box from '@mui/material/Box';
+import { useState } from 'react';
 import axios from 'axios';
-import './DoctorRegistrationHome.css';
+import { useNavigate } from 'react-router-dom';
 
-const DoctorRegistrationHome = () => {
+
+
+const PharmacistRegistrationHome = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     fullName: '',
     email: '',
+    dateOfBirth: '',
     hourlyRate: '',
     affiliation: '',
     educationalBackground: '',
+    
   });
+
+
+
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:3000/doctors', formData)
+      .post('http://localhost:3000/pharmacists', formData)
       .then((response) => {
         console.log('Response:', response.data);
+        navigate('/pharm-home')
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -35,20 +51,21 @@ const DoctorRegistrationHome = () => {
     setFormData({ ...formData, [name]: value });
   };
 
-  return (
-    <Box
+
+return (
+      <Box
       component="div"
       sx={{
-        backgroundColor: '#B3E0FF',
-        height: '100vh',
+        backgroundColor: '#B3E0FF', // Set the background color to light blue
+         height: '100vh', // Set the height to 100% of the viewport
         alignItems: 'center',
         justifyContent: 'center',
       }}
-    >
-      <Container maxWidth="md" className="text-field-container">
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={6}>
-            <TextField
+    >   
+ <Container maxWidth="md" className="text-field-container">
+ <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Username"
@@ -56,11 +73,11 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="username"
               value={formData.username}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Password"
@@ -68,11 +85,11 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="password"
               value={formData.password}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Full Name"
@@ -80,11 +97,11 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="fullName"
               value={formData.fullName}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Email"
@@ -92,11 +109,23 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="email"
               value={formData.email}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
+              fullWidth
+              margin="normal"
+              label="Date Of Birth"
+              variant="outlined"
+              className="text-field"
+              name="dateOfBirth"
+              value={formData.dateOfBirth}
+            onChange={handleInputChange}
+            />
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Hourly Rate"
@@ -104,11 +133,11 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="hourlyRate"
               value={formData.hourlyRate}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Affiliation(hospital)"
@@ -116,11 +145,11 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="affiliation"
               value={formData.affiliation}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
               fullWidth
               margin="normal"
               label="Educational Background"
@@ -128,31 +157,39 @@ const DoctorRegistrationHome = () => {
               className="text-field"
               name="educationalBackground"
               value={formData.educationalBackground}
-              onChange={handleInputChange}
+            onChange={handleInputChange}
             />
-          </Grid>
-        </Grid>
-        <h1 className="title-text">Doctor Registration</h1>
-        <div className="button-container">
-          <Button variant="contained" onClick={handleSubmit}>
-            Register
-          </Button>
-        </div>
-        <div className="button-container-1">
-          <Button variant="contained">Cancel</Button>
-        </div>
-        <div className="container">
-          <div className="image-container">
-            <img
-              src={img}
-              alt="Doctor Image"
-              className="adjustable-image"
-            />
-          </div>
-        </div>
-      </Container>
-    </Box>
-  );
-};
+  </Grid>
 
-export default DoctorRegistrationHome;
+
+
+
+
+</Grid>
+<h1 class="title-text">Pharmacist Registration</h1>;
+<div className="button-container">
+        <Button variant="contained"  onClick={handleSubmit}>Register</Button>
+      </div>
+      <div className="button-container-1">
+        <Button variant="contained">Cancel</Button>
+      </div>
+
+      <div className="container">
+      <div className="image-container">
+        <img
+          src={img} // Use the imported variable 'img' as the source
+          alt="" // Add an alt attribute for accessibility
+          className="adjustable-image"
+        />
+      </div>
+      </div>
+
+</Container>
+</Box>
+
+ 
+    )
+     
+  }
+  
+  export default PharmacistRegistrationHome;

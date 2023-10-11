@@ -3,16 +3,29 @@ import './LoginPagepharmacy.css';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField'; // Import TextField
-
-
+import { useNavigate } from 'react-router-dom';
 
 function LoginPage() {
+  const navigate = useNavigate();
+
+  const handlePatientRegistration = () => {
+    navigate('/patientregpharm');
+  };
+
+  const handleLogin = () => {
+    navigate('/admin-home');
+  }; 
+
+  const handlePharmacistRegistration = () => {
+    navigate('/pharmreg');
+  };
+
   return (
     <div className="container">
       <div className="image-container">
         <img
-          src={img} // Use the imported variable 'img' as the source
-          alt="" // Add an alt attribute for accessibility
+          src={img}
+          alt=""
           className="adjustable-image"
         />
       </div>
@@ -21,7 +34,7 @@ function LoginPage() {
         <TextField 
           label="Username" 
           variant="standard" 
-          fullWidth // This will make the text field take the full width of its container
+          fullWidth
         />
       </div>
 
@@ -29,24 +42,15 @@ function LoginPage() {
         <TextField 
           label="Password" 
           variant="standard" 
-          fullWidth // This will make the text field take the full width of its container
+          fullWidth
         />
       </div>
-      <h1 class="title-text">DON'T HAVE AN ACCOUNT?</h1>;
-
-      <div className="button-container">
-        <Button variant="contained">LOGIN</Button>
-      </div>
-      <div className="button-container-1">
-        <Button variant="outlined">REGISTER AS PATIENT</Button>
-      </div>
       <div className="button-container-2">
-        <Button variant="outlined">REGISTER AS PHARMACIST</Button>
+        <Button variant="contained" onClick={handleLogin}>LOGIN</Button>
+        <Button variant="outlined" onClick={handlePatientRegistration}>REGISTER AS PATIENT</Button>
+        <Button variant="outlined" onClick={handlePharmacistRegistration}>REGISTER AS PHARMACIST</Button>
       </div> 
-      
-
-
-      </div>
+    </div>
   );
 }
 

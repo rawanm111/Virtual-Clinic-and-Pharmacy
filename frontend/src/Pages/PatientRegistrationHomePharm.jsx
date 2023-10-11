@@ -13,9 +13,11 @@ import './PatientRegistrationHome.css';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
 const PatientRegistrationHome = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -37,6 +39,7 @@ const PatientRegistrationHome = () => {
       .post('http://localhost:3000/patients', formData)
       .then((response) => {
         console.log('Response:', response.data);
+        navigate('/pharm-patient-home')
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -190,7 +193,10 @@ const PatientRegistrationHome = () => {
 </Grid>
 <h1 class="title-text">Patient Registration</h1>;
 <div className="button-container">
-        <Button variant="contained"onClick={handleSubmit} >Register</Button>
+<Button
+              variant="contained"
+              onClick={handleSubmit}
+            > Register</Button>
       </div>
       <div className="button-container-1">
         <Button variant="contained">Cancel</Button>

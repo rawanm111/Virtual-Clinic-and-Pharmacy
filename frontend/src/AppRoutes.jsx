@@ -1,19 +1,43 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import AdminMedsPage from './Pagess/AdminMedsPage'
-import PatientMedsPage from './Pagess/PatientMedsPage'
-import PharmacistMedsPage from './Pagess/PharmacistMedsPage'
-import DoctorProfile from './Pagess/DoctorProfile';
-import PatientProfile from './Pagess/PatientProfile';
-import PharmacistProfile from './Pagess/PharmacistProfile';
-import AddMed from './Pagess/addMed';
-import UpdatePatient from "./Pagess/UpdateProfilePatient";
-import UpdateDoctor from "./Pagess/UpdateProfileDoc";
-import UpdatePharmacist from "./Pagess/UpdateProfilePharm";
+import AdminMedsPage from './Pages/AdminMedsPage'
+import PatientMedsPage from './Pages/PatientMedsPage'
+import PharmacistMedsPage from './Pages/PharmacistMedsPage'
+import DoctorProfile from './Pages/DoctorProfile';
+import PatientProfile from './Pages/PatientProfile';
+import PharmacistProfile from './Pages/PharmacistProfile';
+import AddMed from './Pages/addMed';
+import UpdatePatient from "./Pages/UpdateProfilePatient";
+import UpdateDoctor from "./Pages/UpdateProfileDoc";
+import UpdatePharmacist from "./Pages/UpdateProfilePharm";
+import StartPage from "./Pages/StartPage";
+import LoginPageclinic from  "./Pages/LoginPageclinic";
+import LoginPagepharmacy from  "./Pages/LoginPagepharmacy";
+import PatientRegistrationHome from "./Pages/PatientRegistrationHome";
+import PatientRegistrationHomePharm from "./Pages/PatientRegistrationHomePharm";
+import DoctorRegistrationHome from "./Pages/DoctorRegistrationHome";
+import PharmRegistrationHome from "./Pages/PharmacistRegistrationHome";
+import DoctorHome from  "./Pages/DoctorHome";
+import PatientHomeClinic from  "./Pages/PatientHomeClinic";
+import PatientHomePharmacy from "./Pages/PatientHomePharmacy";
+import PharmacistHome from "./Pages/PharmacistHome";
+import AdminHome from  "./Pages/AdminHome";
 
 export default function Paths() {
   return (
-    <Router>
+    <Router> 
       <Routes>
+        <Route path="/" element={<StartPage />} />
+        <Route path="/clinic" element={<LoginPageclinic />} />
+        <Route path="/pharm" element={<LoginPagepharmacy />} />
+        <Route path="/patientreg" element={<PatientRegistrationHome />} />
+        <Route path="/pharmreg" element={<PharmRegistrationHome />} />
+        <Route path="/patientregpharm" element={<PatientRegistrationHomePharm />} />
+        <Route path="/docreg" element={<DoctorRegistrationHome />} />
+        <Route path="/doc-home" element={<DoctorHome />} />
+        <Route path="/clinic-patient-home" element={<PatientHomeClinic />} />
+        <Route path="/pharm-patient-home" element={<PatientHomePharmacy />} />
+        <Route path="/pharm-home" element={<PharmacistHome />} />
+        <Route path="/admin-home" element={<AdminHome />} />
         <Route path="/admin-meds" element={<AdminMedsPage />} />
         <Route path="/patient-meds" element={<PatientMedsPage />} />
         <Route path="/pharm-meds" element={<PharmacistMedsPage />} />
@@ -28,4 +52,5 @@ export default function Paths() {
     </Router>
   );
 }
+
 

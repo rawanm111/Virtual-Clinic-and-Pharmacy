@@ -16,11 +16,6 @@
   }
 
 
-
-
-
-
-  
   /* LoginPage.css */
 .button-container {
   position: absolute; /* Set the position to absolute */
@@ -49,7 +44,7 @@
 .button-container-1 {
   position: absolute; /* Set the position to absolute */
   top: 590px; /* Adjust the top position as needed */
-  left: 1200px; /* Adjust the left position as needed */
+  left: 0px; /* Adjust the left position as needed */
 }
 
 /* Apply styles to the contained button */
@@ -193,8 +188,9 @@
 
 .title-text {
   
-  margin-top: -510px; /* space between title and anything below */
-  margin-left: 1200px; /* move it to the right */
+  margin-top: 0px; /* space between title and anything below */
+  margin-left: 120
+0px; /* move it to the right */
   
   font-size: 15px; /* Adjust the text size */
   color: #008fb3; /* Adjust the text color */

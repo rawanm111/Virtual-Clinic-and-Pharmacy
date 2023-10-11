@@ -2,8 +2,8 @@ import React from 'react';
 import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
 import Logo from './Logo.png';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 const theme = createTheme({
   palette: {
@@ -19,9 +19,14 @@ const theme = createTheme({
 function AppBarComponent({ userName }) {
   const location = useLocation(); 
   const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
+  };
+  
+  const handleAvatarClick = () => {
+    navigate('/pharm-profile');
   };
 
   const appBarStyle = {
@@ -73,7 +78,7 @@ function AppBarComponent({ userName }) {
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
           <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', marginLeft: '20px' }}>
-            <Avatar src={AccountCircle} alt="Zeina Avatar" />
+            <Avatar src={AccountCircle} alt="Zeina Avatar" onClick={handleAvatarClick} />
             <Typography variant="h6" component="div" color="primary" style={nameStyle}>
               {/* {userName} will be later on edited depending on the logged-in user*/} Zeina Elmofty
             </Typography>
@@ -93,8 +98,8 @@ function AppBarComponent({ userName }) {
               label="Home"
               sx={tabStyle}
               component={Link} 
-              to="/pharm-pharmacist-home" 
-              selected={location.pathname === '/pharm-pharmacist-home' } 
+              to="/pharm-home" 
+              selected={location.pathname === '/pharm-home' } 
             />
             <Tab
               label="Medications"
@@ -102,13 +107,6 @@ function AppBarComponent({ userName }) {
               component={Link} 
               to="/pharm-meds" 
               selected={location.pathname === '/pharm-meds'} 
-            />
-            <Tab
-              label="Profile"
-              sx={tabStyle}
-              component={Link} 
-              to="/pharmacist/profile" 
-              selected={location.pathname === '/pharmacist/profile'} 
             />
           </Tabs>
         </div>

@@ -99,37 +99,17 @@ function AppBarComponent({ userName }) {
               label="Home"
               sx={tabStyle}
               component={Link}
-              to="/clinic-patient-home"
-              selected={location.pathname === '/clinic-patient-home'}
+              to="/pharm-patient-home"
+              selected={location.pathname === '/pharm-patient-home'}
             />
             <Tab
-              label="My Family"
+              label="Medications"
               sx={tabStyle}
               component={Link}
-              to="/my-fam"
-              selected={location.pathname === '/my-fam'}
+              to="/patient-meds"
+              selected={location.pathname === '/patient-meds'}
             />
-            <Tab
-              label="Appointments"
-              sx={tabStyle}
-              component={Link}
-              to="/patient-appointments"
-              selected={location.pathname === '/patient-appointments'}
-            />
-            <Tab
-              label="Doctors"
-              sx={tabStyle}
-              component={Link}
-              to="/doctors"
-              selected={location.pathname === '/doctors'}
-            />
-            <Tab
-              label="Prescriptions"
-              sx={tabStyle}
-              component={Link}
-              to="/perscriptions"
-              selected={location.pathname === '/perscriptions'}
-            />
+
           </Tabs>
         </div>
       </AppBar>

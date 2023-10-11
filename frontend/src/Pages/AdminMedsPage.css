@@ -2,12 +2,12 @@
   background-color: lightblue;
 }
 body {
-  background-color: lightblue; /* Or any other color you prefer */
+  background-color: lightblue;
 }
 .centered-text {
   text-align: center; 
   font-size: 24px;
   color: darkblue;
-  /* Add padding or margins if needed */
+
   padding: 10px;
 }

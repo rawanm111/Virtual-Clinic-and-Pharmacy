@@ -77,7 +77,7 @@ function AppBarComponent({ userName }) {
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
-          <Link to="/doctor-profile" onClick={handleAvatarClick}>
+          <Link to="/doc-profile" onClick={handleAvatarClick}>
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>

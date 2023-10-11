@@ -9,24 +9,26 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Paper from '@mui/material/Paper';
-import './PharmacistRegistrationHome.css';
+import './PatientRegistrationHome.css';
 import Box from '@mui/material/Box';
 import { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 
-
-const PharmacistRegistrationHome = () => {
+const PatientRegistrationHome = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: '',
     fullName: '',
     email: '',
     dateOfBirth: '',
-    hourlyRate: '',
-    affiliation: '',
-    educationalBackground: '',
-    
+    gender: '',
+    mobileNumber: '',
+    emergencyContactFullName: '',
+    emergencyContactMobileNumber: '',
+    emergencyContactRelationToPatient: '',
   });
 
 
@@ -34,7 +36,7 @@ const PharmacistRegistrationHome = () => {
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:3000/pharmacists', formData)
+      .post('http://localhost:3000/patients', formData)
       .then((response) => {
         console.log('Response:', response.data);
       })
@@ -47,9 +49,8 @@ const PharmacistRegistrationHome = () => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
+    return (
 
-
-return (
       <Box
       component="div"
       sx={{
@@ -59,6 +60,7 @@ return (
         justifyContent: 'center',
       }}
     >   
+        
  <Container maxWidth="md" className="text-field-container">
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
   <Grid item xs={6}>
@@ -69,7 +71,7 @@ return (
               variant="outlined"
               className="text-field"
               name="username"
-              value={formData.username}
+            value={formData.username}
             onChange={handleInputChange}
             />
   </Grid>
@@ -81,7 +83,7 @@ return (
               variant="outlined"
               className="text-field"
               name="password"
-              value={formData.password}
+            value={formData.password}
             onChange={handleInputChange}
             />
   </Grid>
@@ -93,7 +95,7 @@ return (
               variant="outlined"
               className="text-field"
               name="fullName"
-              value={formData.fullName}
+            value={formData.fullName}
             onChange={handleInputChange}
             />
   </Grid>
@@ -105,7 +107,7 @@ return (
               variant="outlined"
               className="text-field"
               name="email"
-              value={formData.email}
+            value={formData.email}
             onChange={handleInputChange}
             />
   </Grid>
@@ -117,7 +119,7 @@ return (
               variant="outlined"
               className="text-field"
               name="dateOfBirth"
-              value={formData.dateOfBirth}
+            value={formData.dateOfBirth}
             onChange={handleInputChange}
             />
   </Grid>
@@ -125,11 +127,11 @@ return (
   <TextField
               fullWidth
               margin="normal"
-              label="Hourly Rate"
+              label="Gender"
               variant="outlined"
               className="text-field"
-              name="hourlyRate"
-              value={formData.hourlyRate}
+              name="gender"
+            value={formData.gender}
             onChange={handleInputChange}
             />
   </Grid>
@@ -137,24 +139,49 @@ return (
   <TextField
               fullWidth
               margin="normal"
-              label="Affiliation(hospital)"
+              label="Mobile Number"
               variant="outlined"
               className="text-field"
-              name="affiliation"
-              value={formData.affiliation}
-            onChange={handleInputChange}
+              name="mobileNumber"
+              value={formData.mobileNumber}
+              onChange={handleInputChange}
+              
             />
   </Grid>
   <Grid item xs={6}>
   <TextField
               fullWidth
               margin="normal"
-              label="Educational Background"
+              label="Emergency Contact(Full Name)"
               variant="outlined"
               className="text-field"
-              name="educationalBackground"
-              value={formData.educationalBackground}
-            onChange={handleInputChange}
+              name="emergencyContactFullName"
+              value={formData.emergencyContactFullName}
+              onChange={handleInputChange}
+            />
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
+              fullWidth
+              margin="normal"
+              label="Emergency Contact(Mobile Number)"
+              variant="outlined"
+              className="text-field"
+              name="emergencyContactMobileNumber"
+              value={formData.emergencyContactMobileNumber}
+              onChange={handleInputChange}
+            />
+  </Grid>
+  <Grid item xs={6}>
+  <TextField
+              fullWidth
+              margin="normal"
+              label="Emergency Contact(Relation To Patient)"
+              variant="outlined"
+              className="text-field"
+              name="emergencyContactRelationToPatient"
+              value={formData.emergencyContactRelationToPatient}
+              onChange={handleInputChange}
             />
   </Grid>
 
@@ -163,9 +190,12 @@ return (
 
 
 </Grid>
-<h1 class="title-text">Pharmacist Registration</h1>;
+<h1 class="title-text">Patient Registration</h1>;
 <div className="button-container">
-        <Button variant="contained"  onClick={handleSubmit}>Register</Button>
+<Button
+              variant="contained"
+              onClick={() => navigate('/clinic-patient-home')}
+            > Register</Button>
       </div>
       <div className="button-container-1">
         <Button variant="contained">Cancel</Button>
@@ -183,10 +213,13 @@ return (
 
 </Container>
 </Box>
-
  
     )
+   
      
   }
+
   
-  export default PharmacistRegistrationHome;
+  export default PatientRegistrationHome;
+
+
