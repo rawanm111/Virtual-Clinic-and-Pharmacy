@@ -1,12 +1,16 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const medsRoutes = require('./Routes/medsroutes'); 
+const DoctorRoutes = require('./Routes/DoctorRoutes');
+const PharmacistRoutes = require('./Routes/PharmacistRoutes');
+const PatientRoutes = require('./Routes/PatientRoutes');
+
+
 const cors = require('cors');
 
 const app = express();
 
-// Configure CORS with options
-const allowedOrigins = ['http://localhost:3000'];
+const allowedOrigins = ['http://localhost:3001'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -18,12 +22,15 @@ const corsOptions = {
   },
 };
 
-// Use the cors middleware with options BEFORE defining routes
 app.use(cors(corsOptions));
 
 app.use(express.json());
 
 app.use('/meds', medsRoutes);
+app.use('/doctors', DoctorRoutes);
+app.use('/pharmacists', PharmacistRoutes);
+app.use('/patients', PatientRoutes);
+
 
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
@@ -38,7 +45,7 @@ db.once('open', () => {
 });
 
 // Start the server on port
-const PORT = 2002;
+const PORT = 3000;
 app.listen(PORT, () => {
-  console.log('Server is running on port ${PORT}');
+  console.log('Server is running on port 3000');
 });

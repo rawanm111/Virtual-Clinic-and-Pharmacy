@@ -6,7 +6,6 @@ const mongoose = require('mongoose')
 const submitPharmcistReq = async (req , res)=>{
     const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
 
-    //add req to DB
     try{
         const pharmcistReq = await PharmcistReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
         res.status(200).json(pharmcistReq)
@@ -14,7 +13,7 @@ const submitPharmcistReq = async (req , res)=>{
     catch(error){
         res.status(400).json({error: error.message})
     }
-    //res.json({mssg:'add a new request'})
+ 
 }
 
 //get all pharmcist Req

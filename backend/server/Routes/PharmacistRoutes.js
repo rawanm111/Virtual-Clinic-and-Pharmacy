@@ -4,7 +4,8 @@ const PharmacistController = require('../Controllers/PharmacistController');
 
 router.post('/', PharmacistController.createPharmacist);
 router.get('/', PharmacistController.getPharmacist);
-router.put('/:userid', PharmacistController.updatedPharmacist);
 router.delete('/:userid', PharmacistController.deletePharmacist);
+router.put('/:username', PharmacistController.updatePharmacistByUsername);
+router.get('/:username', PharmacistController.getPharmacistByUsername);
 
 module.exports = router;
