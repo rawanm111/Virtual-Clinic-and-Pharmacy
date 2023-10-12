@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import AppBarComponent from '../Components/Appbar/AppbarDoctor';
+import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
 
 export default function PatientsTable() {
   const [patients, setPatients] = useState([]);
@@ -10,6 +10,11 @@ export default function PatientsTable() {
   const [filterValue, setFilterValue] = useState('');
   const [selectedPatientData, setSelectedPatientData] = useState(null);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  // Add state for appointments and filtered appointments
+  const [appointments, setAppointments] = useState([]);
+  const [filteredAppointments, setFilteredAppointments] = useState([]);
 
   useEffect(() => {
     axios
@@ -34,6 +39,21 @@ export default function PatientsTable() {
       })
       .catch((error) => {
         console.error('Error fetching patients:', error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/apps/upcoming-appointments')
+      .then((response) => {
+        if (response.data) {
+          setAppointments(response.data);
+        } else {
+          console.error('No data received for appointments from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching appointments:', error);
       });
   }, []);
 
@@ -69,7 +89,7 @@ export default function PatientsTable() {
           </Button>
         </div>
       ),
-      },
+      }
     
   ];
 
@@ -77,6 +97,40 @@ export default function PatientsTable() {
     setSelectedPatientData(row);
     setPopoverAnchor(row);
   };
+
+  const handleUpcomingTrips = () => {
+    const url = `http://localhost:3000/apps/upcoming-appointments`;
+  
+    axios
+      .get(url)
+      .then((response) => {
+        const data = response.data;
+  
+        // Log the retrieved data and patient data for debugging
+        console.log('Retrieved data:', data);
+        console.log('Patients data:', patients);
+  
+        const matchingPatients = [];
+  
+        // Loop through patients and trips to find matches based on pid
+        for (const patient of patients) {
+          for (const trip of data) {
+            if (trip.pid === patient.id) {
+              matchingPatients.push(patient);
+              break; // Once a match is found, no need to continue searching trips
+            }
+          }
+        }
+        setFilteredRows(matchingPatients)
+        // Log the result of the filter operation for debugging
+        console.log('Patients matching pid:', matchingPatients);
+      })
+      .catch((error) => {
+        console.error('Error retrieving data:', error);
+      });
+  };
+  
+  
 
   return (
     <Box bgcolor="#daf4ff">
@@ -97,7 +151,9 @@ export default function PatientsTable() {
           value={filterValue}
           onChange={handleFilterChange}
         />
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" onClick={handleUpcomingTrips}>
+          Filter by Upcoming Appointments
+        </Button>
       </Box>
 
       <DataGrid

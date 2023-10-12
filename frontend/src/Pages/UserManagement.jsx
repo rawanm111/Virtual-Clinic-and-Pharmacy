@@ -5,7 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 // import { useHistory } from 'react-router-dom';
 // import ProfilePage from './ProfilePage';
 import AppBarComponent from '../Components/Appbar/AppbarAdmin';
-
+import { useNavigate } from 'react-router-dom';
 
 
 export default function UserManagement() {
@@ -246,7 +246,7 @@ export default function UserManagement() {
 
   const handleDelete = (id) => {
     // Send a DELETE request to your backend API
-    const url = `http://localhost:2005/patients/${id}`;
+    const url = `http://localhost:3000/patients/${id}`;
     axios.delete(url)
       .then(() => {
         setpatients((prevPatients) => prevPatients.filter((patient) => patient.id !== id));
@@ -296,14 +296,15 @@ export default function UserManagement() {
 const [admins, setAdmins] = useState([]);
 const [filteredRowsA, setFilteredRowsA] = useState([]);
 const [filterValueA, setFilterValueA] = useState('');
+const navigate = useNavigate();
 
 useEffect(() => {
-  axios.get('http://localhost:3000/admins')
+  axios.get('http://localhost:3000/admin')
     .then((response) => {
       if (response.data) {
         const transformedData = response.data.map((item) => ({
           id: item._id, 
-          name: item.username,   
+          username: item.username,   
         }));
         setAdmins(transformedData);
         setFilteredRowsA(transformedData);
@@ -336,7 +337,7 @@ const handleFilterChangeA = (e) => {
 
 const handleDeleteA = (id) => {
   // Send a DELETE request to your backend API
-  const url = `http://localhost:3000/admins/${id}`;
+  const url = `http://localhost:3000/admin/${id}`;
   axios.delete(url)
     .then(() => {
       setAdmins((prevPatients) => prevPatients.filter((admin) => admin.id !== id));
@@ -349,21 +350,21 @@ const handleDeleteA = (id) => {
 
 
 const columnsA = [
-  { field: 'Username', headerName: 'Name', width: 200 },
+  { field: 'username', headerName: 'Name', width: 200 },
   // { field: 'id', headerName: 'patientid', width: 200 },
-  {
-      field: 'actions',
-      headerName: '',
-      width: 120,
-      renderCell: (params) => (
-        <div>
-          <Button variant="outlined" onClick={() => handleButtonClickA(params.row)}>
-            VIEW
-          </Button>
+  // {
+  //     field: 'actions',
+  //     headerName: '',
+  //     width: 120,
+  //     renderCell: (params) => (
+  //       <div>
+  //         <Button variant="outlined" onClick={() => handleButtonClickA(params.row)}>
+  //           VIEW
+  //         </Button>
           
-        </div>
-      ),
-    },
+  //       </div>
+  //     ),
+  //   },
     {field:'action',headerName:"",width:100,
     renderCell: (params) => (
       <div>
@@ -382,6 +383,10 @@ const handleButtonClickA = (row) => {
   console.log('Button clicked for row:', row);
   // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
 
+};
+
+const navigateToAdminForm = () => {
+  navigate('/AdminForm');
 };
 
 
@@ -489,9 +494,9 @@ sx={{flexDirection: 'row'}}>
         }}
       >
         
-        <Button variant="contained">
-          Create Admin
-        </Button>
+        <Button variant="contained" onClick={navigateToAdminForm}>
+        Create Admin
+      </Button>
 
       
         <TextField

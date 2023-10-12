@@ -3,6 +3,9 @@ import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import 'react-datepicker/dist/react-datepicker-cssmodules.css'; // Import CSS for time selection
 
 export default function DoctorsTable() {
   const [doctors, setDoctors] = useState([]);
@@ -15,7 +18,7 @@ export default function DoctorsTable() {
   const [uniqueSpeciality, setUniqueSpeciality] = useState([]);
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDateTime, setSelectedDateTime] = useState(null); // State for date and time selection
 
   useEffect(() => {
     axios
@@ -29,7 +32,7 @@ export default function DoctorsTable() {
             hourly_rate: item.hourlyRate,
             educational_bg: item.educationalBackground,
             affiliation: item.affiliation,
-            speciality:item.speciality
+            speciality: item.speciality
           }));
           setDoctors(transformedData);
           setFilteredDoctors(transformedData);
@@ -42,12 +45,17 @@ export default function DoctorsTable() {
       .catch((error) => {
         console.error('Error fetching doctors:', error);
       });
-
+  
     axios
-      .get('http://localhost:2005/apps/upcoming-appointments')
+      .get('http://localhost:3000/apps/upcoming-appointments')
       .then((response) => {
         if (response.data) {
-          setAppointments(response.data);
+          const transformedAppointments = response.data.map((appointment) => ({
+            did:appointment.did,
+            date: new Date(appointment.date).toISOString(),
+            // ... other properties
+          }));
+          setAppointments(transformedAppointments);
         } else {
           console.error('No data received for appointments from the API');
         }
@@ -56,66 +64,67 @@ export default function DoctorsTable() {
         console.error('Error fetching appointments:', error);
       });
   }, []);
-
-  const handleFilterChange = (e) => {
-    const value = e.target.value.toLowerCase();
-    setFilterValue(value);
-
-    if (Array.isArray(doctors)) {
-      const searched = doctors.filter((doctor) => {
-        return (
-          (doctor && doctor.name && doctor.name.toLowerCase().includes(value)) ||
-          (doctor && doctor.speciality && doctor.speciality.toLowerCase().includes(value))
-        );
-      });
-      
   
+
+const handleFilterChange = (e) => {
+  const value = e.target.value.toLowerCase();
+  setFilterValue(value);
+
+  if (Array.isArray(doctors)) {
+    const searched = doctors.filter((doctor) => {
+      return (
+        (doctor && doctor.name && doctor.name.toLowerCase().includes(value)) ||
+        (doctor && doctor.speciality && doctor.speciality.toLowerCase().includes(value))
+      );
+    });
 
     setFilteredDoctors(searched);
-    }
-  };
+  }
+};
 
-  const handleSearchInputChange = (event) => {
-    setSearchQuery(event.target.value);
-  };
-  
-  
-
-  const handleUpcomingAppointments = () => {
-    if (selectedDate) {
-      const filteredAppointments = appointments.filter((appointment) =>
-        appointment.date === selectedDate
-      );
-      setFilteredAppointments(filteredAppointments);
-  
-      // Extract the "did" values from the filtered appointments
-      const didValues = filteredAppointments.map((appointment) => appointment.did);
-  
-      // Filter doctors based on the "did" values
-      const filteredDoctors = doctors.filter((doctor) =>
-        didValues.includes(doctor.id)
-      );
-  
-      setFilteredDoctors(filteredDoctors);
-  
-      console.log(filteredAppointments);
-    } else {
-      // Handle the case when selectedDate is undefined
-      console.error('Selected date is undefined.');
-    }
-  };
-  
-  
-  const handleDoctorFilter = () => {
-    const filteredRows = doctors.filter((row) =>
-      row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedSpeciality === '' || row.speciality === selectedSpeciality)
+const handleUpcomingAppointments = () => {
+  if (selectedDateTime) {
+    const selectedDateISO = selectedDateTime.toISOString(); // Format selectedDateTime for comparison
+    const filteredAppointments = appointments.filter((appointment) =>
+      appointment.date === selectedDateISO
     );
-    setFilteredDoctors(filteredRows);
-  };
-  
+    setFilteredAppointments(filteredAppointments);
+    const didValues = filteredAppointments.map((appointment) => appointment.did);
+
+    const filteredDoctors = doctors.filter((doctor) =>
+      didValues.includes(doctor.id)
+    );
+    console.log(filteredDoctors)
+
+    setFilteredDoctors(filteredDoctors);
+  } else {
+    console.error('Selected date is undefined.');
+  }
+};
+
+
+const handleDoctorFilter = () => {
+  const filteredRows = doctors.filter((row) =>
+    row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+    (selectedSpeciality === '' || row.speciality === selectedSpeciality)
+  );
+  setFilteredDoctors(filteredRows);
+};
+
+const handleSpecialityFilter = () => {
+  const filteredRows = doctors.filter((row) => {
+    const nameMatch = row.name && row.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const specialityMatch =
+      selectedSpeciality === '' || (row.speciality && row.speciality === selectedSpeciality);
+    return nameMatch && specialityMatch;
+  });
+  setFilteredDoctors(filteredRows);
+};
+
+// ... (rest of your code)
+
   const columns = [
-    { field: 'username', headerName: 'Name', width: 200 },
+    { field: 'name', headerName: 'Name', width: 200 },
     { field: 'speciality', headerName: 'Speciality', width: 200 },
     { field: 'hourly_rate', headerName: 'Session Price', width: 200 },
     {
@@ -126,8 +135,9 @@ export default function DoctorsTable() {
         <Button variant="outlined" onClick={() => handleViewClick(params.row)}>
           VIEW
         </Button>
-      ),
-    },
+      )
+      },
+  
   ];
 
   const handleViewClick = (row) => {
@@ -140,22 +150,10 @@ export default function DoctorsTable() {
     setPopoverAnchor(null);
   };
 
-  const handleSpecialityFilter = () => {
-    const filteredRows = doctors.filter((row) => {
-      const nameMatch = row.name && row.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const specialityMatch =
-        selectedSpeciality === '' || (row.speciality && row.speciality === selectedSpeciality);
-      return nameMatch && specialityMatch;
-    });
-    setFilteredDoctors(filteredRows);
-  };
-  
-
   return (
-    <Box  bgcolor="#daf4ff">
-      <AppBarComponent/>
+    <Box bgcolor="#daf4ff">
+      <AppBarComponent />
       <h1>Doctors</h1>
-      
 
       <Box
         sx={{
@@ -164,7 +162,6 @@ export default function DoctorsTable() {
           justifyContent: 'right',
           gap: '16px',
           padding: '10px',
-          
         }}
       >
         <TextField
@@ -173,41 +170,27 @@ export default function DoctorsTable() {
           value={filterValue}
           onChange={handleFilterChange}
         />
-        <Button variant="contained">Search</Button>
+        <Button variant="contained" onClick={handleDoctorFilter}>
+          Search
+        </Button>
       </Box>
+
       <div>
-<label>Select a Date:</label>
-<select value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
-  <option value="">Select a Date</option>
-  {[...new Set(appointments.map((appointment) => appointment.date))].map((date) => (
-    <option key={date} value={date}>
-      {date}
-    </option>
-  ))}
-</select>
+        <label>Select a Date and Time:</label>
+        <DatePicker
+          selected={selectedDateTime}
+          onChange={(date) => setSelectedDateTime(date)}
+          showTimeSelect // Enable time selection
+          timeFormat="HH:mm"
+          timeIntervals={15} // Set time intervals as needed
+          timeCaption="Time"
+          dateFormat="yyyy-MM-dd h:mm aa" // Define your preferred date-time format
+        />
 
-<button onClick={handleUpcomingAppointments}>Filter Appointments</button>
-
-      </div><div>
-        <label>Select a Speciality:</label>
-        <select
-          value={selectedSpeciality}
-          onChange={(e) => setSelectedSpeciality(e.target.value)}
-        >
-          <option key="all" value="">
-            Filter using Specialities
-          </option>
-          <option value="al">All Specialities</option>
-          {uniqueSpeciality.map((speciality, index) => (
-            <option key={`${speciality}-${index}`} value={speciality}>
-              {speciality}
-            </option>
-          ))}
-        </select>
-
-        <button onClick={handleSpecialityFilter}>Filter specialities</button>
+        <button onClick={handleUpcomingAppointments}>Filter Appointments</button>
       </div>
 
+      
       <DataGrid
         rows={filteredDoctors}
         columns={columns}
@@ -215,6 +198,7 @@ export default function DoctorsTable() {
         checkboxSelection
         disableRowSelectionOnClick
       />
+
       <Popover
         open={Boolean(selectedDoctorData)}
         anchorEl={popoverAnchor}
@@ -243,3 +227,4 @@ export default function DoctorsTable() {
     </Box>
   );
 }
+

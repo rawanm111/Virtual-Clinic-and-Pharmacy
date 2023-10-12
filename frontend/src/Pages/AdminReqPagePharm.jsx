@@ -4,8 +4,8 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -22,8 +22,8 @@ const HeaderContainer = styled('div')({
 
 const CardsContainer = styled('div')({
   display: 'flex',
-  justifyContent: 'space-between',
-  flexWrap: 'wrap',
+  flexWrap: 'wrap', // Adjusted to wrap cards to the next row
+  gap: '16px', // Add this to control spacing between cards
 });
 
 const CardWrapper = styled(Card)({
@@ -55,87 +55,92 @@ const DataTypography = styled(Typography)({
   marginLeft: '0.5rem',
 });
 
-export default function PatientProfile() {
-  const [PatientProfile, setPatientProfile] = useState([]);
-  const navigate = useNavigate();
+function AdminRequests() {
+  const [adminRequests, setAdminRequests] = useState([]);
+  const Navigate = useNavigate();
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/patients')
+      .get('http://localhost:3000/api/pharmcistReq')
       .then((response) => {
-        setPatientProfile(response.data);
+        setAdminRequests(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching Profiles:', error);
+        console.error('Error fetching Admin Requests:', error);
       });
   }, []);
 
-  const handleUpdatePackage = (username) => {
-    navigate(`/update-patient/${username}`);
-  };
-
   return (
     <div>
+      <AppbarAdmin />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            My Profile
+          Pharmcist Requests
           </Typography>
         </HeaderContainer>
         <CardsContainer>
-          {PatientProfile.map((PatientProfile) => (
-            <CardWrapper key={PatientProfile._id} variant="outlined">
+          {adminRequests.map((adminRequest) => (
+            <CardWrapper key={adminRequest._id} variant="outlined">
               <CardContent>
                 <NameTypography variant="h5" component="div">
-                  {PatientProfile.username}
+                  {adminRequest.name}
                 </NameTypography>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Username:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Password: {PatientProfile.password}
+                    {adminRequest.username}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    E-mail:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Email: {PatientProfile.email}
+                    {adminRequest.email}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Password:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Full Name: {PatientProfile.fullName}
+                    {adminRequest.password}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Birthdate:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Date of Birth: {PatientProfile.dateOfBirth}
+                    {adminRequest.birthdate}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Hourly Rate:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Gender: {PatientProfile.gender}
+                    {adminRequest.hourlyRate}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Hospital Name:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Mobile Number: {PatientProfile.mobileNumber}
+                    {adminRequest.hospital}
                   </DataTypography>
                 </div>
                 <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Educational Background:
+                  </SubtitleTypography>
                   <DataTypography variant="body2">
-                    Emergency Contact Full Name: {PatientProfile.emergencyContactFullName}
+                    {adminRequest.educationalBackground}
                   </DataTypography>
-                </div>
-                <div>
-                  <DataTypography variant="body2">
-                    Emergency Contact Mobile Number: {PatientProfile.emergencyContactMobileNumber}
-                  </DataTypography>
-                </div>
-                <div>
-                  <DataTypography variant="body2">
-                    Emergency Contact Relation to Patient: {PatientProfile.emergencyContactRelationToPatient}
-                  </DataTypography>
-                </div>
-                <div>
-                  <Button onClick={() => handleUpdatePackage(PatientProfile.username)}>Update</Button>
                 </div>
               </CardContent>
             </CardWrapper>
@@ -145,3 +150,5 @@ export default function PatientProfile() {
     </div>
   );
 }
+
+export default AdminRequests;
