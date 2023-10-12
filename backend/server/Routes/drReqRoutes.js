@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
 const {
-    submitPharmcistReq,
+    submitDrReq,
     getReq,
     getAllReq
-} = require('../Controllers/pharmcistReqController')
+} = require('../Controllers/drReqController')
 
 
 
@@ -18,7 +18,7 @@ router.get('/',getAllReq)
 router.get('/:id',getReq)
 
 //submit a new req 
-router.post('/', submitPharmcistReq)
+router.post('/', submitDrReq)
 
 //accept a req
 router.patch('/:id',(req , res )=>{
