@@ -27,6 +27,16 @@ import UserManagement from "./Pages/UserManagement";
 import HealthPackages from "./Pages/HealthPackagesPage";
 import NewPackage from "./Pages/NewPackagePage";
 import UpdatePackage from "./Pages/UpdatePackage";
+import AdminRequestsD from "./Pages/AdminReqPageDoc";
+import AdminRequestsP from "./Pages/AdminReqPagePharm";
+import FamilyMember from "./Pages/DisplayPage";
+import Form from "./Pages/Form";
+import HealthRecords from "./Pages/HealthRecPage";
+import AppTable from "./Pages/appointmentsP";
+import AppTableP from "./Pages/appointmentsP";
+import AdminForm from "./Pages/adminform";
+import Prescription from "./Pages/prescription";
+
 
 export default function Paths() {
   return (
@@ -58,9 +68,22 @@ export default function Paths() {
         <Route path="/patientsTable" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/health-packages" element={<HealthPackages />} />
+        <Route path="/add-family-member" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
+        <Route path="/my-fam" element={<FamilyMember />} /> 
         <Route path="/update-package/:id" element={<UpdatePackage />} /> 
+        <Route path="/pharmacist-requests" element={<AdminRequestsP />} /> 
+        <Route path="/doctor-requests" element={<AdminRequestsD />} /> 
+        <Route path="/health-recs" element={<HealthRecords />} /> 
+        <Route path="/appPageDoc" element={<AppTable />} /> 
+        <Route path="/appPagePatient" element={<AppTableP/>} /> 
 
+        <Route path="/AdminForm" element={<AdminForm />} /> 
+        <Route path="/Prescription" element={<Prescription/>} /> 
+
+        
+
+        
       </Routes>
     </Router>
   );
