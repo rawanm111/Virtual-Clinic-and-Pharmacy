@@ -1,5 +1,6 @@
-const pharmcistReqModel = require('../Models/pharmcistReqModel')
-const PharmcistReq = require('../Models/pharmcistReqModel')
+
+const drReqModel = require('../Models/drReqModel')
+const DrReq = require('../Models/drReqModel')
 const mongoose = require('mongoose')
 
 
@@ -7,14 +8,14 @@ const mongoose = require('mongoose')
 
 
 
-//submit a new pahrmcist req
-const submitPharmcistReq = async (req , res)=>{
+//submit a new dr req
+const submitDrReq = async (req , res)=>{
     const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
 
     //add req to DB
     try{
-        const pharmcistReq = await PharmcistReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
-        res.status(200).json(pharmcistReq)
+        const drReq = await DrReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
+        res.status(200).json(drReq)
     }
     catch(error){
         res.status(400).json({error: error.message})
@@ -22,10 +23,9 @@ const submitPharmcistReq = async (req , res)=>{
     //res.json({mssg:'add a new request'})
 }
 
-//get all pharmcist Req
+//get all dr Req
 const getAllReq = async(req , res )=>{
-    
-    const allRequests = await pharmcistReqModel.find({}).sort({createdAt: -1})
+    const allRequests = await drReqModel.find({}).sort({createdAt: -1})
     res.status(200).json(allRequests)
 }
 
@@ -36,14 +36,14 @@ const getReq = async (req, res)=>{
     {
         return res.status(404).json({error: 'no such request'})
     }
-    const pharmcistReq = await pharmcistReqModel.findById(id)
-    if(!pharmcistReq){
+    const drReq = await drReqModel.findById(id)
+    if(!drReq){
         return res.status(400).json({error:'no such request'})
     }
-    res.status(200).json(pharmcistReq)
+    res.status(200).json(drReq)
 }
 
 
 module.exports = {
-    submitPharmcistReq, getAllReq,getReq
+    submitDrReq, getAllReq,getReq
 }

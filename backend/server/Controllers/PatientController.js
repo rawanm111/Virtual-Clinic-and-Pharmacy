@@ -37,18 +37,16 @@ exports.updatePatient = async (req, res) => {
 };
 
 
+
 exports.deletePatient = async (req, res) => {
-  const { username } = req.params;
   try {
-    const deleted = await patientModel.findOneAndDelete({ username: username });
-    if (!deleted) {
-      return res.status(404).json({ message: 'Patient not found' });
-    }
+    await patientModel.findByIdAndDelete(req.params.userid);
     res.status(204).end();
   } catch (err) {
     res.status(500).json(err);
   }
 };
+
 
 
 exports.getPatientByUsername = async (req, res) => {
