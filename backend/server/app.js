@@ -6,12 +6,17 @@ const PharmacistRoutes = require('./Routes/PharmacistRoutes');
 const PatientRoutes = require('./Routes/PatientRoutes');
 const AppsRoutes= require('./Routes/appointementsrouter')
 const healthPackageRoutes = require('./Routes/HealthPackageRoutes');
-
+const drReqRoutes = require('./Routes/drReqRoutes')
+const pharmcistReqRoutes = require('./Routes/pharmcistReqRoutes');
+const FamilyMemberRoutes = require('./Routes/FamilyMemberRoutes');
+const HealthRecRoutes = require('./Routes/HealthRecRoutes.js');
+const PrescriptionRoutes = require('./Routes/PrescriptionRoutes.js');
+const Adminroutes = require('./Routes/Adminroutes.js');
 const cors = require('cors');
 
 const app = express();
 
-const allowedOrigins = ['http://localhost:3001'];
+const allowedOrigins = ['http://localhost:3003'];
 
 const corsOptions = {
   origin: function (origin, callback) {
@@ -33,6 +38,12 @@ app.use('/pharmacists', PharmacistRoutes);
 app.use('/patients', PatientRoutes);
 app.use('/apps', AppsRoutes);
 app.use('/health-packages', healthPackageRoutes);
+app.use( '/api/drReq',drReqRoutes);
+app.use( '/api/pharmcistReq',pharmcistReqRoutes);
+app.use('/family_members', FamilyMemberRoutes);
+app.use('/HealthRecords',HealthRecRoutes);
+app.use('/Prescription',PrescriptionRoutes);
+app.use('/admin',Adminroutes);
 
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
