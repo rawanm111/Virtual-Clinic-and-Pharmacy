@@ -39,6 +39,7 @@ const PatientRegistrationHome = () => {
       .post('http://localhost:3000/patients', formData)
       .then((response) => {
         console.log('Response:', response.data);
+        navigate('/clinic-patient-home');
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -194,7 +195,7 @@ const PatientRegistrationHome = () => {
 <div className="button-container">
 <Button
               variant="contained"
-              onClick={() => navigate('/clinic-patient-home')}
+              onClick={handleSubmit}
             > Register</Button>
       </div>
       <div className="button-container-1">
