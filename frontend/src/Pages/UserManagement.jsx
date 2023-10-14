@@ -259,7 +259,7 @@ export default function UserManagement() {
 
   
   const columnsP = [
-    { field: 'fullName', headerName: 'Name', width: 200 },
+    { field: 'name', headerName: 'Name', width: 200 },
     { field: 'username', headerName: 'Username', width: 200 },
     { field: 'email', headerName: 'E-mail', width: 200 },
     { field: 'mobileNumber', headerName: 'Mobile Number', width: 200 },
@@ -327,10 +327,10 @@ const handleFilterChangeA = (e) => {
 
   if (Array.isArray(admins)) {
     const filteredAdmins = admins.filter((admin) => {
-      return admin && admin.name && admin.name.toLowerCase().includes(value);
+      return admin && admin.username && admin.username.toLowerCase().includes(value);
     });
 
-    setFilteredRowsP(filteredAdmins);
+    setFilteredRowsA(filteredAdmins);
   }
 };
 
@@ -485,7 +485,16 @@ const navigateToAdminForm = () => {
 <h1>Admins</h1>
 <Box
 sx={{flexDirection: 'row'}}>
-<Box
+
+        
+        <Button variant="contained" onClick={navigateToAdminForm}>
+        Create Admin
+      </Button>
+
+      
+       
+     </Box>
+     <Box
         sx={{
           display: 'flex',
           justifyContent: 'left',
@@ -493,13 +502,7 @@ sx={{flexDirection: 'row'}}>
           padding: '10px',
         }}
       >
-        
-        <Button variant="contained" onClick={navigateToAdminForm}>
-        Create Admin
-      </Button>
-
-      
-        <TextField
+     <TextField
           label="Search by Name"
           variant="outlined"
           value={filterValueA}
@@ -510,8 +513,6 @@ sx={{flexDirection: 'row'}}>
         </Button>
 
       </Box>
-     </Box>
-      
       <DataGrid
         rows={filteredRowsA}
         columns={columnsA}

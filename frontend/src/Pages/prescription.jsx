@@ -14,11 +14,11 @@ function Prescription() {
     // Define a function to fetch prescription data
     const fetchPrescriptionData = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/Prescription/2');
+        const response = await axios.get('http://localhost:3000/Prescription');
         if (response.status === 200) {
           const responseData = response.data.map((row) => ({
             ...row,
-            id: row._id, // Use _id as the unique id for each row
+            id: row._id, 
           }));
           console.log('Fetched data:', responseData);
           setPrescriptionData(responseData);

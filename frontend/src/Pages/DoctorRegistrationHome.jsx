@@ -106,7 +106,7 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Hourly Rate"
               variant="outlined"
-              className="text-field"
+              type="number"
               name="hourlyRate"
               value={formData.hourlyRate}
               onChange={handleInputChange}

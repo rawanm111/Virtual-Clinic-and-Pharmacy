@@ -15,6 +15,7 @@ export default function UpdateDoctor() {
     affiliation: '',
     educationalBackground: '',
     speciality: '',
+    dateOfBirth: '',
   });
 
   useEffect(() => {

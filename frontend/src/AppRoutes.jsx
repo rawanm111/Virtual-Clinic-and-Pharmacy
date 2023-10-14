@@ -32,7 +32,7 @@ import AdminRequestsP from "./Pages/AdminReqPagePharm";
 import FamilyMember from "./Pages/DisplayPage";
 import Form from "./Pages/Form";
 import HealthRecords from "./Pages/HealthRecPage";
-import AppTable from "./Pages/appointmentsP";
+import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
