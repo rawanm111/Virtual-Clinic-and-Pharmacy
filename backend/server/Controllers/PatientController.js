@@ -38,7 +38,8 @@ exports.updatePatient = async (req, res) => {
 
 
 
-exports.deletePatient = async (req, res) => {
+
+exports.deletePatient= async (req, res) => {
   try {
     await patientModel.findByIdAndDelete(req.params.userid);
     res.status(204).end();

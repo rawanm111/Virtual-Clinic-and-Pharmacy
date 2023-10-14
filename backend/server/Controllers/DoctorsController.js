@@ -32,13 +32,14 @@ exports.updateDoc = async (req, res) => {
     }
   };
 
+
+
   exports.deleteDoc = async (req, res) => {
     try {
-      const deletedDoctor = await doctors.findOneAndDelete({ username: req.params.username });
-      
+      await doctors.findByIdAndDelete(req.params.userid);
       res.status(204).end();
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).json(err);
     }
   };
 
