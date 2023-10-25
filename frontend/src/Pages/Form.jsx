@@ -106,8 +106,8 @@ export default function Form() {
             value={formData.relationtopatient}
             onChange={handleInputChange}
           >
-            <option value="Father">Wife</option>
-            <option value="Mother">Husband</option>
+            <option value="Wife">Wife</option>
+            <option value="Husband">Husband</option>
             <option value="Children">Children</option>
           </TextField>
         </div>

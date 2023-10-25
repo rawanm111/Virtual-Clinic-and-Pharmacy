@@ -1,36 +1,37 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 const pharmcistReqSchema = new Schema({
-    username:{
+    username: {
         type: String,
         required: true
-    },
-    name:{
+      },
+      password: {
+        type: String,
+        required: true,
+      },
+      fullName: {
         type: String,
         required: true
-    },
-    email:{
+      },
+      email: {
         type: String,
         required: true
-    },
-    password:{
+      },
+      dateOfBirth: {
         type: String,
         required: true
-    },
-    birthdate:{
-        type: String,
-        required: true
-    },
-    hourlyRate:{
+      },
+      hourlyRate: {
         type: Number,
         required: true
-    },hospital:{
+      },
+      affiliation: {
         type: String,
         required: true
-    },
-    educationalBackground:{
+      },
+      educationalBackground: {
         type: String,
         required: true
-    }
+      },
 }, {timestamps: true})
 module.exports = mongoose.model('pharmcistReq', pharmcistReqSchema )
