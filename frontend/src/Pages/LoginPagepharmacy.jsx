@@ -1,12 +1,17 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
 //import React from 'react';
+=======
+import React from 'react';
+>>>>>>> origin/marwan
 import './LoginPagepharmacy.css';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField'; // Import TextField
 import { useNavigate } from 'react-router-dom';
 
+<<<<<<< HEAD
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -53,21 +58,34 @@ function LoginPage() {
         alert('Login failed: ' + error.message);
       }
     };
+=======
+function LoginPage() {
+  const navigate = useNavigate();
+>>>>>>> origin/marwan
 
   const handlePatientRegistration = () => {
     navigate('/patientregpharm');
   };
 
+<<<<<<< HEAD
   // const handleLogin = () => {
   //   navigate('/admin-home');
   // }; 
+=======
+  const handleLogin = () => {
+    navigate('/admin-home');
+  }; 
+>>>>>>> origin/marwan
 
   const handlePharmacistRegistration = () => {
     navigate('/pharmreg');
   };
 
   return (
+<<<<<<< HEAD
     <form onSubmit={handleLogin} className="container"> {/* Form submission handler added */}
+=======
+>>>>>>> origin/marwan
     <div className="container">
       <div className="image-container">
         <img
@@ -92,6 +110,7 @@ function LoginPage() {
           fullWidth
         />
       </div>
+<<<<<<< HEAD
       <div className="textfield-container">
         <TextField
           label="Username"
@@ -112,13 +131,18 @@ function LoginPage() {
           onChange={handlePasswordChange} // Bind onChange handler
         />
       </div>
+=======
+>>>>>>> origin/marwan
       <div className="button-container-2">
         <Button variant="contained" onClick={handleLogin}>LOGIN</Button>
         <Button variant="outlined" onClick={handlePatientRegistration}>REGISTER AS PATIENT</Button>
         <Button variant="outlined" onClick={handlePharmacistRegistration}>REGISTER AS PHARMACIST</Button>
       </div> 
     </div>
+<<<<<<< HEAD
     </form>
+=======
+>>>>>>> origin/marwan
   );
 }
 

@@ -83,8 +83,13 @@ function AdminRequests() {
           {adminRequests.map((adminRequest) => (
             <CardWrapper key={adminRequest._id} variant="outlined">
               <CardContent>
+<<<<<<< HEAD
                 <NameTypography variant="h5" component="div">
                   {adminRequest.name}
+=======
+              <NameTypography variant="h5" component="div">
+                  {adminRequest.fullName}
+>>>>>>> origin/marwan
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -115,7 +120,11 @@ function AdminRequests() {
                     Birthdate:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
+<<<<<<< HEAD
                     {adminRequest.birthdate}
+=======
+                    {adminRequest.dateOfBirth}
+>>>>>>> origin/marwan
                   </DataTypography>
                 </div>
                 <div>
@@ -131,7 +140,11 @@ function AdminRequests() {
                     Hospital Name:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
+<<<<<<< HEAD
                     {adminRequest.hospital}
+=======
+                    {adminRequest.affiliation}
+>>>>>>> origin/marwan
                   </DataTypography>
                 </div>
                 <div>
@@ -142,6 +155,17 @@ function AdminRequests() {
                     {adminRequest.educationalBackground}
                   </DataTypography>
                 </div>
+<<<<<<< HEAD
+=======
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Speciality:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    {adminRequest.speciality}
+                  </DataTypography>
+                </div>
+>>>>>>> origin/marwan
               </CardContent>
             </CardWrapper>
           ))}

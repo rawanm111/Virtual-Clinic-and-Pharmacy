@@ -36,10 +36,17 @@ const PharmacistRegistrationHome = () => {
 
   const handleSubmit = () => {
     axios
+<<<<<<< HEAD
       .post('http://localhost:3000/pharmacists', formData)
       .then((response) => {
         console.log('Response:', response.data);
         navigate('/pharm-home')
+=======
+      .post('http://localhost:3000/api/pharmcistReq', formData)
+      .then((response) => {
+        console.log('Response:', response.data);
+      //  navigate('/pharm-home')
+>>>>>>> origin/marwan
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -148,6 +155,10 @@ return (
             onChange={handleInputChange}
             />
   </Grid>
+<<<<<<< HEAD
+=======
+  
+>>>>>>> origin/marwan
   <Grid item xs={6}>
   <TextField
               fullWidth

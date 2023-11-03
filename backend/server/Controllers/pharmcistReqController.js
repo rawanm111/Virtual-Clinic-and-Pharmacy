@@ -9,6 +9,7 @@ const mongoose = require('mongoose')
 
 //submit a new pahrmcist req
 const submitPharmcistReq = async (req , res)=>{
+<<<<<<< HEAD
     const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
 
     //add req to DB
@@ -20,6 +21,15 @@ const submitPharmcistReq = async (req , res)=>{
         res.status(400).json({error: error.message})
     }
     //res.json({mssg:'add a new request'})
+=======
+    try {
+        const newPharmacist = new pharmcistReqModel(req.body);
+        const savedPharmacist = await newPharmacist.save();
+        res.status(201).json(savedPharmacist);
+      } catch (err) {
+        res.status(500).json(err);
+      }
+>>>>>>> origin/marwan
 }
 
 //get all pharmcist Req
