@@ -1,0 +1,59 @@
+.adjustable-image {
+    width: 50%; /* Increase the width to make the image larger */
+    max-height: 100vh; /* Set the maximum height to the viewport height */
+    
+    
+    margin-left: 450px; /* Adjust the left margin as needed */
+    margin-top: -100px;
+  }
+
+
+  .button-container-1 {
+    position: absolute; /* Set the position to absolute */
+    top: 780px; /* Adjust the top position as needed */
+    left: 1020px; /* Adjust the left position as needed */
+    }
+    
+    /* Apply styles to the contained button */
+    .button-container-1 Button {
+    background-color: #ffffff; /* Set the background color */
+    color:  #007bffd5; /* Set the text color */
+    width: 450px; /* Set the width of the button */
+    height: 60px; /* Set the height of the button */
+    font-size: 19px; /* Set the font size */
+    border: none; /* Remove the border */
+    border: 1px solid #007bffd5; /* Add a border with the desired color */
+    border-radius: 3px; /* Add rounded corners */
+    cursor: pointer; /* Add a pointer cursor on hover */
+    transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+    }
+    
+    /* Apply hover styles to the button */
+    .button-container-1 Button:hover {
+    background-color: #0057b336; /* Change background color on hover */
+    }
+
+    .button-container-2 {
+        position: absolute; /* Set the position to absolute */
+        top: 780px; /* Adjust the top position as needed */
+        left: 400px; /* Adjust the left position as needed */
+        }
+        
+        /* Apply styles to the contained button */
+        .button-container-2 Button {
+        background-color: #ffffff; /* Set the background color */
+        color:  #007bffd5; /* Set the text color */
+        width: 450px; /* Set the width of the button */
+        height: 60px; /* Set the height of the button */
+        font-size: 19px; /* Set the font size */
+        border: none; /* Remove the border */
+        border: 1px solid #007bffd5; /* Add a border with the desired color */
+        border-radius: 3px; /* Add rounded corners */
+        cursor: pointer; /* Add a pointer cursor on hover */
+        transition: background-color 0.3s, color 0.3s; /* Add a smooth transition effect */
+        }
+        
+        /* Apply hover styles to the button */
+        .button-container-2 Button:hover {
+        background-color: #0057b336; /* Change background color on hover */
+        }
