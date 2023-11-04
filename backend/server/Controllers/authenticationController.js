@@ -1,12 +1,14 @@
 //const User = require('../models/user.model');
+
+const bcrypt = require('bcrypt');
 const Doctor = require('../Models/doccs');
-const Patient = require('../models/patient.model');
-const Admin = require('../Models/admin.model');
-const Pharmacist = require('../Models/pharmacist.model');
+const Patient = require('../Models/patients');
+const Admin = require('../Models/Admin');
+const Pharmacist = require('../Models/pharmacists');
 
 
 // Login endpoint for admin
-router.post('/login', async (req, res) => {
+const login = async (req, res) => {
   //new test comment
   //new test comment 2
     try {
@@ -32,6 +34,8 @@ router.post('/login', async (req, res) => {
       // Handle any other errors
       res.status(500).json({ success: false, message: error.message });
     }
-  });
+  };
   
-  module.exports = router;
+  module.exports = {
+    login
+  };

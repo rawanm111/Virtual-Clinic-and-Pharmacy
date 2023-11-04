@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/marwan
 const drReqModel = require('../Models/drReqModel')
 const DrReq = require('../Models/drReqModel')
 const mongoose = require('mongoose')
@@ -15,7 +11,6 @@ const mongoose = require('mongoose')
 const submitDrReq = async (req , res)=>{
     const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
 
-<<<<<<< HEAD
     //add req to DB
     try{
         const drReq = await DrReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
@@ -25,15 +20,6 @@ const submitDrReq = async (req , res)=>{
         res.status(400).json({error: error.message})
     }
     //res.json({mssg:'add a new request'})
-=======
-    try {
-        const newDoc = new DrReq(req.body);
-        const savedDoc = await newDoc.save();
-        res.status(201).json(savedDoc);
-      } catch (err) {
-        res.status(500).json(err);
-      }
->>>>>>> origin/marwan
 }
 
 //get all dr Req
