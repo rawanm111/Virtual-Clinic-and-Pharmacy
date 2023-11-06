@@ -1,4 +1,6 @@
 const patientModel = require('../Models/patients');
+const Appointment = require('../Models/appointements');
+const Doctor = require('../Models/doccs');
 
 exports.createPatient = async (req, res) => {
   try {
@@ -63,4 +65,19 @@ exports.getPatientByUsername = async (req, res) => {
   }
 };
 
-
+exports.getPatientsByDoctorId = async (req, res) => {
+  const { docId } = req.params; 
+  try {
+    const doctor = await Doctor.findById(docId);
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    const appointments = await Appointment.find({ doctor: doctor._id });
+    const patientIds = appointments.map((appointment) => appointment.patient);
+    const patients = await patientModel.find({ _id: { $in: patientIds } });
+    return res.json(patients);
+  } catch (error) {
+    console.error('Error fetching patients by doctor:', error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};

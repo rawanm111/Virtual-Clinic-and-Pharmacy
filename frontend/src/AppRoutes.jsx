@@ -49,14 +49,14 @@ export default function Paths() {
         <Route path="/pharmreg" element={<PharmRegistrationHome />} />
         <Route path="/patientregpharm" element={<PatientRegistrationHomePharm />} />
         <Route path="/docreg" element={<DoctorRegistrationHome />} />
-        <Route path="/doc-home" element={<DoctorHome />} />
-        <Route path="/clinic-patient-home" element={<PatientHomeClinic />} />
-        <Route path="/pharm-patient-home" element={<PatientHomePharmacy />} />
-        <Route path="/pharm-home" element={<PharmacistHome />} />
+        <Route path="/doc-home/:id" element={<DoctorHome />} />
+        <Route path="/clinic-patient-home/:id" element={<PatientHomeClinic />} />
+        <Route path="/pharm-patient-home/:id" element={<PatientHomePharmacy />} />
+        <Route path="/pharm-home/:id" element={<PharmacistHome />} />
         <Route path="/admin-home" element={<AdminHome />} />
         <Route path="/admin-meds" element={<AdminMedsPage />} />
-        <Route path="/patient-meds" element={<PatientMedsPage />} />
-        <Route path="/pharm-meds" element={<PharmacistMedsPage />} />
+        <Route path="/patient-meds/:id" element={<PatientMedsPage />} />
+        <Route path="/pharm-meds/:id" element={<PharmacistMedsPage />} />
         <Route path="/doc-profile" element={<DoctorProfile />} />
         <Route path="/patient-profile" element={<PatientProfile />} />
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
@@ -64,22 +64,21 @@ export default function Paths() {
         <Route path="/update-patient/:username" element={<UpdatePatient />} />
         <Route path="/update-doctor/:username" element={<UpdateDoctor />} />
         <Route path="/update-pharmacist/:username" element={<UpdatePharmacist />} />
-        <Route path="/doctorsTable" element={<DoctorsTable />} />
-        <Route path="/patientsTable" element={<PatientsTable />} />
+        <Route path="/doctorsTable/:id" element={<DoctorsTable />} />
+        <Route path="/patientsTable/:id" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/health-packages" element={<HealthPackages />} />
         <Route path="/add-family-member" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
-        <Route path="/my-fam" element={<FamilyMember />} /> 
-        <Route path="/update-package/:id" element={<UpdatePackage />} /> 
+        <Route path="/my-fam/:id" element={<FamilyMember />} /> 
+        <Route path="/update-package" element={<UpdatePackage />} /> 
         <Route path="/pharmacist-requests" element={<AdminRequestsP />} /> 
         <Route path="/doctor-requests" element={<AdminRequestsD />} /> 
-        <Route path="/health-recs" element={<HealthRecords />} /> 
-        <Route path="/appPageDoc" element={<AppTable />} /> 
-        <Route path="/appPagePatient" element={<AppTableP/>} /> 
-
+        <Route path="/health-recs/:id" element={<HealthRecords />} /> 
+        <Route path="/appPageDoc/:id" element={<AppTable />} /> 
+        <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
-        <Route path="/Prescription" element={<Prescription/>} /> 
+        <Route path="/Prescription/:id" element={<Prescription/>} /> 
 
         
 
