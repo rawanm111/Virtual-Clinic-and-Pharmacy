@@ -84,11 +84,7 @@ function AdminRequests() {
             <CardWrapper key={adminRequest._id} variant="outlined">
               <CardContent>
                 <NameTypography variant="h5" component="div">
-<<<<<<< HEAD
                   {adminRequest.name}
-=======
-                  {adminRequest.fullName}
->>>>>>> origin/marwan
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -119,11 +115,7 @@ function AdminRequests() {
                     Birthdate:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-<<<<<<< HEAD
                     {adminRequest.birthdate}
-=======
-                    {adminRequest.dateOfBirth}
->>>>>>> origin/marwan
                   </DataTypography>
                 </div>
                 <div>
@@ -139,11 +131,7 @@ function AdminRequests() {
                     Hospital Name:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-<<<<<<< HEAD
                     {adminRequest.hospital}
-=======
-                    {adminRequest.affiliation}
->>>>>>> origin/marwan
                   </DataTypography>
                 </div>
                 <div>

@@ -20,13 +20,8 @@ export default function UserManagement() {
         if (response.data) {
           const transformedData = response.data.map((item) => ({
             id: item._id, // Adjust this based on your data structure
-<<<<<<< HEAD
             username:item.username,
             name: item.fullName,   // Adjust this based on your data structure
-=======
-            name: item.fullName,   // Adjust this based on your data structure
-            username :item.username,
->>>>>>> origin/marwan
             hourlyRate: item.hourlyRate ,
             educational_bg: item.educationalBackground, // Adjust this based on your data structure
             speciality: item.speciality,
@@ -64,11 +59,7 @@ export default function UserManagement() {
 
   const handleDeleteDocs = (id) => {
     // Send a DELETE request to your backend API
-<<<<<<< HEAD
     const url = `http://localhost:3000/doctors/${id}`;
-=======
-    const url = "http://localhost:3000/doctors/${id}";
->>>>>>> origin/marwan
     axios.delete(url)
       .then(() => {
         setDoctors((prevDoctors) => prevDoctors.filter((doctor) => doctor.id !== id));
@@ -105,11 +96,7 @@ export default function UserManagement() {
   const handleButtonClick = (row) => {
     // Implement the action you want to perform when the button is clicked
     console.log('Button clicked for row:', row);
-<<<<<<< HEAD
     // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
-=======
-    // history.push(/ProfilePage/${row.id}); // Replace with your route structure
->>>>>>> origin/marwan
 
   };
 
@@ -166,11 +153,7 @@ export default function UserManagement() {
 
   const handleDeletePharma = (id) => {
     // Send a DELETE request to your backend API
-<<<<<<< HEAD
     const url = `http://localhost:3000/pharmacists/${id}`;
-=======
-    const url = "http://localhost:3000/pharmacists/${id}";
->>>>>>> origin/marwan
     axios.delete(url)
       .then(() => {
         setPharmacists((prevPharma) => prevPharma.filter((pharmacist) => pharmacist.id !== id));
@@ -206,11 +189,7 @@ export default function UserManagement() {
   const handleButtonClickPharma = (row) => {
     // Implement the action you want to perform when the button is clicked
     console.log('Button clicked for row:', row);
-<<<<<<< HEAD
     // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
-=======
-    // history.push(/ProfilePage/${row.id}); // Replace with your route structure
->>>>>>> origin/marwan
 
   }; 
 
@@ -268,11 +247,7 @@ export default function UserManagement() {
 
   const handleDelete = (id) => {
     // Send a DELETE request to your backend API
-<<<<<<< HEAD
     const url = `http://localhost:3000/patients/${id}`;
-=======
-    const url = "http://localhost:3000/patients/${id}";
->>>>>>> origin/marwan
     axios.delete(url)
       .then(() => {
         setpatients((prevPatients) => prevPatients.filter((patient) => patient.id !== id));
@@ -307,11 +282,7 @@ export default function UserManagement() {
   const handleButtonClickP = (row) => {
     // Implement the action you want to perform when the button is clicked
     console.log('Button clicked for row:', row);
-<<<<<<< HEAD
     // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
-=======
-    // history.push(/ProfilePage/${row.id}); // Replace with your route structure
->>>>>>> origin/marwan
 
   };
 
@@ -367,11 +338,7 @@ const handleFilterChangeA = (e) => {
 
 const handleDeleteA = (id) => {
   // Send a DELETE request to your backend API
-<<<<<<< HEAD
   const url = `http://localhost:3000/admin/${id}`;
-=======
-  const url = "http://localhost:3000/admin/${id}";
->>>>>>> origin/marwan
   axios.delete(url)
     .then(() => {
       setAdmins((prevPatients) => prevPatients.filter((admin) => admin.id !== id));
@@ -415,11 +382,7 @@ const columnsA = [
 const handleButtonClickA = (row) => {
   // Implement the action you want to perform when the button is clicked
   console.log('Button clicked for row:', row);
-<<<<<<< HEAD
   // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
-=======
-  // history.push(/ProfilePage/${row.id}); // Replace with your route structure
->>>>>>> origin/marwan
 
 };
 
@@ -564,8 +527,4 @@ sx={{flexDirection: 'row'}}>
 
 
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> origin/marwan

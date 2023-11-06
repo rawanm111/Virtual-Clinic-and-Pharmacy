@@ -1,6 +1,6 @@
 const express=require('express');
 const router=express.Router();
-const appoincontroller=require('../controllers/appoincontroller')
+const appoincontroller=require('../Controllers/appoincontroller')
 
 router.post('/',appoincontroller.createappointement);
 

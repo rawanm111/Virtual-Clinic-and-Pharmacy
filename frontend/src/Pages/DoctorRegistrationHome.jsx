@@ -19,27 +19,16 @@ const DoctorRegistrationHome = () => {
     affiliation: '',
     educationalBackground: '',
     dateOfBirth: '',
-<<<<<<< HEAD
-=======
-    speciality:'',
->>>>>>> origin/marwan
   });
 
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     axios
-<<<<<<< HEAD
       .post('http://localhost:3000/doctors', formData)
       .then((response) => {
         console.log('Response:', response.data);
         navigate('/doc-home');
-=======
-      .post('http://localhost:3000/api/drReq', formData)
-      .then((response) => {
-        console.log('Response:', response.data);
-        //navigate('/doc-home');
->>>>>>> origin/marwan
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -195,8 +184,4 @@ const DoctorRegistrationHome = () => {
   );
 };
 
-<<<<<<< HEAD
 export default DoctorRegistrationHome;
-=======
-export default DoctorRegistrationHome;
->>>>>>> origin/marwan

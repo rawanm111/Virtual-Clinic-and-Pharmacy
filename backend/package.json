@@ -8,11 +8,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-<<<<<<< HEAD
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
-=======
->>>>>>> origin/marwan
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "cors": "^2.8.5",
@@ -22,10 +19,7 @@
     "env": "^0.0.2",
     "express": "^4.18.2",
     "mongoose": "^7.6.1",
-<<<<<<< HEAD
     "nodemon": "^3.0.1",
-=======
->>>>>>> origin/marwan
     "path-browserify": "^1.0.1",
     "querystring-es3": "^0.2.1",
     "stream-browserify": "^3.0.0",

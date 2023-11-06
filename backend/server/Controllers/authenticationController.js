@@ -20,15 +20,11 @@ const login = async (req, res) => {
         return res.status(407).json({ success: false, message: 'Admin not found' });
       }
   
-      // Compare the provided password with the hashed password
-      const isMatch = await bcrypt.compare(req.body.password, admin.password);
-      
-      // If the password matches, respond with success
-      if (isMatch) {
+      if (req.body.password === admin.password) {
         res.json({ success: true, message: 'Logged in successfully' });
       } else {
         // If the password does not match, send an error message
-        res.status(401).json({ success: false, message: 'Invalid credentials' });
+        res.status(406).json({ success: false, message: 'Invalid credentials' });
       }
     } catch (error) {
       // Handle any other errors

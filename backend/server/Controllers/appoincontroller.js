@@ -1,4 +1,4 @@
-const appointement = require('../models/appointements');
+const appointement = require('../Models/appointements');
 
 exports.createappointement = async (req, res) => {
   try {

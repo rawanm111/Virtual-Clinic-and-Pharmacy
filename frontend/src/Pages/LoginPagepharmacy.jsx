@@ -1,91 +1,60 @@
-<<<<<<< HEAD
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
 //import React from 'react';
-=======
-import React from 'react';
->>>>>>> origin/marwan
 import './LoginPagepharmacy.css';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField'; // Import TextField
 import { useNavigate } from 'react-router-dom';
 
-<<<<<<< HEAD
 
 function LoginPage() {
   const navigate = useNavigate();
-    // State hooks for username and password
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-     // Update the username state on change
-  const handleUsernameChange = (event) => {
-    setUsername(event.target.value);
-  };
-
-  // Update the password state on change
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-    const handleLogin = async (event) => {
-      console.log("try 0");
-
-      event.preventDefault(); // Prevent default form submission behavior
-  
-      try {
-        // Send a POST request to your backend
-        console.log("try 1");
-        const response = await axios.post('http://localhost:3000/login', {
-          username,
-          password
-        });
-        console.log("try 2");
-
-        // Check the response from the backend
-        if (response.data.success) {
-          // Navigate to the admin home page if authentication is successful
-          console.log("try 3");
-          navigate('/admin-home');
-        } else {
-          // Handle failed authentication here
-          console.log("try 4");
-
-          alert(response.data.message);
-        }
-      } catch (error) {
-        // Handle errors in sending the request or receiving the response
-        alert('Login failed: ' + error.message);
-      }
-    };
-=======
-function LoginPage() {
-  const navigate = useNavigate();
->>>>>>> origin/marwan
+  const [error, setError] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   const handlePatientRegistration = () => {
     navigate('/patientregpharm');
   };
 
-<<<<<<< HEAD
-  // const handleLogin = () => {
-  //   navigate('/admin-home');
-  // }; 
-=======
-  const handleLogin = () => {
-    navigate('/admin-home');
-  }; 
->>>>>>> origin/marwan
-
   const handlePharmacistRegistration = () => {
     navigate('/pharmreg');
   };
 
+  const handleUsernameChange = (event) => {
+    setUsername(event.target.value);
+  };
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+ 
+const handleLogin = async () => {
+  try {
+    const response = await axios.post('http://localhost:3000/login', {
+      username, 
+      password
+    });
+
+    const data = response.data;
+    
+    if (data) {
+      navigate('/admin-home');
+    }
+    // else  {
+    //   // Optionally show an error message here
+    //   setError('the password or username you entered are not valide. Please check your credentials.');
+    //   //window.location.reload();
+    // }
+  } catch (error) {
+    console.error('Error during login:', error);
+    window.location.reload();
+  }
+};
+
   return (
-<<<<<<< HEAD
-    <form onSubmit={handleLogin} className="container"> {/* Form submission handler added */}
-=======
->>>>>>> origin/marwan
     <div className="container">
       <div className="image-container">
         <img
@@ -100,6 +69,8 @@ function LoginPage() {
           label="Username" 
           variant="standard" 
           fullWidth
+          value={username}
+          onChange={handleUsernameChange}
         />
       </div>
 
@@ -108,41 +79,17 @@ function LoginPage() {
           label="Password" 
           variant="standard" 
           fullWidth
+          type="password"
+          value={password}
+          onChange={handlePasswordChange}
         />
       </div>
-<<<<<<< HEAD
-      <div className="textfield-container">
-        <TextField
-          label="Username"
-          variant="standard"
-          fullWidth
-          value={username} // Bind state to component
-          onChange={handleUsernameChange} // Bind onChange handler
-        />
-      </div>
-
-      <div className="textfield-container-1">
-        <TextField
-          label="Password"
-          variant="standard"
-          fullWidth
-          type="password" // Hide password input
-          value={password} // Bind state to component
-          onChange={handlePasswordChange} // Bind onChange handler
-        />
-      </div>
-=======
->>>>>>> origin/marwan
       <div className="button-container-2">
         <Button variant="contained" onClick={handleLogin}>LOGIN</Button>
         <Button variant="outlined" onClick={handlePatientRegistration}>REGISTER AS PATIENT</Button>
         <Button variant="outlined" onClick={handlePharmacistRegistration}>REGISTER AS PHARMACIST</Button>
       </div> 
     </div>
-<<<<<<< HEAD
-    </form>
-=======
->>>>>>> origin/marwan
   );
 }
 
