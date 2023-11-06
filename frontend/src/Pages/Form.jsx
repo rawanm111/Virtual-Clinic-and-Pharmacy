@@ -52,46 +52,10 @@ export default function Form() {
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Name"
+            label="Email"
             variant="outlined"
             name="name"
             value={formData.name}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
-            label="Age"
-            variant="outlined"
-            type="number"
-            name="age"
-            value={formData.age}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
-            label="Gender"
-            variant="outlined"
-            select
-            SelectProps={{ native: true }}
-            name="gender"
-            value={formData.gender}
-            onChange={handleInputChange}
-          >
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-          </TextField>
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
-            label="National ID"
-            variant="outlined"
-            name="nationalid"
-            value={formData.nationalid}
             onChange={handleInputChange}
           />
         </div>
