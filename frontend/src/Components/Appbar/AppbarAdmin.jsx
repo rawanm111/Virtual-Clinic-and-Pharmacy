@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
-import { Link, useLocation } from 'react-router-dom'; // Import Link and useLocation
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Logo from './Logo.png';
 
 const theme = createTheme({
@@ -17,7 +17,9 @@ const theme = createTheme({
 });
 
 function AppBarComponent({ userName }) {
-  const location = useLocation(); 
+  const location = useLocation();
+  const { id } = useParams(); 
+
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -92,44 +94,44 @@ function AppBarComponent({ userName }) {
             <Tab
               label="Home"
               sx={tabStyle}
-              component={Link} 
-              to="/admin-home" 
-              selected={location.pathname === '/admin-home'} 
+              component={Link}
+              to={`/admin-home/${id}`} 
+              selected={location.pathname === `/admin-home/${id}`}  
             />
             <Tab
               label="Doctor Requests"
               sx={tabStyle}
-              component={Link} 
-              to="/doctor-requests" 
-              selected={location.pathname === '/doctor-requests'} 
+              component={Link}
+              to={`/doctor-requests/${id}`} 
+              selected={location.pathname === `/doctor-requests/${id}`}  
             />
             <Tab
               label="Pharmacist Requests"
               sx={tabStyle}
               component={Link}
-              to="/pharmacist-requests"
-              selected={location.pathname === '/pharmacist-requests'}
+              to={`/pharmacist-requests/${id}`}  
+              selected={location.pathname === `/pharmacist-requests/${id}`} 
             />
             <Tab
               label="User Management"
               sx={tabStyle}
               component={Link}
-              to="/userManagement"
-              selected={location.pathname === '/user-management'}
+              to={`/user-management/${id}`} 
+              selected={location.pathname === `/user-management/${id}`}  
             />
             <Tab
               label="Health Packages"
               sx={tabStyle}
               component={Link}
-              to="/health-packages"
-              selected={location.pathname === '/health-packages'}
+              to={`/health-packages/${id}`} 
+              selected={location.pathname === `/health-packages/${id}`} 
             />
             <Tab
               label="Medications"
               sx={tabStyle}
               component={Link}
-              to="/admin-meds"
-              selected={location.pathname === '/admin-meds'}
+              to={`/admin-meds/${id}`} 
+              selected={location.pathname === `/admin-meds/${id}`} 
             />
           </Tabs>
         </div>

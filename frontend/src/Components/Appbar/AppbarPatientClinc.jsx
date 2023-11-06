@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import Link, useLocation, and useNavigate
+import { Link, useLocation, useNavigate , useParams} from 'react-router-dom';
 import Logo from './Logo.png';
 
 const theme = createTheme({
@@ -16,9 +16,10 @@ const theme = createTheme({
   },
 });
 
-function AppBarComponent({ userName }) {
+function AppBarComponent({ userName}) {
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate to access the navigation function
+  const navigate = useNavigate();
+  const { id } = useParams(); 
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -71,14 +72,14 @@ function AppBarComponent({ userName }) {
 
   // Function to handle Avatar click
   const handleAvatarClick = () => {
-    navigate('/patient-profile');
+    navigate(`/patient-profile/${id}`);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
-          <Link to="/patient-profile" onClick={handleAvatarClick}>
+          <Link to={`/patient-profile/${id}`} onClick={handleAvatarClick}>
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
@@ -99,36 +100,36 @@ function AppBarComponent({ userName }) {
               label="Home"
               sx={tabStyle}
               component={Link}
-              to="/clinic-patient-home"
-              selected={location.pathname === '/clinic-patient-home'}
+              to={`/clinic-patient-home/${id}`}
+              selected={location.pathname === `/clinic-patient-home/${id}`}
             />
             <Tab
               label="My Family"
               sx={tabStyle}
               component={Link}
-              to="/my-fam"
-              selected={location.pathname === '/my-fam'}
+              to={`/my-fam/${id}`}
+              selected={location.pathname === `/my-fam/${id}`}
             />
             <Tab
               label="Appointments"
               sx={tabStyle}
               component={Link}
-              to="/appPagePatient"
-              selected={location.pathname === '/appPagePatient'}
+              to={`/appPagePatient/${id}`}
+              selected={location.pathname === `/appPagePatient/${id}`}
             />
             <Tab
               label="Doctors"
               sx={tabStyle}
               component={Link}
-              to="/doctorsTable"
-              selected={location.pathname === '/doctors'}
+              to={`/doctorsTable/${id}`}
+              selected={location.pathname === `/doctorsTable/${id}`}
             />
             <Tab
               label="Prescriptions"
               sx={tabStyle}
               component={Link}
-              to="/Prescription"
-              selected={location.pathname === '/Prescription'}
+              to={`/Prescription/${id}`}
+              selected={location.pathname === `/Prescription/${id}`}
             />
           </Tabs>
         </div>
