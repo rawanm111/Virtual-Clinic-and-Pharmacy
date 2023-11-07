@@ -49,6 +49,7 @@ app.use('/admin',Adminroutes);
 app.use('/login', authroutes)
 
 
+
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
 mongoose.connect(connectionString, {

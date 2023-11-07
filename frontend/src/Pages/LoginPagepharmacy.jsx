@@ -30,28 +30,6 @@ function LoginPage() {
     setPassword(event.target.value);
   };
 
- 
-// const handleLogin = async () => {
-//   try {
-//     const response = await axios.post('http://localhost:3000/login', {
-//       username, 
-//       password,
-    
-//     });
-
-//     const data = response.data;
-//     const error2 = response.status;
-    
-//     if (data) {
-//       navigate('/admin-home');
-//     }
-  
-//   } catch (error) {
-//     console.error('Wrong password', error);
-//     //window.location.reload();
-//     setError('Forgot password?'); // Set the error state
-//   }
-// };
 
 
 const handleLogin = async () => {
