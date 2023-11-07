@@ -1,5 +1,4 @@
 const doctors = require('../Models/doccs');
-
 exports.createNewDoc = async (req, res) => {
   try {
     const newDoc = new doctors(req.body);

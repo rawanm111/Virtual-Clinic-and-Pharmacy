@@ -30,27 +30,54 @@ function LoginPage() {
     setPassword(event.target.value);
   };
 
- 
+
+
+
 const handleLogin = async () => {
   try {
     const response = await axios.post('http://localhost:3000/login', {
-      username, 
-      password
+      username,
+      password,
     });
 
     const data = response.data;
-    const error2 = response.status;
-    
-    if (data) {
-      navigate('/admin-home');
+
+    if (data.success) {
+      // Use the role from the response to determine where to navigate
+      switch (data.role) {
+        case 'Admin':
+          navigate('/admin-home');
+          break;
+        case 'Doctor':
+          navigate('/doc-home/:id');
+          break;
+        case 'Patient':
+          navigate('/pharm-patient-home/:id');
+          break;
+        case 'Pharmacist':
+          navigate('/pharm-home/:id');
+          break;
+        default:
+          // Handle any user types that don't have a specified route
+          setError('User role is not recognized.');
+          break;
+      }
+    } else {
+      // If the login was not successful, but there was no error thrown
+      setError(data.message);
     }
-  
   } catch (error) {
-    console.error('Wrong password', error);
-    //window.location.reload();
-    setError('Forgot password?'); // Set the error state
+    console.error('Login error', error);
+    if (error.response) {
+      // If the server responded with a status other than 2xx, get the message from the server's response
+      setError(error.response.data.message);
+    } else {
+      // If the server did not respond or there was a different error, set a generic error message
+      setError('An error occurred during login. Please try again.');
+    }
   }
 };
+
 
   return (
     <div className="container">
