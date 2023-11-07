@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AppBarComponent from '../Components/Appbar/AppbarDoctor';
+import { useParams } from 'react-router-dom';
 
 export default function PatientsTable() {
   const [patients, setPatients] = useState([]);
@@ -10,15 +11,13 @@ export default function PatientsTable() {
   const [filterValue, setFilterValue] = useState('');
   const [selectedPatientData, setSelectedPatientData] = useState(null);
   const [popoverAnchor, setPopoverAnchor] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-
-  // Add state for appointments and filtered appointments
+  const { id } = useParams();
   const [appointments, setAppointments] = useState([]);
   const [filteredAppointments, setFilteredAppointments] = useState([]);
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/patients')
+      .get(`http://localhost:3000/patients/p/${id}`)
       .then((response) => {
         if (response.data) {
           const transformedData = response.data.map((item) => ({
@@ -40,11 +39,11 @@ export default function PatientsTable() {
       .catch((error) => {
         console.error('Error fetching patients:', error);
       });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/apps/upcoming-appointments')
+      .get(`http://localhost:3000/apps/upcoming-appointments/${id}`)
       .then((response) => {
         if (response.data) {
           setAppointments(response.data);
@@ -55,7 +54,7 @@ export default function PatientsTable() {
       .catch((error) => {
         console.error('Error fetching appointments:', error);
       });
-  }, []);
+  }, [id]);
 
   const handleFilterChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -89,8 +88,7 @@ export default function PatientsTable() {
           </Button>
         </div>
       ),
-      }
-    
+    },
   ];
 
   const handleViewClick = (row) => {
@@ -99,41 +97,30 @@ export default function PatientsTable() {
   };
 
   const handleUpcomingTrips = () => {
-    const url = `http://localhost:3000/apps/upcoming-appointments`;
-  
+    const url = `http://localhost:3000/apps/upcoming-appointments/${id}`;
+
     axios
       .get(url)
       .then((response) => {
         const data = response.data;
-  
-        // Log the retrieved data and patient data for debugging
-        console.log('Retrieved data:', data);
-        console.log('Patients data:', patients);
-  
         const matchingPatients = [];
-  
-        // Loop through patients and trips to find matches based on pid
         for (const patient of patients) {
           for (const trip of data) {
-            if (trip.pid === patient.id) {
+            if (trip.patient._id === patient.id) {
               matchingPatients.push(patient);
-              break; // Once a match is found, no need to continue searching trips
+              break;
             }
           }
         }
-        setFilteredRows(matchingPatients)
-        // Log the result of the filter operation for debugging
-        console.log('Patients matching pid:', matchingPatients);
+        setFilteredRows(matchingPatients);
       })
       .catch((error) => {
         console.error('Error retrieving data:', error);
       });
   };
-  
-  
 
   return (
-    <Box bgcolor="#daf4ff">
+    <Box >
       <AppBarComponent />
       <h1>Patients</h1>
       <Box
@@ -193,5 +180,4 @@ export default function PatientsTable() {
         )}
       </Popover>
     </Box>
-  );
-}
+  ); }

@@ -1,12 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
 const medsRoutes = require('./Routes/medsroutes'); 
 const DoctorRoutes = require('./Routes/DoctorRoutes');
 const PharmacistRoutes = require('./Routes/PharmacistRoutes');
 const PatientRoutes = require('./Routes/PatientRoutes');
-const AppsRoutes= require('./Routes/appointementsrouter')
+const AppsRoutes= require('./Routes/appointmentsRouter');
 const healthPackageRoutes = require('./Routes/HealthPackageRoutes');
 const drReqRoutes = require('./Routes/drReqRoutes')
 const pharmcistReqRoutes = require('./Routes/pharmcistReqRoutes');

@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 const User = require('../Models/User'); // Import User model and schema
 
-const PatientSchema = new mongoose.Schema();
-PatientSchema.add(User.UserSchema); // Adding UserSchema to PatientSchema
-PatientSchema.add({
+const patientSchema = new mongoose.Schema();
+patientSchema.add(User.UserSchema); // Adding UserSchema to PatientSchema
+patientSchema.add({
   fullName: {
     type: String,
     required: true,
@@ -38,7 +38,7 @@ PatientSchema.add({
   },
 });
 
-module.exports = mongoose.model('Patient', PatientSchema);
+module.exports = mongoose.model('patients', patientSchema);
 
 
 

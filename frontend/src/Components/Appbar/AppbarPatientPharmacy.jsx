@@ -2,7 +2,7 @@ import React from 'react';
 import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; // Import Link, useLocation, and useNavigate
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import Logo from './Logo.png';
 
 const theme = createTheme({
@@ -16,9 +16,10 @@ const theme = createTheme({
   },
 });
 
-function AppBarComponent({ userName }) {
+function AppBarComponent({ userName}) {
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate to access the navigation function
+  const navigate = useNavigate();
+  const { id } = useParams(); 
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -71,14 +72,14 @@ function AppBarComponent({ userName }) {
 
   // Function to handle Avatar click
   const handleAvatarClick = () => {
-    navigate('/patient-profile');
+    navigate(`/patient-profile/${id}`);
   };
 
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
-          <Link to="/patient-profile" onClick={handleAvatarClick}>
+          <Link to={`/patient-profile/${id}`} onClick={handleAvatarClick}>
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
@@ -99,17 +100,16 @@ function AppBarComponent({ userName }) {
               label="Home"
               sx={tabStyle}
               component={Link}
-              to="/pharm-patient-home"
-              selected={location.pathname === '/pharm-patient-home'}
+              to={`/pharm-patient-home/${id}`}
+              selected={location.pathname === `/pharm-patient-home/${id}`}
             />
             <Tab
               label="Medications"
               sx={tabStyle}
               component={Link}
-              to="/patient-meds"
-              selected={location.pathname === '/patient-meds'}
+              to={`/patient-meds/${id}`}
+              selected={location.pathname === `/patient-meds/${id}`}
             />
-
           </Tabs>
         </div>
       </AppBar>
