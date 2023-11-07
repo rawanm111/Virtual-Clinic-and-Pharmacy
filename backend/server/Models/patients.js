@@ -4,6 +4,10 @@ const User = require('../Models/User'); // Import User model and schema
 const patientSchema = new mongoose.Schema();
 patientSchema.add(User.UserSchema); // Adding UserSchema to PatientSchema
 patientSchema.add({
+  role: { 
+    type: String,
+    default: 'patient',
+  },
   fullName: {
     type: String,
     required: true,

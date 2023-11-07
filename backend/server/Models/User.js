@@ -20,10 +20,10 @@ const UserSchema = new mongoose.Schema({
     // ],
   },
 
-  // userType: {
-  //   type: String,
-  //   required: true,
-  // },
+  role: {
+    type: String,
+    required: true,
+  },
 });
 
 

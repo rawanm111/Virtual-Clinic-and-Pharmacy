@@ -1,6 +1,6 @@
 //const User = require('../models/user.model');
 
-const bcrypt = require('bcrypt');
+//const bcrypt = require('bcrypt');
 const Doctor = require('../Models/doccs');
 const Patient = require('../Models/patients');
 const Admin = require('../Models/Admin');
@@ -24,7 +24,7 @@ const login = async (req, res) => {
         res.json({ success: true, message: 'Logged in successfully' });
       } else {
         // If the password does not match, send an error message
-        res.status(406).json({ success: false, message: 'Invalid credentials' });
+        res.status(406).json({ success: false, message: 'wrong password' });
       }
     } catch (error) {
       // Handle any other errors
