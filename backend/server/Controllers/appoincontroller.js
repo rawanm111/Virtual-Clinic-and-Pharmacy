@@ -59,8 +59,6 @@ exports.deleteappointement = async (req, res) => {
   }
 };
 
-
-
 exports.getUpcomingAppointments = async (req, res) => {
   try {
     const doctorId = req.params.id; 
@@ -80,7 +78,7 @@ exports.getUpcomingAppointments = async (req, res) => {
 
 exports.getAvailableAppointments = async (req, res) => {
   try {
-    const availableAppointments = await appointement.find({ status: "Available" }).populate('doctor'); ;
+    const availableAppointments = await appointement.find({ status: "Available" }).populate('Doctor'); ;
     res.status(200).json(availableAppointments);
   } catch (err) {
     res.status(500).json(err);
@@ -106,6 +104,5 @@ exports.createUpcomingAppointment = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
 
 

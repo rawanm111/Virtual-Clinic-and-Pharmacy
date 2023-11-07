@@ -82,7 +82,7 @@ function PharmacistMedicationTable() {
       updatedData[index].isEditingDescription = false;
 
       // Send the updated description to the backend API
-      await axios.put(`http://localhost:3000/meds/updateDescription/${row.id}`, { description: row.description });
+      await axios.put(`http://localhost:2002/meds/updateDescription/${row.id}`, { description: row.description });
 
       setMedicationData(updatedData);
     } catch (error) {
@@ -97,7 +97,7 @@ function PharmacistMedicationTable() {
       updatedData[index].isEditingPrice = false;
 
       // Send the updated price to the backend API
-      await axios.put(`http://localhost:3000/meds/updatePrice/${row.id}`, { price: row.price });
+      await axios.put(`http://localhost:2002/meds/updatePrice/${row.id}`, { price: row.price });
 
       setMedicationData(updatedData);
     } catch (error) {

@@ -19,17 +19,16 @@ const DoctorRegistrationHome = () => {
     affiliation: '',
     educationalBackground: '',
     dateOfBirth: '',
-    speciality:'',
   });
 
   const navigate = useNavigate();
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:3000/api/drReq', formData)
+      .post('http://localhost:3000/doctors', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        //navigate('/doc-home');
+        navigate('/doc-home');
       })
       .catch((error) => {
         console.error('Error:', error);

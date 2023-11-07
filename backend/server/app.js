@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const medsRoutes = require('./Routes/medsroutes'); 
 const DoctorRoutes = require('./Routes/DoctorRoutes');
 const PharmacistRoutes = require('./Routes/PharmacistRoutes');
 const PatientRoutes = require('./Routes/PatientRoutes');
-const AppsRoutes= require('./Routes/appointementsrouter')
+const AppsRoutes= require('./Routes/appointmentsRouter');
 const healthPackageRoutes = require('./Routes/HealthPackageRoutes');
 const drReqRoutes = require('./Routes/drReqRoutes')
 const pharmcistReqRoutes = require('./Routes/pharmcistReqRoutes');
@@ -12,6 +13,8 @@ const FamilyMemberRoutes = require('./Routes/FamilyMemberRoutes');
 const HealthRecRoutes = require('./Routes/HealthRecRoutes.js');
 const PrescriptionRoutes = require('./Routes/PrescriptionRoutes.js');
 const Adminroutes = require('./Routes/Adminroutes.js');
+//const Admin = require('./Models/Admin');
+const authroutes = require('./Routes/authenticationRoutes');
 const cors = require('cors');
 
 const app = express();
@@ -31,7 +34,6 @@ const corsOptions = {
 app.use(cors(corsOptions));
 
 app.use(express.json());
-
 app.use('/meds', medsRoutes);
 app.use('/doctors', DoctorRoutes);
 app.use('/pharmacists', PharmacistRoutes);
@@ -44,6 +46,8 @@ app.use('/family_members', FamilyMemberRoutes);
 app.use('/HealthRecords',HealthRecRoutes);
 app.use('/Prescription',PrescriptionRoutes);
 app.use('/admin',Adminroutes);
+app.use('/login', authroutes)
+
 
 // MongoDB Configuration
 const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";

@@ -84,7 +84,7 @@ function AdminRequests() {
             <CardWrapper key={adminRequest._id} variant="outlined">
               <CardContent>
                 <NameTypography variant="h5" component="div">
-                  {adminRequest.fullName}
+                  {adminRequest.name}
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -115,7 +115,7 @@ function AdminRequests() {
                     Birthdate:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-                    {adminRequest.dateOfBirth}
+                    {adminRequest.birthdate}
                   </DataTypography>
                 </div>
                 <div>
@@ -131,7 +131,7 @@ function AdminRequests() {
                     Hospital Name:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-                    {adminRequest.affiliation}
+                    {adminRequest.hospital}
                   </DataTypography>
                 </div>
                 <div>

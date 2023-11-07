@@ -71,7 +71,7 @@ export default function Paths() {
         <Route path="/add-family-member" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
-        <Route path="/update-package" element={<UpdatePackage />} /> 
+        <Route path="/update-package/:id" element={<UpdatePackage />} /> 
         <Route path="/pharmacist-requests" element={<AdminRequestsP />} /> 
         <Route path="/doctor-requests" element={<AdminRequestsD />} /> 
         <Route path="/health-recs/:id" element={<HealthRecords />} /> 
@@ -79,10 +79,6 @@ export default function Paths() {
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
-
-        
-
-        
       </Routes>
     </Router>
   );

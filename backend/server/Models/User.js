@@ -1,39 +1,33 @@
 const mongoose = require('mongoose');
+// const passwordValidator = function(password) {
+//   // This regex will enforce at least one uppercase letter and at least 8 characters
+//   return /^(?=.*[A-Z]).{8,}$/.test(password);
+// };
 
 const UserSchema = new mongoose.Schema({
 
-  name: {
+  username: {
     type: String,
     required: true,
   },
-  userType: {
-    type: String,
-    required: true,
-  },
-  gender: {
-    type: String,
-    required: true,
-  },
-  age: {
-    type: Number,
-    required: true,
-  },
-  phoneNumber: {
-    type: String,
-    required: true,
-  },
-  dateOfBirth: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
+  
   password: {
     type: String,
     required: true,
+    // validate: [
+    //   passwordValidator,
+    //   'Password should be at least 8 characters long and contain at least one uppercase letter.'
+    // ],
   },
+
+  // userType: {
+  //   type: String,
+  //   required: true,
+  // },
 });
 
+
+
 module.exports = mongoose.model('User', UserSchema);
+module.exports.UserSchema = UserSchema;
+//module.exports = mongoose.model('User', UserSchema);
