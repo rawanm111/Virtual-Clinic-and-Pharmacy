@@ -28,7 +28,7 @@ const DoctorRegistrationHome = () => {
       .post('http://localhost:3000/doctors', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        navigate('/doc-home');
+        navigate('/clinic');
       })
       .catch((error) => {
         console.error('Error:', error);

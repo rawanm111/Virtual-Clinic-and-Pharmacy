@@ -4,23 +4,23 @@ const Patient = require('../Models/patients');
 const Admin = require('../Models/Admin');
 const Pharmacist = require('../Models/pharmacists');
 
+
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    // Array of user models to search through
     const userTypes = [
       { model: Doctor, role: 'Doctor' },
       { model: Patient, role: 'Patient' },
       { model: Admin, role: 'Admin' },
       { model: Pharmacist, role: 'Pharmacist' }
     ];
-
-    // Find the user by username in each model
     for (const userType of userTypes) {
       const user = await userType.model.findOne({ username: username });
       if (user) {
-        // If user is found, compare the plaintext password
-        if (password === user.password) {
+        console.log('User found:', user); // Log the user object
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        console.log('Password Match:', passwordMatch); // Log the result of password comparison
+        if (passwordMatch) {
           return res.json({
             success: true,
             message: 'Logged in successfully',
@@ -31,13 +31,13 @@ const login = async (req, res) => {
         }
       }
     }
-    // If no user found in any model
     return res.status(404).json({ success: false, message: 'User not found' });
   } catch (error) {
-    // Handle any other errors
+    console.error(error); // Log the actual error for debugging
     res.status(500).json({ success: false, message: 'An error occurred during login' });
   }
 };
+
 
 module.exports = {
   login

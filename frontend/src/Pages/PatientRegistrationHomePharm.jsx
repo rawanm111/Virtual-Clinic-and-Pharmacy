@@ -39,7 +39,7 @@ const PatientRegistrationHome = () => {
       .post('http://localhost:3000/patients', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        navigate('/pharm-patient-home')
+        navigate('/pharm')
       })
       .catch((error) => {
         console.error('Error:', error);

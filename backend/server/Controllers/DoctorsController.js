@@ -1,10 +1,44 @@
 const doctors = require('../Models/doccs');
-exports.createNewDoc = async (req, res) => {
+const bcrypt = require('bcrypt');
+
+exports.createDoc = async (req, res) => {
   try {
-    const newDoc = new doctors(req.body);
-    const savedDoc = await newDoc.save();
-    res.status(201).json(savedDoc);
+    const {
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password,
+    } = req.body;
+    console.log('Received data:', req.body); 
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newDoctor = new doctors({
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password: hashedPassword, 
+    });
+
+    console.log('New Doctor:', newDoctor); 
+
+    const savedDoctor = await newDoctor.save();
+    console.log('Saved Doctor:', savedDoctor); 
+
+    res.status(201).json(savedDoctor);
   } catch (err) {
+    console.error(err); 
     res.status(500).json(err);
   }
 };

@@ -31,15 +31,12 @@ const PharmacistRegistrationHome = () => {
     
   });
 
-
-
-
   const handleSubmit = () => {
     axios
       .post('http://localhost:3000/pharmacists', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        navigate('/pharm-home')
+        navigate('/pharm')
       })
       .catch((error) => {
         console.error('Error:', error);

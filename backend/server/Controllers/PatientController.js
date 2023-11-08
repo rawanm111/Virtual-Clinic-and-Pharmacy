@@ -1,16 +1,44 @@
 const patientModel = require('../Models/patients');
 const Appointment = require('../Models/appointements');
 const Doctor = require('../Models/doccs');
+const bcrypt = require('bcrypt');
 
 exports.createPatient = async (req, res) => {
+  const {
+    fullName,
+    email,
+    dateOfBirth,
+    gender,
+    mobileNumber,
+    emergencyContactFullName,
+    emergencyContactMobileNumber,
+    emergencyContactRelationToPatient,
+    password, 
+    username,
+  } = req.body;
   try {
-    const newPatient = new patientModel(req.body);
-    const savedPatient = await newPatient.save();
-    res.status(201).json(savedPatient);
-  } catch (err) {
-    res.status(500).json(err);
+ 
+      const salt = await bcrypt.genSalt(); 
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const newPatient= await patientModel.create({
+        username,
+        fullName,
+        email,
+        dateOfBirth,
+        gender,
+        mobileNumber ,
+        emergencyContactFullName ,
+        emergencyContactMobileNumber,
+        emergencyContactRelationToPatient,
+        password: hashedPassword,
+      });
+      res.status(200).json(newPatient)
+  } catch (error) {
+      console.error(error);
+      res.status(400).json({ error: error.message })
   }
-};
+}
+
 
 exports.getPatient = async (req, res) => {
   try {
