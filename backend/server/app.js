@@ -18,7 +18,7 @@ const authroutes = require('./Routes/authenticationRoutes');
 const cors = require('cors');
 
 const app = express();
-
+app.use(express.json());
 const allowedOrigins = ['http://localhost:3001'];
 
 const corsOptions = {

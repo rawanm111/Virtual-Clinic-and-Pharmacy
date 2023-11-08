@@ -1,19 +1,54 @@
 const drReqModel = require('../Models/drReqModel')
 const DrReq = require('../Models/drReqModel')
 const mongoose = require('mongoose')
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
-//submit a new dr req
-const submitDrReq = async (req , res)=>{
-    const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
-
+const submitDrReq = async (req, res) => {
     try {
-        const newDoc = new DrReq(req.body);
-        const savedDoc = await newDoc.save();
-        res.status(201).json(savedDoc);
-      } catch (err) {
-        res.status(500).json(err);
-      }
-}
+      const {
+        username,
+        fullName,
+        email,
+        password,
+        hourlyRate,
+        dateOfBirth,
+        affiliation,
+        educationalBackground,
+        speciality,
+      } = req.body;
+  
+      // You can use req.files to access the uploaded files.
+      const nationalIdFile = req.files.nationalIdFile;
+      const medicalLicenseFile = req.files.medicalLicenseFile;
+      const medicalDegreeFile = req.files.medicalDegreeFile;
+  
+      // Create a new instance of the doctor registration model
+      const newDoctorRequest = new drReqModel({
+        username,
+        fullName,
+        email,
+        password,
+        hourlyRate,
+        dateOfBirth,
+        affiliation,
+        educationalBackground,
+        speciality,
+        nationalIdFile,
+        medicalLicenseFile,
+        medicalDegreeFile,
+      });
+      
+      // Save the doctor registration request to the database
+      await newDoctorRequest.save();
+
+      res.status(201).json({ message: 'Doctor registration request submitted successfully' });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'An error occurred while processing the request' });
+    }
+  };
 
 //get all dr Req
 const getAllReq = async(req , res )=>{
