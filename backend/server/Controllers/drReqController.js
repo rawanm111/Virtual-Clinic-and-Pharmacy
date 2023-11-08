@@ -2,24 +2,17 @@ const drReqModel = require('../Models/drReqModel')
 const DrReq = require('../Models/drReqModel')
 const mongoose = require('mongoose')
 
-
-
-
-
-
 //submit a new dr req
 const submitDrReq = async (req , res)=>{
     const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
 
-    //add req to DB
-    try{
-        const drReq = await DrReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
-        res.status(200).json(drReq)
-    }
-    catch(error){
-        res.status(400).json({error: error.message})
-    }
-    //res.json({mssg:'add a new request'})
+    try {
+        const newDoc = new DrReq(req.body);
+        const savedDoc = await newDoc.save();
+        res.status(201).json(savedDoc);
+      } catch (err) {
+        res.status(500).json(err);
+      }
 }
 
 //get all dr Req

@@ -36,10 +36,10 @@ const PharmacistRegistrationHome = () => {
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:3000/pharmacists', formData)
+      .post('http://localhost:3000/api/pharmcistReq', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        navigate('/pharm-home')
+      //  navigate('/pharm-home')
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -148,6 +148,7 @@ return (
             onChange={handleInputChange}
             />
   </Grid>
+  
   <Grid item xs={6}>
   <TextField
               fullWidth

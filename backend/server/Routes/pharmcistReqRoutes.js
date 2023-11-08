@@ -7,10 +7,6 @@ const {
 } = require('../Controllers/pharmcistReqController')
 
 
-
-
-
-
 //get all phamcist requests
 router.get('/',getAllReq)
 
@@ -29,9 +25,6 @@ router.patch('/:id',(req , res )=>{
 router.patch('/:id',(req , res )=>{
     res.json({mssg:'this req has been rejected'})
 })
-
-
-
 
 
 module.exports = router
