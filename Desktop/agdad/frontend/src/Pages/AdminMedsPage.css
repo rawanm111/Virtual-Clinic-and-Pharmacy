@@ -1,0 +1,13 @@
+.admin-meds-page {
+  background-color: lightblue;
+}
+body {
+  background-color: lightblue;
+}
+.centered-text {
+  text-align: center; 
+  font-size: 24px;
+  color: darkblue;
+
+  padding: 10px;
+}

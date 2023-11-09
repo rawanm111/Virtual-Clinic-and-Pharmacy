@@ -1,0 +1,26 @@
+
+body {
+    background-color: lightblue;
+}
+
+.content-wrapper {
+    position: relative;
+    height: 50vh;
+}
+
+.custom-text {
+    position: absolute;
+    top: 50%;
+    left: 120px;
+    
+    color: #007BFF;
+    line-height: 1.2;
+}
+
+
+.custom-image {
+    position: absolute;
+    top:40%;
+    left: 1100px;
+    width: 40%;
+}
