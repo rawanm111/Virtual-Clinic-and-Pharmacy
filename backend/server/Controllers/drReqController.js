@@ -1,26 +1,54 @@
 const drReqModel = require('../Models/drReqModel')
 const DrReq = require('../Models/drReqModel')
 const mongoose = require('mongoose')
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
+const submitDrReq = async (req, res) => {
+    try {
+      const {
+        username,
+        fullName,
+        email,
+        password,
+        hourlyRate,
+        dateOfBirth,
+        affiliation,
+        educationalBackground,
+        speciality,
+      } = req.body;
+  
+      // You can use req.files to access the uploaded files.
+      const nationalIdFile = req.files.nationalIdFile;
+      const medicalLicenseFile = req.files.medicalLicenseFile;
+      const medicalDegreeFile = req.files.medicalDegreeFile;
+  
+      // Create a new instance of the doctor registration model
+      const newDoctorRequest = new drReqModel({
+        username,
+        fullName,
+        email,
+        password,
+        hourlyRate,
+        dateOfBirth,
+        affiliation,
+        educationalBackground,
+        speciality,
+        nationalIdFile,
+        medicalLicenseFile,
+        medicalDegreeFile,
+      });
+      
+      // Save the doctor registration request to the database
+      await newDoctorRequest.save();
 
-
-
-
-
-//submit a new dr req
-const submitDrReq = async (req , res)=>{
-    const{username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground} = req.body
-
-    //add req to DB
-    try{
-        const drReq = await DrReq.create({username,name,email,password,birthdate,hourlyRate,hospital,educationalBackground})
-        res.status(200).json(drReq)
+      res.status(201).json({ message: 'Doctor registration request submitted successfully' });
+    } catch (error) {
+      console.error('Error:', error);
+      res.status(500).json({ error: 'An error occurred while processing the request' });
     }
-    catch(error){
-        res.status(400).json({error: error.message})
-    }
-    //res.json({mssg:'add a new request'})
-}
+  };
 
 //get all dr Req
 const getAllReq = async(req , res )=>{

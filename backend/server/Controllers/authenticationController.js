@@ -17,14 +17,15 @@ const login = async (req, res) => {
     for (const userType of userTypes) {
       const user = await userType.model.findOne({ username: username });
       if (user) {
-        console.log('User found:', user); // Log the user object
+        console.log('User found:', user); 
         const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log('Password Match:', passwordMatch); // Log the result of password comparison
+        console.log('Password Match:', passwordMatch); 
         if (passwordMatch) {
           return res.json({
             success: true,
             message: 'Logged in successfully',
-            role: userType.role
+            role: userType.role,
+            userId: user._id
           });
         } else {
           return res.status(406).json({ success: false, message: 'Wrong password' });
@@ -33,7 +34,7 @@ const login = async (req, res) => {
     }
     return res.status(404).json({ success: false, message: 'User not found' });
   } catch (error) {
-    console.error(error); // Log the actual error for debugging
+    console.error(error); 
     res.status(500).json({ success: false, message: 'An error occurred during login' });
   }
 };

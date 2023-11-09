@@ -6,12 +6,12 @@ const Otp = () => {
 
   const handleChange = (event) => {
     const value = event.target.value;
-    setOtp(value.replace(/\D/g, '')); // Replace any non-digit characters
+    setOtp(value.replace(/\D/g, '')); 
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Add the logic for OTP submission here, like an API call
+   
     console.log('OTP submitted:', otp);
   };
 
@@ -26,7 +26,7 @@ const Otp = () => {
           width: '100%',
         }}
       >
-        {/* Set the color of Typography to primary to match the button and text field */}
+       
         <Typography component="h1" variant="h5" color="primary" sx={{ mt: 4, mb: 4 }}>
           An OTP has been sent to your email
         </Typography>
@@ -41,16 +41,16 @@ const Otp = () => {
             type="text"
             id="otp"
             autoFocus
-            inputProps={{ maxLength: 6 }} // Assuming the OTP is 6 digits
+            inputProps={{ maxLength: 6 }} 
             value={otp}
             onChange={handleChange}
-            color="primary" // Ensure the text field uses the primary color
+            color="primary" 
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
-            color="primary" // Ensure the button uses the primary color
+            color="primary" 
             sx={{ mt: 3, mb: 2 }}
           >
             Verify OTP
