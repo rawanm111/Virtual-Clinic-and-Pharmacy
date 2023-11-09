@@ -36,6 +36,18 @@ patientSchema.add({
     type: String,
     required: true,
   },
+  familyMembers: [
+    {
+      patient: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'patients', // Reference to the Patient model
+      },
+      relation: {
+        type: String,
+        required: true,
+      },
+    },
+  ],
 });
 
 module.exports = mongoose.model('patients', patientSchema);

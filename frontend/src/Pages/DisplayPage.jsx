@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, useParams } from 'react-router-dom'; // Import useNavigate
 import Button from '@mui/material/Button';
 
 import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
 
+
+
+
+
+
+
 function FamilyMember() {
+
+ 
+
   const navigate = useNavigate(); // Initialize the navigate function
 
   console.log('FamilyMember component is rendering.');
@@ -50,6 +59,8 @@ function FamilyMember() {
     { field: 'relationtopatient', headerName: 'Relation to Patient', flex: 1 },
   ];
 
+
+  const { id } = useParams();
   return (
     <div>
       <AppBarComponent />
@@ -62,7 +73,7 @@ function FamilyMember() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => navigate('/add-family-member')} // Use navigate to go to the add family member route
+        onClick={() => navigate(`/add-family-member/${id}`)} // Use navigate to go to the add family member route
       >
         Add Family Member
       </Button>

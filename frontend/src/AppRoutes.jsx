@@ -68,7 +68,7 @@ export default function Paths() {
         <Route path="/patientsTable/:id" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/health-packages" element={<HealthPackages />} />
-        <Route path="/add-family-member" element={<Form />} />
+        <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
         <Route path="/update-package/:id" element={<UpdatePackage />} /> 

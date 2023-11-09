@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import {
+  TextField,
+  Button,
+  Container,
+  Typography,
+  Box,
+} from '@mui/material';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import { useParams } from 'react-router-dom';
+
 
 export default function Form() {
+  const {id} = useParams();
+
   const [formData, setFormData] = useState({
-    name: '',
-    age: 0,
-    gender: 'Male',
-    nationalid: '',
-    relationtopatient: 'Father', // Set a default value
+    emailOrPhone: '', // Change "name" to "emailOrPhone" to collect email or phone
+    relation: 'Father', // Set a default value
   });
 
   const handleSubmit = () => {
     axios
-      .post('http://localhost:3000/family_members', formData)
-      .then((response) => {
+    .post(`http://localhost:3000/patients/api/addFamilyMember/${id}`, formData)
+    .then((response) => {
         console.log('Response:', response.data);
       })
       .catch((error) => {
@@ -52,10 +59,10 @@ export default function Form() {
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Email"
+            label="Email or Phone"
             variant="outlined"
-            name="name"
-            value={formData.name}
+            name="emailOrPhone" // Update the name to "emailOrPhone"
+            value={formData.emailOrPhone}
             onChange={handleInputChange}
           />
         </div>
@@ -66,12 +73,12 @@ export default function Form() {
             variant="outlined"
             select
             SelectProps={{ native: true }}
-            name="relationtopatient"
-            value={formData.relationtopatient}
+            name="relation" // Update the name to "relation"
+            value={formData.relation}
             onChange={handleInputChange}
           >
-            <option value="Father">Wife</option>
-            <option value="Mother">Husband</option>
+            <option value="Father">Father</option>
+            <option value="Mother">Mother</option>
             <option value="Children">Children</option>
           </TextField>
         </div>

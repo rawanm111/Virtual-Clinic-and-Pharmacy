@@ -9,5 +9,7 @@ router.get('/p/:docId', PatientController.getPatientsByDoctorId);
 router.put('/:username', PatientController.updatePatient);
 router.delete('/:userid', PatientController.deletePatient);
 router.get('/:username', PatientController.getPatientByUsername);
+router.post('/api/addFamilyMember/:userid', PatientController.addFamilyMemberLinkedToPatient);
+
 
 module.exports = router;
