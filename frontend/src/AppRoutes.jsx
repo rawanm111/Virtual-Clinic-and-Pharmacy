@@ -36,7 +36,7 @@ import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
-
+import MedHistory from "./Pages/medHistory";
 
 export default function Paths() {
   return (
@@ -79,6 +79,8 @@ export default function Paths() {
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
+        
       </Routes>
     </Router>
   );
