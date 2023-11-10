@@ -34,7 +34,7 @@ export default function AppTableP() {
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
   const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself'); // Added family member state
   const [familyMembers, setFamilyMembers] = useState([]); // Added family members state
-
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState('All'); 
   useEffect(() => {
     axios
       .get(`http://localhost:3000/patients/family_members/user/${id}`)
@@ -121,18 +121,27 @@ export default function AppTableP() {
       ),
     },
   ];
+ // Added status filter state
 
-  const handleFilterChange = () => {
-    const filteredApps = apps.filter((app) => {
-      if (!dateFilterStart || !dateFilterEnd) {
-        return true;
-      }
-      return (
-        app.date >= dateFilterStart && app.date <= dateFilterEnd
-      );
-    });
-    setFilteredRows(filteredApps);
-  };
+ const handleStatusFilterChange = (event) => {
+  setSelectedStatusFilter(event.target.value);
+};
+
+const handleFilterChange = () => {
+  const filteredApps = apps.filter((app) => {
+    // Check if the date is within the selected range
+    const isDateInRange =
+      (!dateFilterStart || app.date >= dateFilterStart) &&
+      (!dateFilterEnd || app.date <= dateFilterEnd);
+
+    // Check if the status matches the selected status filter
+    const isStatusMatch =
+      selectedStatusFilter === 'All' || app.status === selectedStatusFilter;
+
+    return isDateInRange && isStatusMatch;
+  });
+  setFilteredRows(filteredApps);
+};
 
   const handleFilterChangeOne = () => {
     const checkDate = new Date(checkAvailabilityDate);
@@ -148,6 +157,8 @@ export default function AppTableP() {
     });
     setAvailableApps(filteredAvailableApps);
   };
+
+  
 
   const handleBookAppointment = (appointmentId) => {
     setSelectedAppointmentId(appointmentId); // Store the appointmentId in state
@@ -252,6 +263,8 @@ export default function AppTableP() {
     }
   };
 
+
+
   return (
     <>
       <AppBarComponent />
@@ -354,11 +367,23 @@ export default function AppTableP() {
             setDateFilterEnd(new Date(e.target.value))
           }
         />
-        <Button
-          variant="contained"
-          onClick={handleFilterChange}
-        >
-          Check My Appointments
+        <FormControl variant="outlined">
+          <InputLabel id="status-filter-label">Status</InputLabel>
+          <Select
+            labelId="status-filter-label"
+            id="status-filter"
+            value={selectedStatusFilter}
+            onChange={handleStatusFilterChange}
+          >
+            <MenuItem value="All">All</MenuItem>
+            <MenuItem value="Upcoming">Upcoming</MenuItem>
+            <MenuItem value="Completed">Completed</MenuItem>
+            <MenuItem value="Cancelled">Cancelled</MenuItem>
+            <MenuItem value="Rescheduled">Rescheduled</MenuItem>
+          </Select>
+        </FormControl>
+        <Button variant="contained" onClick={handleFilterChange}>
+          Apply Filters
         </Button>
       </Box>
 
