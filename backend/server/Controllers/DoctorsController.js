@@ -92,9 +92,22 @@ exports.getDoctorByUsername = async (req, res) => {
   try {
     const patient = await doctors.findOne({ username: username });
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found' });
+      return res.status(404).json({ message: 'doc not found' });
     }
     res.status(200).json(patient);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.getDoctorById = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const doctor = await doctors.findById(id); 
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.status(200).json(doctor);
   } catch (err) {
     res.status(500).json(err);
   }

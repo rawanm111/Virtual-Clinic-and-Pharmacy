@@ -57,7 +57,7 @@ export default function Paths() {
         <Route path="/admin-meds" element={<AdminMedsPage />} />
         <Route path="/patient-meds/:id" element={<PatientMedsPage />} />
         <Route path="/pharm-meds/:id" element={<PharmacistMedsPage />} />
-        <Route path="/doc-profile" element={<DoctorProfile />} />
+        <Route path="/doc-profile/:id" element={<DoctorProfile />} />
         <Route path="/patient-profile" element={<PatientProfile />} />
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
         <Route path="/new-med" element={<AddMed />} />

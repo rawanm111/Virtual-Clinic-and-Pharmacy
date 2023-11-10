@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
+import { Navigate , useParams} from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 
@@ -62,20 +62,23 @@ const UpdatePackage = (id) => {
  export default function DoctorProfile() {
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const Navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/doctors') 
+      .get(`http://localhost:3000/doctors/get/${id}`) // Fetch the details of the specific doctor using the ID from the URL
       .then((response) => {
         setDoctorProfile(response.data);
       })
       .catch((error) => {
-        console.error('Error fetching DoctorProfiles:', error);
+        console.error('Error fetching DoctorProfile:', error);
       });
-  }, []);
+  }, [id]);
+
   const handleUpdatePackage = (username) => {
     Navigate(`/update-doctor/${username}`);
   };
+
   return (
     <div>     
       <PageContainer>
@@ -85,7 +88,6 @@ const UpdatePackage = (id) => {
           </Typography>
         </HeaderContainer>
         <CardsContainer>
-          {DoctorProfile.map((DoctorProfile) => (
             <CardWrapper key={DoctorProfile.username} variant="outlined">
               <CardContent>
   <NameTypography variant="h5" component="div">
@@ -105,7 +107,7 @@ const UpdatePackage = (id) => {
   <div>  <Button onClick={() => handleUpdatePackage(DoctorProfile.username)}>Update</Button>  </div>
 </CardContent>
             </CardWrapper>
-          ))}
+        
         </CardsContainer>
       </PageContainer>
     </div>

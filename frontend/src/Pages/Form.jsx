@@ -77,8 +77,8 @@ export default function Form() {
             value={formData.relation}
             onChange={handleInputChange}
           >
-            <option value="Father">Father</option>
-            <option value="Mother">Mother</option>
+            <option value="Wife">Wife</option>
+            <option value="Husband">Husband</option>
             <option value="Children">Children</option>
           </TextField>
         </div>

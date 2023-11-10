@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Button, TextField, MenuItem } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AppBarComponent from '../Components/Appbar/AppbarDoctor';
 import { useParams } from 'react-router-dom';
@@ -10,10 +10,11 @@ export default function AppTable() {
   const [filteredRows, setFilteredRows] = useState([]);
   const [dateFilterStart, setDateFilterStart] = useState(null);
   const [dateFilterEnd, setDateFilterEnd] = useState(null);
-  const [newAppointmentDateTime, setNewAppointmentDateTime] = useState(''); // Include time
-  const [followUpDateTime, setFollowUpDateTime] = useState(''); // Include time
+  const [newAppointmentDateTime, setNewAppointmentDateTime] = useState('');
+  const [followUpDateTime, setFollowUpDateTime] = useState('');
   const [followUpPatientName, setFollowUpPatientName] = useState('');
-  const currentDate = new Date(); // Get the current date
+  const [appointmentStatus, setAppointmentStatus] = useState('');
+  const currentDate = new Date();
 
   const { id } = useParams();
 
@@ -36,7 +37,7 @@ export default function AppTable() {
       .catch((error) => {
         console.error('Error fetching apps:', error);
       });
-  }, []);
+  }, [id]);
 
   const isDateTimeValid = (selectedDateTime) => {
     return selectedDateTime >= currentDate;
@@ -54,7 +55,6 @@ export default function AppTable() {
       axios.post('http://localhost:3000/apps', newAppointment)
         .then((response) => {
           console.log('New appointment created:', response.data);
-
           axios.get(`http://localhost:3000/apps/doctor/${id}`)
             .then((response) => {
               if (response.data) {
@@ -127,11 +127,13 @@ export default function AppTable() {
 
   const handleFilterChange = () => {
     const filteredApps = apps.filter((app) => {
-      if (!dateFilterStart || !dateFilterEnd) {
-        return true;
-      }
+      const statusCondition =
+        !appointmentStatus || app.status.toLowerCase() === appointmentStatus.toLowerCase();
 
-      return app.date >= dateFilterStart && app.date <= dateFilterEnd;
+      const dateCondition =
+        !dateFilterStart || !dateFilterEnd || (app.date >= dateFilterStart && app.date <= dateFilterEnd);
+
+      return statusCondition && dateCondition;
     });
 
     setFilteredRows(filteredApps);
@@ -162,6 +164,21 @@ export default function AppTable() {
           value={dateFilterEnd ? dateFilterEnd.toISOString().split('T')[0] : ''}
           onChange={(e) => setDateFilterEnd(new Date(e.target.value))}
         />
+        <TextField
+          select
+          label="Status"
+          value={appointmentStatus}
+          onChange={(e) => setAppointmentStatus(e.target.value)}
+          variant="outlined"
+          sx={{ minWidth: '150px' }}
+        >
+          <MenuItem value="">All</MenuItem>
+          <MenuItem value="upcoming">Upcoming</MenuItem>
+          <MenuItem value="completed">Completed</MenuItem>
+          <MenuItem value="cancelled">Cancelled</MenuItem>
+          <MenuItem value="rescheduled">Rescheduled</MenuItem>
+          <MenuItem value="available">Available</MenuItem>
+        </TextField>
         <Button variant="contained" onClick={handleFilterChange}>
           Filter
         </Button>
@@ -229,3 +246,4 @@ export default function AppTable() {
     </>
   );
 }
+
