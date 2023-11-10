@@ -9,6 +9,8 @@ function PharmacistMedicationTable() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMedicalUse, setSelectedMedicalUse] = useState('');
   const [uniqueMedicalUses, setUniqueMedicalUses] = useState([]);
+  const [selectedImageRow, setSelectedImageRow] = useState(null);
+  const [imageUrl, setImageUrl] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -53,9 +55,7 @@ function PharmacistMedicationTable() {
     setSearchQuery(event.target.value);
   };
 
-  // Functions to handle editing description and price
   const handleEditDescription = (row) => {
-    // Create a copy of the medicationData
     const updatedData = [...medicationData];
     const index = updatedData.findIndex((item) => item.id === row.id);
     updatedData[index].isEditingDescription = true;
@@ -63,7 +63,6 @@ function PharmacistMedicationTable() {
   };
 
   const handleEditPrice = (row) => {
-    // Create a copy of the medicationData
     const updatedData = [...medicationData];
     const index = updatedData.findIndex((item) => item.id === row.id);
     updatedData[index].isEditingPrice = true;
@@ -74,14 +73,12 @@ function PharmacistMedicationTable() {
     navigate('/new-med');
   };
 
-  // Functions to handle saving description and price changes
   const handleSaveDescription = async (row) => {
     try {
       const updatedData = [...medicationData];
       const index = updatedData.findIndex((item) => item.id === row.id);
       updatedData[index].isEditingDescription = false;
 
-      // Send the updated description to the backend API
       await axios.put(`http://localhost:2002/meds/updateDescription/${row.id}`, { description: row.description });
 
       setMedicationData(updatedData);
@@ -96,7 +93,6 @@ function PharmacistMedicationTable() {
       const index = updatedData.findIndex((item) => item.id === row.id);
       updatedData[index].isEditingPrice = false;
 
-      // Send the updated price to the backend API
       await axios.put(`http://localhost:2002/meds/updatePrice/${row.id}`, { price: row.price });
 
       setMedicationData(updatedData);
@@ -105,7 +101,31 @@ function PharmacistMedicationTable() {
     }
   };
 
-  // Define columns for the DataGrid
+  const handleImageClick = (row) => {
+    setSelectedImageRow(row);
+    setImageUrl(row.picture);
+  };
+
+  const handleImagePopupClose = () => {
+    setSelectedImageRow(null);
+    setImageUrl('');
+  };
+
+  const handleImageUpload = async (url) => {
+    try {
+      const updatedData = [...medicationData];
+      const index = updatedData.findIndex((item) => item.id === selectedImageRow.id);
+      updatedData[index].picture = url;
+
+      await axios.put(`http://localhost:3000/meds/updatePicture/${selectedImageRow.id}`, { picture: url });
+
+      setMedicationData(updatedData);
+      handleImagePopupClose();
+    } catch (error) {
+      console.error('Error updating picture:', error);
+    }
+  };
+
   const columns = [
     { field: 'name', headerName: 'Name', flex: 1 },
     {
@@ -181,11 +201,14 @@ function PharmacistMedicationTable() {
       headerName: 'Picture',
       flex: 1,
       renderCell: (params) => (
-        <img
-          src={params.value}
-          alt="Medication"
-          style={{ width: '100px', height: 'auto' }}
-        />
+        <div>
+          <img
+            src={params.value}
+            alt="Medication"
+            style={{ width: '100px', height: 'auto', cursor: 'pointer' }}
+            onClick={() => handleImageClick(params.row)}
+          />
+        </div>
       ),
     },
   ];
@@ -227,6 +250,18 @@ function PharmacistMedicationTable() {
           getRowId={(row) => row.id}
         />
       </div>
+
+      {/* Image Popup */}
+      {selectedImageRow && (
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', background: 'rgba(0, 0, 0, 0.5)', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <div style={{ background: '#fff', padding: '20px', borderRadius: '8px', maxWidth: '600px', textAlign: 'center' }}>
+            <p>Enter new image URL:</p>
+            <input type="text" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} />
+            <Button variant="contained" color="primary" onClick={() => handleImageUpload(imageUrl)}>Save</Button>
+            <Button variant="outlined" color="primary" onClick={handleImagePopupClose}>Cancel</Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -22,8 +23,8 @@ const HeaderContainer = styled('div')({
 
 const CardsContainer = styled('div')({
   display: 'flex',
-  flexWrap: 'wrap', // Adjusted to wrap cards to the next row
-  gap: '16px', // Add this to control spacing between cards
+  flexWrap: 'wrap',
+  gap: '16px',
 });
 
 const CardWrapper = styled(Card)({
@@ -55,9 +56,34 @@ const DataTypography = styled(Typography)({
   marginLeft: '0.5rem',
 });
 
+// Move base64toBlob function here
+const base64toBlob = (base64Data, contentType) => {
+  try {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  } catch (error) {
+    console.error('Error decoding base64:', error);
+    return null; // Return null to indicate an error
+  }
+};
+
 function AdminRequests() {
   const [adminRequests, setAdminRequests] = useState([]);
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -70,13 +96,88 @@ function AdminRequests() {
       });
   }, []);
 
+  const handleRejectRequest = (requestId) => {
+    setAdminRequests(adminRequests.filter((req) => req._id !== requestId));
+
+    axios
+      .delete(`http://localhost:3000/api/pharmcistReq/delete/${requestId}`)
+      .then((response) => {
+        console.log('Request rejected and removed successfully');
+      })
+      .catch((error) => {
+        console.error('Error rejecting request:', error);
+      });
+  };
+
+  const handleAcceptRequest = (requestId, adminRequest) => {
+    const requestData = {
+      fullName: adminRequest.fullName,
+      username: adminRequest.username,
+      email: adminRequest.email,
+      password: adminRequest.password,
+      dateOfBirth: adminRequest.dateOfBirth,
+      hourlyRate: adminRequest.hourlyRate,
+      affiliation: adminRequest.affiliation,
+      educationalBackground: adminRequest.educationalBackground,
+    };
+    axios
+      .post('http://localhost:3000/pharmacists/', requestData)
+      .then((response) => {
+        console.log('Request accepted successfully');
+        axios
+          .delete(`http://localhost:3000/api/pharmcistReq/delete/${requestId}`)
+          .then((response) => {
+            setAdminRequests(adminRequests.filter((req) => req._id !== requestId));
+          })
+          .catch((error) => {
+            console.error('Error removing request:', error);
+          });
+      })
+      .catch((error) => {
+        console.error('Error accepting request:', error);
+      });
+  };
+
+  const handleDownloadFile = (fileInfo, fileName) => {
+    if (fileInfo && fileInfo.buffer && fileInfo.buffer.length > 0) {
+      const fileExtension = fileName.split('.').pop().toLowerCase();
+
+      // Map file extensions to content types
+      const contentTypeMap = {
+        png: 'image/png',
+        // Add more mappings as needed
+      };
+
+      const contentType = contentTypeMap[fileExtension] || 'application/octet-stream';
+
+      console.log('File Extension:', fileExtension);
+      console.log('Content Type:', contentType);
+
+      const blobData = base64toBlob(fileInfo.buffer, contentType);
+      if (blobData) {
+        const blobUrl = URL.createObjectURL(blobData);
+
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = fileName;
+        a.click();
+      } else {
+        console.error('Invalid base64 data for file:', fileName);
+        // Handle the error, e.g., show a message to the user
+      }
+    } else {
+      console.error('No or invalid file data for file:', fileName);
+      // Handle the error, e.g., show a message to the user
+    }
+  };
+
   return (
     <div>
       <AppbarAdmin />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-          Pharmcist Requests
+            Pharmacist Requests
           </Typography>
         </HeaderContainer>
         <CardsContainer>
@@ -84,7 +185,7 @@ function AdminRequests() {
             <CardWrapper key={adminRequest._id} variant="outlined">
               <CardContent>
                 <NameTypography variant="h5" component="div">
-                  {adminRequest.name}
+                  {adminRequest.fullName}
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -115,7 +216,7 @@ function AdminRequests() {
                     Birthdate:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-                    {adminRequest.birthdate}
+                    {adminRequest.dateOfBirth}
                   </DataTypography>
                 </div>
                 <div>
@@ -131,7 +232,7 @@ function AdminRequests() {
                     Hospital Name:
                   </SubtitleTypography>
                   <DataTypography variant="body2">
-                    {adminRequest.hospital}
+                    {adminRequest.affiliation}
                   </DataTypography>
                 </div>
                 <div>
@@ -143,6 +244,64 @@ function AdminRequests() {
                   </DataTypography>
                 </div>
               </CardContent>
+              <div>
+                <SubtitleTypography variant="subtitle1">
+                  Pharmacist Files:
+                </SubtitleTypography>
+                <DataTypography variant="body2">
+                  {/* Display any relevant message or status related to the file */}
+                </DataTypography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    handleDownloadFile(
+                      adminRequest.nationalIdFile[0],
+                      `${adminRequest.fullName}_NationalID.png`
+                    )
+                  }
+                >
+                  Download National ID
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    handleDownloadFile(
+                      adminRequest.pharmacyDegreeFile[0],
+                      `${adminRequest.fullName}_PharmacyDegree.pdf`
+                    )
+                  }
+                >
+                  Download Pharmacy Degree
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() =>
+                    handleDownloadFile(
+                      adminRequest.workingLicenseFile[0],
+                      `${adminRequest.fullName}_WorkingLicense.pdf`
+                    )
+                  }
+                >
+                  Download Working License
+                </Button>
+              </div>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={() => handleAcceptRequest(adminRequest._id, adminRequest)}
+              >
+                Accept Request
+              </Button>
+              <Button
+                variant="contained"
+                color="secondary"
+                onClick={() => handleRejectRequest(adminRequest._id)}
+              >
+                Reject Request
+              </Button>
             </CardWrapper>
           ))}
         </CardsContainer>

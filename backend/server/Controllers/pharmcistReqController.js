@@ -1,10 +1,9 @@
-const PharmacistReq = require('../Models/pharmcistReqModel'); // Ensure the correct model name is used
+const PharmacistReq = require('../Models/pharmcistReqModel'); // Corrected the model import
 const mongoose = require('mongoose');
 const multer = require('multer');
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-// Controller to submit a pharmacist registration request
 const submitPharmacistReq = async (req, res) => {
   try {
     const {
@@ -33,29 +32,21 @@ const submitPharmacistReq = async (req, res) => {
       pharmacyDegreeFile,
       workingLicenseFile,
     });
-    console.log("heyy");
     await newPharmacistRequest.save();
 
     res.status(201).json({ message: 'Pharmacist registration request submitted successfully' });
   } catch (error) {
-    console.log(error);
     console.error('Error:', error);
     res.status(500).json({ error: 'An error occurred while processing the request' });
   }
 };
 
-// Module exports
-module.exports = {
-  submitPharmacistReq,
-};
 
-// Get all pharmacist requests
 const getAllReq = async (req, res) => {
   const allRequests = await PharmacistReq.find({}).sort({ createdAt: -1 });
   res.status(200).json(allRequests);
 };
 
-// Get a single request
 const getReq = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
@@ -68,9 +59,18 @@ const getReq = async (req, res) => {
   res.status(200).json(pharmacistReq);
 };
 
-// Module exports
+const deletereqs = async (req, res) => {
+  try {
+    await PharmacistReq.findByIdAndDelete(req.params.id);  // Fixed the model reference
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 module.exports = {
-  submitPharmacistReq,
   getAllReq,
   getReq,
+  deletereqs,
+  submitPharmacistReq,
 };

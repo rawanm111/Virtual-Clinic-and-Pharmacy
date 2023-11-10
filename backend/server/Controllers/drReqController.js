@@ -51,26 +51,63 @@ const submitDrReq = async (req, res) => {
   };
 
 //get all dr Req
-const getAllReq = async(req , res )=>{
-    const allRequests = await drReqModel.find({}).sort({createdAt: -1})
-    res.status(200).json(allRequests)
-}
+const getReq = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).json({ error: 'No such request' });
+  }
 
-//get a single req
-const getReq = async (req, res)=>{
-    const{id} = req.params
-    if(!mongoose.Types.ObjectId.isValid(id))
-    {
-        return res.status(404).json({error: 'no such request'})
-    }
-    const drReq = await drReqModel.findById(id)
-    if(!drReq){
-        return res.status(400).json({error:'no such request'})
-    }
-    res.status(200).json(drReq)
-}
+  const drReq = await drReqModel.findById(id);
+
+  if (!drReq) {
+    return res.status(400).json({ error: 'No such request' });
+  }
+
+  // Convert file data to base64 string
+  const nationalIdFileData = drReq.nationalIdFile && drReq.nationalIdFile.toString('base64');
+  const medicalLicenseFileData = drReq.medicalLicenseFile && drReq.medicalLicenseFile.toString('base64');
+  const medicalDegreeFileData = drReq.medicalDegreeFile && drReq.medicalDegreeFile.toString('base64');
+
+  // Include file data in the response
+  const responseData = {
+    ...drReq.toJSON(),
+    nationalIdFileData,
+    medicalLicenseFileData,
+    medicalDegreeFileData,
+  };
+
+  res.status(200).json(responseData);
+};
+
+const getAllReq = async (req, res) => {
+  try {
+    const allRequests = await drReqModel.find({}).sort({ createdAt: -1 });
+
+    // Convert file data to base64 string for each request
+    const requestsWithData = allRequests.map((drReq) => ({
+      ...drReq.toJSON(),
+      nationalIdFileData: drReq.nationalIdFile && drReq.nationalIdFile.toString('base64'),
+      medicalLicenseFileData: drReq.medicalLicenseFile && drReq.medicalLicenseFile.toString('base64'),
+      medicalDegreeFileData: drReq.medicalDegreeFile && drReq.medicalDegreeFile.toString('base64'),
+    }));
+
+    res.status(200).json(requestsWithData);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json(err);
+  }
+};
+
+const deletereqs = async (req, res) => {
+  try {
+    await PharmacistReq.findByIdAndDelete(req.params.id);  // Fixed the model reference
+    res.status(204).end();
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
 
 
 module.exports = {
-    submitDrReq, getAllReq,getReq
+  submitDrReq, getAllReq,getReq,deletereqs
 }

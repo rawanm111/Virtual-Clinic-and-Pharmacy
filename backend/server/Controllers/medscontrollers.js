@@ -89,3 +89,27 @@ exports.updatePrice = async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 };
+
+// Update medication picture
+exports.updatePicture = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { picture } = req.body;
+
+    // Find the medication by ID and update its picture
+    const updatedmed = await meds.findByIdAndUpdate(
+      id,
+      { picture },
+      { new: true }
+    );
+
+    if (!updatedmed) {
+      return res.status(404).json({ message: 'Medication not found' });
+    }
+
+    res.status(200).json(updatedmed);
+  } catch (err) {
+    console.error('Error updating picture:', err);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};
