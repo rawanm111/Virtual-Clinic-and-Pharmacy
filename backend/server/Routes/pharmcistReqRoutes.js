@@ -1,30 +1,33 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const router = express.Router();
 const {
-    submitPharmcistReq,
+    getAllReq,
     getReq,
-    getAllReq
-} = require('../Controllers/pharmcistReqController')
+    deletereqs,
+    submitPharmacistReq,
+} = require('../Controllers/pharmcistReqController');  // Corrected the controller import
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
+router.post('/', upload.fields([
+  { name: 'nationalIdFile', maxCount: 1 },
+  { name: 'pharmacyDegreeFile', maxCount: 1 },
+  { name: 'workingLicenseFile', maxCount: 1 }
+]), submitPharmacistReq);
 
-//get all phamcist requests
-router.get('/',getAllReq)
+router.get('/', getAllReq);
 
-//get a single req 
-router.get('/:id',getReq)
+router.get('/:id', getReq);
 
-//submit a new req 
-router.post('/', submitPharmcistReq)
+router.delete('/delete/:id', deletereqs);
 
-//accept a req
-router.patch('/:id',(req , res )=>{
-    res.json({mssg:'this req has been acccepted'})
-})
+router.patch('/:id', (req, res) => {
+  res.json({ mssg: 'This request has been accepted' });
+});
 
-//rej a req
-router.patch('/:id',(req , res )=>{
-    res.json({mssg:'this req has been rejected'})
-})
+router.patch('/:id', (req, res) => {
+  res.json({ mssg: 'This request has been rejected' });
+});
 
-
-module.exports = router
+module.exports = router;
