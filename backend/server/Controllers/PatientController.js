@@ -109,3 +109,38 @@ exports.getPatientsByDoctorId = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+// exports.resetPass = async (req, res) => {
+//   const { username } = req.params; // Assuming the username is passed as a URL parameter
+//   const { newPassword } = req.body; // Assuming the new password is passed in the request body
+
+//   if (!newPassword) {
+//     return res.status(400).json({ message: 'New password is required' });
+//   }
+
+//   try {
+//     const salt = await bcrypt.genSalt();
+//     const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+//     const updated = await patientModel.findOneAndUpdate(
+//       { username: username },
+//       { password: hashedPassword },
+//       { new: true }
+//     );
+
+//     if (!updated) {
+//       return res.status(404).json({ message: 'Patient not found' });
+//     }
+
+//     // Optionally, remove the password from the response for security
+//     updated.password = undefined;
+
+//     res.status(200).json(updated);
+//   } catch (err) {
+//     console.error('Error updating password:', err);
+//     res.status(500).json({ message: 'Internal server error' });
+//   }
+// };
+

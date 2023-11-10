@@ -6,6 +6,8 @@ const Patient = require('../Models/patients');
 const Admin = require('../Models/Admin');
 const Pharmacist = require('../Models/pharmacists');
 const patients = require('../Models/patients');
+const doccs = require('../Models/doccs');
+const pharmacists = require('../Models/pharmacists');
 
 // Set up NodeMailer transporter
 var transporter = nodemailer.createTransport({
@@ -78,7 +80,7 @@ const sendOtp = async (req, res) => {
     res.status(500).json({ message: 'An error occurred during the OTP sending process' });
   }
 };
-module.exports = sendOtp;
+// module.exports = sendOtp;
 
 
 // Example controller for verifying OTP
@@ -131,6 +133,66 @@ const verifyOtp = async (req, res) => {
 // }
 
 
+const models = [patients, doccs, pharmacists]; // Add all your user models here
+
+const resetPass = async (req, res) => {
+  const { username } = req.body;
+  const { newPassword } = req.body;
+
+  if (!newPassword) {
+    return res.status(400).json({ message: 'New password is required' });
+  }
+
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    let updatedUser = null;
+    for (const model of models) {
+      updatedUser = await model.findOneAndUpdate(
+        { username: username },
+        { password: hashedPassword },
+        { new: true }
+      );
+      if (updatedUser) break;
+    }
+
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Optionally, remove the password from the response for security
+    updatedUser.password = undefined;
+
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('Error updating password:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+// module.exports = {
+//   resetPass
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -144,10 +206,10 @@ const login = async (req, res) => {
   try {
     const { username, password } = req.body;
     const userTypes = [
-      { model: Doctor, role: 'Doctor' },
-      { model: Patient, role: 'Patient' },
-      { model: Admin, role: 'Admin' },
-      { model: Pharmacist, role: 'Pharmacist' }
+      { model: patients },
+      { model: doccs},
+      { model: Admin },
+      { model: Pharmacist }
     ];
     for (const userType of userTypes) {
       const user = await userType.model.findOne({ username: username });
@@ -159,7 +221,7 @@ const login = async (req, res) => {
           return res.json({
             success: true,
             message: 'Logged in successfully',
-            role: userType.role
+            role: user.role
           });
         } else {
           // await sendOtp(user);
@@ -167,7 +229,7 @@ const login = async (req, res) => {
         }
       }
     }
-    return res.status(404).json({ success: false, message: 'User not shishtawok' });
+    return res.status(404).json({ success: false, message: 'invalid username' });
   } catch (error) {
     console.error(error); // Log the actual error for debugging
     res.status(500).json({ success: false, message: 'An error occurred during login' });
@@ -180,42 +242,42 @@ const login = async (req, res) => {
 
 
 
-const verifyemail = async (req, res) => {
-  try {
-    const {email} = req.body;
-    const userTypes = [
-      { model: Doctor, role: 'Doctor' },
-      { model: Patient, role: 'Patient' },
-      { model: Admin, role: 'Admin' },
-      { model: Pharmacist, role: 'Pharmacist' }
-    ];
-    for (const userType of userTypes) {
-      const user = await userType.model.findOne({ email: email });
-      if (user) {
-        console.log('User found:', user); // Log the user object
-        // const passwordMatch = await bcrypt.compare(password, user.password);
-        // console.log('Password Match:', passwordMatch); // Log the result of password comparison
-        // if (passwordMatch) {
-        //   return res.json({
-        //     success: true,
-        //     message: 'Logged in successfully',
-        //     role: userType.role
-        //   });
-        // } else {
-        //   // await sendOtp(user);
-        //   return res.status(406).json({ success: false, message: 'Wrong password' });
-        // }
-      }
-    }
-    return res.status(404).json({ success: false, message: 'User not found' });
-  } catch (error) {
-    console.error(error); // Log the actual error for debugging
-    res.status(500).json({ success: false, message: 'An error occurred during login' });
-  }
-};
+// const verifyemail = async (req, res) => {
+//   try {
+//     const {email} = req.body;
+//     const userTypes = [
+//       { model: Doctor, role: 'Doctor' },
+//       { model: Patient, role: 'Patient' },
+//       { model: Admin, role: 'Admin' },
+//       { model: Pharmacist, role: 'Pharmacist' }
+//     ];
+//     for (const userType of userTypes) {
+//       const user = await userType.model.findOne({ email: email });
+//       if (user) {
+//         console.log('User found:', user); // Log the user object
+//         // const passwordMatch = await bcrypt.compare(password, user.password);
+//         // console.log('Password Match:', passwordMatch); // Log the result of password comparison
+//         // if (passwordMatch) {
+//         //   return res.json({
+//         //     success: true,
+//         //     message: 'Logged in successfully',
+//         //     role: userType.role
+//         //   });
+//         // } else {
+//         //   // await sendOtp(user);
+//         //   return res.status(406).json({ success: false, message: 'Wrong password' });
+//         // }
+//       }
+//     }
+//     return res.status(404).json({ success: false, message: 'User not found' });
+//   } catch (error) {
+//     console.error(error); // Log the actual error for debugging
+//     res.status(500).json({ success: false, message: 'An error occurred during login' });
+//   }
+// };
 
 
 
 module.exports = {
-  sendOtp,verifyOtp,login
+  sendOtp,verifyOtp,login,resetPass
 };

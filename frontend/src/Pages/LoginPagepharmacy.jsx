@@ -74,16 +74,17 @@ function LoginPage() {
       if (data.success) {
         // Use the role from the response to determine where to navigate
         switch (data.role) {
-          case 'Admin':
-            navigate('/admin-home');
-            break;
-          case 'Doctor':
-            navigate('/doc-home/:id');
-            break;
-          case 'Patient':
+          case 'patient':
             navigate('/pharm-patient-home/:id');
             break;
-          case 'Pharmacist':
+          case 'admin':
+            navigate('/admin-home');
+            break;
+          case 'doctor':
+            navigate('/doc-home/:id');
+            break;
+          
+          case 'pharmacist':
             navigate('/pharm-home/:id');
             break;
           default:

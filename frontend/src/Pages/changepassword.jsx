@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
+import axios from 'axios'; // Import axios for API calls
+import { useParams } from 'react-router-dom';
 
 const ChangePassword = () => {
   const [passwords, setPasswords] = useState({
@@ -7,21 +9,34 @@ const ChangePassword = () => {
     newPassword: '',
     confirmNewPassword: '',
   });
+  const { username } = useParams();
 
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
   };
 
+  const updatePassword = async (newPassword) => {
+    try {
+      // Replace '/api/reset-password' with your actual API endpoint
+      const response = await axios.put('http://localhost:3000/resetpassword', { username, newPassword });
+      console.log(response.data);
+      alert('Password successfully updated');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password');
+    }
+  };
+
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Validate passwords here
     if (passwords.newPassword !== passwords.confirmNewPassword) {
       alert("New passwords don't match.");
       return;
     }
+    updatePassword(passwords.newPassword);
+  };
     // Proceed with the password change process (e.g., API call)
     console.log('Passwords submitted:', passwords);
-  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -37,19 +52,6 @@ const ChangePassword = () => {
           Change Password
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          {/* <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="currentPassword"
-            label="Current Password"
-            type="password"
-            id="currentPassword"
-            autoComplete="current-password"
-            value={passwords.currentPassword}
-            onChange={handleChange('currentPassword')}
-          /> */}
           <TextField
             variant="outlined"
             margin="normal"

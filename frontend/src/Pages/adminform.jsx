@@ -88,7 +88,7 @@ function AdminForm() {
   });
 
   const handleSubmit = () => {
-    axios.post('http://localhost:3000/admin', formData) // Use '/admin' for the POST request
+    axios.post('http://localhost:3000/admin/', formData) // Use '/admin' for the POST request
       .then(response => {
         console.log('Response:', response.data);
 
