@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import axios from 'axios';
 import './DoctorRegistrationHome.css';
-import { useNavigate } from 'react-router-dom'; 
+import { useNavigate } from 'react-router-dom';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Import the file upload icon
 
 const DoctorRegistrationHome = () => {
   const [formData, setFormData] = useState({
@@ -19,20 +20,43 @@ const DoctorRegistrationHome = () => {
     affiliation: '',
     educationalBackground: '',
     dateOfBirth: '',
+    speciality: '',
   });
+  const [nationalIdFile, setNationalIdFile] = useState(null);
+  const [medicalLicenseFile, setMedicalLicenseFile] = useState(null);
+  const [medicalDegreeFile, setMedicalDegreeFile] = useState(null);
 
   const navigate = useNavigate();
 
-  const handleSubmit = () => {
-    axios
-      .post('http://localhost:3000/doctors', formData)
-      .then((response) => {
-        console.log('Response:', response.data);
-        navigate('/clinic');
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+
+  const handleSubmit = async () => {
+
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
+    try {
+      const formDataToSend = new FormData();
+
+      for (const key in formData) {
+        formDataToSend.append(key, formData[key]);
+      }
+
+      formDataToSend.append('nationalIdFile', nationalIdFile);
+      formDataToSend.append('medicalLicenseFile', medicalLicenseFile);
+      formDataToSend.append('medicalDegreeFile', medicalDegreeFile);
+
+      const response = await axios.post('http://localhost:3000/api/drReq', formDataToSend);
+
+      console.log('Response:', response.data);
+      navigate('/clinic');
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   const handleInputChange = (event) => {
@@ -40,16 +64,12 @@ const DoctorRegistrationHome = () => {
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleFileChange = (event, fileSetter) => {
+    fileSetter(event.target.files[0]);
+  };
+
   return (
-    <Box
-      component="div"
-      sx={{
-        backgroundColor: '#B3E0FF',
-        height: '100vh',
-        alignItems: 'center',
-        justifyContent: 'center',
-      }}
-    >
+    <Box>
       <Container maxWidth="md" className="text-field-container">
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
@@ -58,7 +78,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Username"
               variant="outlined"
-              className="text-field"
               name="username"
               value={formData.username}
               onChange={handleInputChange}
@@ -70,8 +89,8 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Password"
               variant="outlined"
-              className="text-field"
               name="password"
+              type = "password"
               value={formData.password}
               onChange={handleInputChange}
             />
@@ -82,7 +101,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Full Name"
               variant="outlined"
-              className="text-field"
               name="fullName"
               value={formData.fullName}
               onChange={handleInputChange}
@@ -94,7 +112,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Email"
               variant="outlined"
-              className="text-field"
               name="email"
               value={formData.email}
               onChange={handleInputChange}
@@ -118,7 +135,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Affiliation(hospital)"
               variant="outlined"
-              className="text-field"
               name="affiliation"
               value={formData.affiliation}
               onChange={handleInputChange}
@@ -130,7 +146,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Educational Background"
               variant="outlined"
-              className="text-field"
               name="educationalBackground"
               value={formData.educationalBackground}
               onChange={handleInputChange}
@@ -142,7 +157,6 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Date of Birth"
               variant="outlined"
-              className="text-field"
               name="dateOfBirth"
               value={formData.dateOfBirth}
               onChange={handleInputChange}
@@ -154,14 +168,79 @@ const DoctorRegistrationHome = () => {
               margin="normal"
               label="Speciality"
               variant="outlined"
-              className="text-field"
               name="speciality"
               value={formData.speciality}
               onChange={handleInputChange}
             />
           </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="National ID"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('nationalIdFileInput').click()} />
+                ),
+              }}
+            />
+            <input
+              type="file"
+              accept=".jpg, .jpeg, .png"
+              style={{ display: 'none' }}
+              id="nationalIdFileInput"
+              onChange={(e) => handleFileChange(e, setNationalIdFile)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Medical License"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalLicenseFileInput').click()} />
+                ),
+              }}
+            />
+            <input
+              type="file"
+              accept=".pdf"
+              style={{ display: 'none' }}
+              id="medicalLicenseFileInput"
+              onChange={(e) => handleFileChange(e, setMedicalLicenseFile)}
+            />
+          </Grid>
+          <Grid item xs={6}>
+            <TextField
+              fullWidth
+              margin="normal"
+              label="Medical Degree"
+              variant="outlined"
+              InputProps={{
+                readOnly: true,
+                startAdornment: (
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalDegreeFileInput').click()} />
+                ),
+              }}
+            />
+            <input
+              type="file"
+              accept=".pdf"
+              style={{ display: 'none' }}
+              id="medicalDegreeFileInput"
+              onChange={(e) => handleFileChange(e, setMedicalDegreeFile)}
+            />
+          </Grid>
         </Grid>
         <h1 className="title-text">Doctor Registration</h1>
+        <div>
+          <img src={img} alt="Doctor Image" className="adjustable-image" />
+        </div>
         <div className="button-container">
           <Button variant="contained" onClick={handleSubmit}>
             Register
@@ -169,15 +248,6 @@ const DoctorRegistrationHome = () => {
         </div>
         <div className="button-container-1">
           <Button variant="contained">Cancel</Button>
-        </div>
-        <div className="container">
-          <div className="image-container">
-            <img
-              src={img}
-              alt="Doctor Image"
-              className="adjustable-image"
-            />
-          </div>
         </div>
       </Container>
     </Box>

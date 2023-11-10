@@ -72,28 +72,25 @@ function LoginPage() {
       const data = response.data;
 
       if (data.success) {
-        // Use the role from the response to determine where to navigate
+        const userId = data.userId;
         switch (data.role) {
-          case 'patient':
-            navigate('/pharm-patient-home/:id');
-            break;
           case 'admin':
             navigate('/admin-home');
             break;
-          case 'doctor':
-            navigate('/doc-home/:id');
+
+          case 'patient':
+            navigate(`/pharm-patient-home/${userId}`);
             break;
-          
           case 'pharmacist':
-            navigate('/pharm-home/:id');
+            navigate(`/pharm-home/${userId}`);
             break;
           default:
-            // Handle any user types that don't have a specified route
+            
             setError('User role is not recognized.');
             break;
         }
       } else {
-        // If the login was not successful, but there was no error thrown
+       
         setError(data.message);
         
       }
@@ -105,7 +102,7 @@ function LoginPage() {
           setShowForgotPassword(true);}
         setError(error.response.data.message);
       } else {
-        // If the server did not respond or there was a different error, set a generic error message
+        
         setError('An error occurred during login. Please try again.');
       }
     }

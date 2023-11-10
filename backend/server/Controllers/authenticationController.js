@@ -13,8 +13,8 @@ const pharmacists = require('../Models/pharmacists');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'marwantest70@gmail.com',
-    pass: 'pgdo wmjl wxpt ukug'
+    user: 'marwanayman678@gmail.com',
+    pass: 'heyw zirn mmih qowd'
   }
 });
 const otpStorage = new Map();
@@ -57,7 +57,7 @@ const sendOtp = async (req, res) => {
       otpStorage.set(user.username,otp);
       console.log(otpStorage);
       var mailOptions = {
-        from: 'marwantest70@gmail.com',
+        from: 'marwanayman678@gmail.com',
         to: user.email,
         subject: 'Reset Password Link',
         text: `Your OTP for resetting your password is: ${otp}` // Include the OTP in the email text
@@ -214,14 +214,16 @@ const login = async (req, res) => {
     for (const userType of userTypes) {
       const user = await userType.model.findOne({ username: username });
       if (user) {
-        console.log('User found:', user); // Log the user object
+        console.log('User found:', user); 
         const passwordMatch = await bcrypt.compare(password, user.password);
-        console.log('Password Match:', passwordMatch); // Log the result of password comparison
+        console.log('Password Match:', passwordMatch); 
         if (passwordMatch) {
           return res.json({
             success: true,
             message: 'Logged in successfully',
-            role: user.role
+            role: user.role,
+            //role: userType.role,
+            userId: user._id
           });
         } else {
           // await sendOtp(user);
@@ -231,7 +233,7 @@ const login = async (req, res) => {
     }
     return res.status(404).json({ success: false, message: 'invalid username' });
   } catch (error) {
-    console.error(error); // Log the actual error for debugging
+    console.error(error); 
     res.status(500).json({ success: false, message: 'An error occurred during login' });
   }
 };

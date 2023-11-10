@@ -1,14 +1,13 @@
 const express = require('express')
 const router = express.Router()
 const {
-    submitPharmcistReq,
+    submitPharmacistReq,
     getReq,
     getAllReq
 } = require('../Controllers/pharmcistReqController')
-
-
-
-
+const multer = require('multer');
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage });
 
 
 //get all phamcist requests
@@ -17,8 +16,11 @@ router.get('/',getAllReq)
 //get a single req 
 router.get('/:id',getReq)
 
-//submit a new req 
-router.post('/', submitPharmcistReq)
+router.post('/', upload.fields([
+    { name: 'nationalIdFile', maxCount: 1 },
+    { name: 'pharmacyDegreeFile', maxCount: 1 },
+    { name: 'workingLicenseFile', maxCount: 1 }
+  ]), submitPharmacistReq);
 
 //accept a req
 router.patch('/:id',(req , res )=>{
@@ -29,9 +31,6 @@ router.patch('/:id',(req , res )=>{
 router.patch('/:id',(req , res )=>{
     res.json({mssg:'this req has been rejected'})
 })
-
-
-
 
 
 module.exports = router

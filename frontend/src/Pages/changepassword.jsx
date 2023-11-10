@@ -10,9 +10,16 @@ const ChangePassword = () => {
     confirmNewPassword: '',
   });
   const { username } = useParams();
+  const [success, setSuccess] = useState(false); 
 
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
+    setSuccess(false); 
+  };
+
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
   };
 
   const updatePassword = async (newPassword) => {
@@ -29,14 +36,30 @@ const ChangePassword = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    
+    setSuccess(false);
+
+    
     if (passwords.newPassword !== passwords.confirmNewPassword) {
       alert("New passwords don't match.");
       return;
     }
-    updatePassword(passwords.newPassword);
-  };
-    // Proceed with the password change process (e.g., API call)
+
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
+
     console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
+  };
 
   return (
     <Container component="main" maxWidth="xs">
@@ -52,6 +75,7 @@ const ChangePassword = () => {
           Change Password
         </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+        
           <TextField
             variant="outlined"
             margin="normal"
