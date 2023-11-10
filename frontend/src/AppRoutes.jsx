@@ -36,7 +36,12 @@ import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
+import Wallet from "./Pages/wallet";
+import WalletDoc from "./Pages/walletDoc";
+import Cart from "./Pages/Cart";
 import MedHistory from "./Pages/medHistory";
+
+
 
 export default function Paths() {
   return (
@@ -78,7 +83,10 @@ export default function Paths() {
         <Route path="/appPageDoc/:id" element={<AppTable />} /> 
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
-        <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="/Prescription/:id" element={<Prescription/>} />
+        <Route path="/wallet/:id" element={<Wallet/>} />
+        <Route path="/walletDoc/:id" element={<WalletDoc/>} />
+      <Route path="/Cart/:id" element={<Cart/>}/>
         <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
         
       </Routes>

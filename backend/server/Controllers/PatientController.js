@@ -2,17 +2,44 @@ const patientModel = require('../Models/patients');
 const Appointment = require('../Models/appointements');
 const Doctor = require('../Models/doccs');
 
+const walletModel = require('../Models/Wallet'); // Import the wallet model
+
 const patients = require('../Models/patients');
 
 exports.createPatient = async (req, res) => {
   try {
+    // Create a new patient
     const newPatient = new patientModel(req.body);
     const savedPatient = await newPatient.save();
+
+    // Create a wallet for the new patient
+    const newWallet = new walletModel({
+      patient: savedPatient._id, // Assuming patientModel has an _id field
+      balance: 0, // You can set an initial balance if needed
+    });
+
+    // Save the wallet
+    const savedWallet = await newWallet.save();
+
+    // Update the patient with the wallet information
+    savedPatient.wallet = savedWallet._id;
+    await savedPatient.save();
+
     res.status(201).json(savedPatient);
   } catch (err) {
     res.status(500).json(err);
   }
 };
+
+// exports.createPatient = async (req, res) => {
+//   try {
+//     const newPatient = new patientModel(req.body);
+//     const savedPatient = await newPatient.save();
+//     res.status(201).json(savedPatient);
+//   } catch (err) {
+//     res.status(500).json(err);
+//   }
+// };
 
 exports.getPatient = async (req, res) => {
   try {

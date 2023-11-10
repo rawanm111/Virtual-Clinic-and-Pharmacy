@@ -120,7 +120,84 @@ export default function AppTableP() {
         </Button>
       ),
     },
-  ];
+  ]
+  const getAppointment = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/apps/available-appointments');
+  
+      try {
+        if (response && response.status === 200) {
+          const data = response.data;
+          if (Array.isArray(data) && data.length > 0) {
+            console.log(data);
+            console.log('Will handle now');
+            // Pass the ID of the selected appointment to handlePayment
+            handlePayment(data, selectedAppointmentId);
+          } else {
+            console.error('No valid data found in the response.');
+          }
+        } else {
+          console.error('Error:', response && response.data);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  
+  const handlePayment = async (cartData, selectedAppointmentId) => {
+    try {
+      const items = cartData;
+  
+      if (!Array.isArray(items) || items.length === 0) {
+        console.error('No medications found in the cart data.');
+        return;
+      }
+  
+      // Find the selected appointment in the cart data
+      const selectedItem = items.find(item => item._id === selectedAppointmentId);
+  
+      // Check if selectedItem is found
+      if (!selectedItem) {
+        console.error('Selected appointment not found in the cart data.');
+        return;
+      }
+  
+      // Ensure doctorId is available before accessing _id
+      const doctorId = selectedItem.doctor && selectedItem.doctor._id;
+  
+      // Check if doctorId is available
+      if (!doctorId) {
+        console.error('Doctor ID is not available for the selected appointment.');
+        return;
+      }
+  
+      console.log('Selected Appointment ID:', selectedAppointmentId);
+      console.log('Doctor ID:', doctorId);
+  
+      const response = await axios.post('http://localhost:3000/payment', {
+        appId: selectedAppointmentId, 
+        items: [{
+          id: selectedAppointmentId,
+          quantity: 1,
+        }],
+      });
+  
+      console.log(response && response.data);
+      {handleSubmitPayment()}
+      if (response && response.status === 200) {
+        window.location = response.data && response.data.url;
+        console.log(response.data && response.data.url);
+      } else {
+        console.error('Error:', response && response.data);
+      }
+    } catch (error) {
+      console.error('Error:', error.response && error.response.data);
+    }
+  };
+  
  // Added status filter state
 
  const handleStatusFilterChange = (event) => {
@@ -260,6 +337,51 @@ const handleFilterChange = () => {
         .catch((error) => {
           console.error('Error booking appointment:', error);
         });
+    }
+  };
+  const [walletBalance, setWalletBalance] = useState(0); // Add wallet balance state
+
+  const handleWallet = async () => {
+    try {
+      
+      if (paymentOption === 'wallet') {
+        // Make a request to your backend to process wallet payment
+        
+        const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
+          
+        });
+        // const prev= response.data.balance - 200;
+        console.log(response.data)
+
+        if (response.data.balance < 200) {
+          console.error("Insufficient balance");
+          
+        }
+        else{
+          {handleSubmitPayment()}
+        if (response && response.status === 200) {
+          console.log('Wallet payment successful!');
+          // Optionally, you can handle any additional logic after a successful wallet payment
+          
+          // Update the user's wallet balance (assuming you have a state for wallet balance)
+          // setWalletBalance(prev);
+          // console.log(walletBalance)
+          
+          const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
+            
+            patientId: id,
+            balance: response.data.balance - 200,
+          });
+
+          
+        } else {
+          console.error('Wallet payment failed:', response && response.data);
+          // Handle wallet payment failure (e.g., show error message to the user)
+        }
+      }}
+    } catch (error) {
+      console.error('Error processing wallet payment:', error);
+      // Handle error (e.g., show error message to the user)
     }
   };
 
@@ -440,10 +562,11 @@ const handleFilterChange = () => {
           </RadioGroup>
         </DialogContent>
         <DialogActions>
+          
           <Button onClick={closePaymentDialog} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleSubmitPayment} color="primary">
+          <Button onClick={() => paymentOption === 'visa' ? getAppointment() : handleWallet()} color="primary">
             Submit
           </Button>
         </DialogActions>
