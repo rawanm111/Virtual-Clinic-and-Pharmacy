@@ -1,9 +1,25 @@
 const doctors = require('../Models/doccs');
+const walletModel = require('../Models/walletDoc'); // Import the wallet model
 
 exports.createNewDoc = async (req, res) => {
   try {
+    // Create a new patient
     const newDoc = new doctors(req.body);
     const savedDoc = await newDoc.save();
+
+    // Create a wallet for the new patient
+    const newWallet = new walletModel({
+      doctor: savedDoc._id, 
+      balance: 0, // You can set an initial balance if needed
+    });
+
+    // Save the wallet
+    const savedWallet = await newWallet.save();
+
+    // Update the patient with the wallet information
+    savedDoc.walletDoc = savedWallet._id;
+    await savedDoc.save();
+
     res.status(201).json(savedDoc);
   } catch (err) {
     res.status(500).json(err);
