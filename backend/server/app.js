@@ -104,8 +104,8 @@ console.log(appId);
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [lineItem],
-      success_url: `http://localhost/clinic-patient-home/${appId}`,
-      cancel_url: `http://localhost/clinic-patient-home/${appId}`,
+      success_url: `http://localhost:3001/clinic-patient-home/${appId}`,
+      cancel_url: `http://localhost:3001/clinic-patient-home/${appId}`,
     });
 
 
