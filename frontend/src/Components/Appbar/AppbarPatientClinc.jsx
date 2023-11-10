@@ -124,6 +124,13 @@ function AppBarComponent({ userName}) {
               to={`/doctorsTable/${id}`}
               selected={location.pathname === `/doctorsTable/${id}`}
             />
+            {/* <Tab
+              label="Health Records"
+              sx={tabStyle}
+              component={Link}
+              to={`/HealthRecordPatient/${id}`}
+              selected={location.pathname === `/HealthRecordPatient/${id}`}
+            /> */}
             <Tab
               label="Prescriptions"
               sx={tabStyle}
@@ -132,7 +139,7 @@ function AppBarComponent({ userName}) {
               selected={location.pathname === `/Prescription/${id}`}
             />
              <Tab
-               label="My Medical History"
+               label="Health Records"
               sx={tabStyle}
               component={Link}
               to={`/MedHistory/${id}`}
@@ -146,3 +153,6 @@ function AppBarComponent({ userName}) {
 }
 
 export default AppBarComponent;
+
+
+

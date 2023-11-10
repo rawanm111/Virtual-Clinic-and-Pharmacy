@@ -115,7 +115,27 @@ const getAllHistoriesByPatient = async (req, res) => {
     }
   };
   
+  const saveDoctorNotes = async (req, res) => {
+    const { historyId } = req.params;
+    const { doctorNotes } = req.body;
   
+    try {
+      const updatedHistory = await MedicalHistory.findByIdAndUpdate(
+        historyId,
+        { $set: { doctorNotes } },
+        { new: true }
+      );
+  
+      if (!updatedHistory) {
+        return res.status(404).json({ error: 'Medical history not found' });
+      }
+  
+      res.json(updatedHistory);
+    } catch (error) {
+      console.error('Error updating doctor notes:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
 
 
 
@@ -124,4 +144,5 @@ module.exports = {
   deleteDocument,
   getAllHistoriesByPatient,
   getDocumentByName,
+  saveDoctorNotes,
 };

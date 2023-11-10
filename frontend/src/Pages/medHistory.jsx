@@ -67,7 +67,7 @@ function MedHistory() {
       const formData = new FormData();
       formData.append('file', selectedFile);
 
-      axios.post(`http://localhost:3000/med-history/upload/${id}`, formData)
+      axios.post(`http://localhost:3000/medHistory/upload/${id}`, formData)
         .then((response) => {
           console.log('File uploaded successfully');
           fetchMedicalHistories(); // Trigger refetch after upload
@@ -120,7 +120,7 @@ function MedHistory() {
   };
 
   const fetchMedicalHistories = () => {
-    axios.get(`http://localhost:3000/med-history/patient/${id}`)
+    axios.get(`http://localhost:3000/medHistory/patient/${id}`)
       .then((response) => {
         setHistories(response.data);
       })
