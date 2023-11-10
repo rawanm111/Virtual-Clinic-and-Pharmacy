@@ -2,6 +2,8 @@ const patientModel = require('../Models/patients');
 const Appointment = require('../Models/appointements');
 const Doctor = require('../Models/doccs');
 
+const patients = require('../Models/patients');
+
 exports.createPatient = async (req, res) => {
   try {
     const newPatient = new patientModel(req.body);
@@ -20,6 +22,43 @@ exports.getPatient = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
+
+
+exports.addFamilyMemberLinkedToPatient = async (req, res) => {
+
+  const { emailOrPhone, relation} = req.body;
+
+  try {
+    // Find the current patient based on the logged-in user
+    const currentPatient = await patients.findById(req.params.userid);
+
+    if (!currentPatient) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+
+    // Check if the patient already exists based on email or phone
+    let patientMember = await patients.findOne({ $or: [{ email: emailOrPhone }, { mobileNumber: emailOrPhone }] });
+
+    if (!patientMember) {
+      return res.status(404).json({ message: 'no Patient with such email or phone number' });
+    }
+
+    // Add the family member to the current patient's record
+    currentPatient.familyMembers.push({
+      patient: patientMember._id,
+      relation,
+    });
+
+    await currentPatient.save();
+
+    return res.status(200).json(currentPatient);
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ message: 'Server error' });
+  }
+};     
 
 exports.updatePatient = async (req, res) => {
   const { username } = req.params;
@@ -79,5 +118,25 @@ exports.getPatientsByDoctorId = async (req, res) => {
   } catch (error) {
     console.error('Error fetching patients by doctor:', error);
     return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.getFamilyMembersForUser = async (req, res) => {
+  try {
+    const familyMembers = await patients.findById(req.params.id)
+      .populate({
+        path: 'familyMembers.patient',
+        model: 'patients',
+      })
+      .select('familyMembers'); // Retrieve only familyMembers field
+
+    if (!familyMembers) {
+      return res.status(404).json({ message: 'Patient not found' });
+    }
+
+    res.status(200).json(familyMembers.familyMembers);
+  } catch (error) {
+    console.error('Error:', error);
+    return res.status(500).json({ message: 'Server error' });
   }
 };

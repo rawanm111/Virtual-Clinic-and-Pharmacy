@@ -9,7 +9,6 @@ const AppsRoutes= require('./Routes/appointmentsRouter');
 const healthPackageRoutes = require('./Routes/HealthPackageRoutes');
 const drReqRoutes = require('./Routes/drReqRoutes')
 const pharmcistReqRoutes = require('./Routes/pharmcistReqRoutes');
-const FamilyMemberRoutes = require('./Routes/FamilyMemberRoutes');
 const HealthRecRoutes = require('./Routes/HealthRecRoutes.js');
 const PrescriptionRoutes = require('./Routes/PrescriptionRoutes.js');
 const Adminroutes = require('./Routes/Adminroutes.js');
@@ -43,7 +42,6 @@ app.use('/apps', AppsRoutes);
 app.use('/health-packages', healthPackageRoutes);
 app.use( '/api/drReq',drReqRoutes);
 app.use( '/api/pharmcistReq',pharmcistReqRoutes);
-app.use('/family_members', FamilyMemberRoutes);
 app.use('/HealthRecords',HealthRecRoutes);
 app.use('/Prescription',PrescriptionRoutes);
 app.use('/admin',Adminroutes);

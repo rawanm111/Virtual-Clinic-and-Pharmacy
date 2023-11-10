@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Box, Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions, RadioGroup, FormControlLabel, Radio } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+} from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
 import { useParams } from 'react-router-dom';
@@ -17,9 +32,27 @@ export default function AppTableP() {
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [paymentOption, setPaymentOption] = useState('wallet');
   const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself'); // Added family member state
+  const [familyMembers, setFamilyMembers] = useState([]); // Added family members state
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/apps/patient/${id}`)
+    axios
+      .get(`http://localhost:3000/patients/family_members/user/${id}`)
+      .then((response) => {
+        if (response.data) {
+          setFamilyMembers(response.data);
+        } else {
+          console.error('No family members data received from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching family members:', error);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/apps/patient/${id}`)
       .then((response) => {
         if (response.data) {
           const transformedData = response.data.map((item) => ({
@@ -37,17 +70,22 @@ export default function AppTableP() {
       .catch((error) => {
         console.error('Error fetching apps:', error);
       });
-  }, []);
+  }, [id]);
 
   useEffect(() => {
-    axios.get(`http://localhost:3000/apps/available-appointments`)
+    axios
+      .get(`http://localhost:3000/apps/available-appointments`)
       .then((response) => {
         if (response.data) {
-          const availableData = response.data.map((item) => ({
-            id: item._id,
-            DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
-            date: new Date(item.date),
-          })).filter((item) => item.date >= currentDate);
+          const availableData = response.data
+            .map((item) => ({
+              id: item._id,
+              DoctorName: item.doctor
+                ? item.doctor.fullName
+                : 'Doctor Not Found',
+              date: new Date(item.date),
+            }))
+            .filter((item) => item.date >= currentDate);
 
           setAvailableApps(availableData);
         } else {
@@ -57,7 +95,7 @@ export default function AppTableP() {
       .catch((error) => {
         console.error('Error fetching available appointments:', error);
       });
-  }, []);
+  }, [currentDate]);
 
   const columns = [
     { field: 'DoctorName', headerName: 'Doctor Name', width: 200 },
@@ -79,16 +117,19 @@ export default function AppTableP() {
           onClick={() => handleBookAppointment(params.row.id)}
         >
           Book Appointment
-        </Button>)
-      },
-  ]
+        </Button>
+      ),
+    },
+  ];
 
   const handleFilterChange = () => {
     const filteredApps = apps.filter((app) => {
       if (!dateFilterStart || !dateFilterEnd) {
         return true;
       }
-      return app.date >= dateFilterStart && app.date <= dateFilterEnd;
+      return (
+        app.date >= dateFilterStart && app.date <= dateFilterEnd
+      );
     });
     setFilteredRows(filteredApps);
   };
@@ -121,44 +162,77 @@ export default function AppTableP() {
     setPaymentOption(event.target.value);
   };
 
+  const handleFamilyMemberChange = (event) => {
+    setSelectedFamilyMember(event.target.value);
+  };
+
   const handleSubmitPayment = () => {
     if (selectedAppointmentId) {
       closePaymentDialog();
-      const updatedAppointment = {
-        patient: id,
-        status: 'Upcoming',
-      };
+      let updatedAppointment;
+  
+      if (selectedFamilyMember === 'myself') {
+        updatedAppointment = {
+          patient: id, // Use the user's ID when booking for oneself
+          familyMember: null, // No specific family member when booking for oneself
+          status: 'Upcoming',
+        };
+      } else {
+        const selectedFamilyMemberData = familyMembers.find(
+          (member) => member._id === selectedFamilyMember
+        );
+  
+        updatedAppointment = {
+          patient: selectedFamilyMemberData.patient._id,
+          familyMember: selectedFamilyMember,
+          status: 'Upcoming',
+        };
+      }
 
-      axios.put(`http://localhost:3000/apps/${selectedAppointmentId}`, updatedAppointment)
+      axios
+        .put(`http://localhost:3000/apps/${selectedAppointmentId}`, updatedAppointment)
         .then((response) => {
           console.log(`Booked appointment with ID: ${selectedAppointmentId}`);
 
           // After successfully booking, reload the available appointments
-          axios.get(`http://localhost:3000/apps/available-appointments`)
+          axios
+            .get(`http://localhost:3000/apps/available-appointments`)
             .then((response) => {
               if (response.data) {
-                const availableData = response.data.map((item) => ({
-                  id: item._id,
-                  DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
-                  date: new Date(item.date),
-                })).filter((item) => item.date >= currentDate);
+                const availableData = response.data
+                  .map((item) => ({
+                    id: item._id,
+                    DoctorName: item.doctor
+                      ? item.doctor.fullName
+                      : 'Doctor Not Found',
+                    date: new Date(item.date),
+                  }))
+                  .filter((item) => item.date >= currentDate);
 
                 setAvailableApps(availableData);
               } else {
-                console.error('No available appointments data received from the API');
+                console.error(
+                  'No available appointments data received from the API'
+                );
               }
             })
             .catch((error) => {
-              console.error('Error fetching available appointments:', error);
+              console.error(
+                'Error fetching available appointments:',
+                error
+              );
             });
 
           // After booking, also update 'My Appointments' list
-          axios.get(`http://localhost:3000/apps/patient/${id}`)
+          axios
+            .get(`http://localhost:3000/apps/patient/${id}`)
             .then((response) => {
               if (response.data) {
                 const transformedData = response.data.map((item) => ({
                   id: item._id,
-                  DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
+                  DoctorName: item.doctor
+                    ? item.doctor.fullName
+                    : 'Doctor Not Found',
                   status: item.status,
                   date: new Date(item.date),
                 }));
@@ -197,7 +271,10 @@ export default function AppTableP() {
           value={checkAvailabilityDate}
           onChange={(e) => setCheckAvailabilityDate(e.target.value)}
         />
-        <Button variant="contained" onClick={handleFilterChangeOne}>
+        <Button
+          variant="contained"
+          onClick={handleFilterChangeOne}
+        >
           Check Availability
         </Button>
         <Button
@@ -205,14 +282,19 @@ export default function AppTableP() {
           onClick={() => {
             setCheckAvailabilityDate('');
 
-            axios.get(`http://localhost:3000/apps/available-appointments`)
+            axios
+              .get(`http://localhost:3000/apps/available-appointments`)
               .then((response) => {
                 if (response.data) {
-                  const availableData = response.data.map((item) => ({
-                    id: item._id,
-                    DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
-                    date: new Date(item.date),
-                  })).filter((item) => item.date >= currentDate);
+                  const availableData = response.data
+                    .map((item) => ({
+                      id: item._id,
+                      DoctorName: item.doctor
+                        ? item.doctor.fullName
+                        : 'Doctor Not Found',
+                      date: new Date(item.date),
+                    }))
+                    .filter((item) => item.date >= currentDate);
 
                   setAvailableApps(availableData);
                 } else {
@@ -220,7 +302,10 @@ export default function AppTableP() {
                 }
               })
               .catch((error) => {
-                console.error('Error fetching available appointments:', error);
+                console.error(
+                  'Error fetching available appointments:',
+                  error
+                );
               });
           }}
         >
@@ -248,16 +333,31 @@ export default function AppTableP() {
         <TextField
           type="date"
           variant="outlined"
-          value={dateFilterStart ? dateFilterStart.toISOString().split('T')[0] : ''}
-          onChange={(e) => setDateFilterStart(new Date(e.target.value))}
+          value={
+            dateFilterStart
+              ? dateFilterStart.toISOString().split('T')[0]
+              : ''
+          }
+          onChange={(e) =>
+            setDateFilterStart(new Date(e.target.value))
+          }
         />
         <TextField
           type="date"
           variant="outlined"
-          value={dateFilterEnd ? dateFilterEnd.toISOString().split('T')[0] : ''}
-          onChange={(e) => setDateFilterEnd(new Date(e.target.value))}
+          value={
+            dateFilterEnd
+              ? dateFilterEnd.toISOString().split('T')[0]
+              : ''
+          }
+          onChange={(e) =>
+            setDateFilterEnd(new Date(e.target.value))
+          }
         />
-        <Button variant="contained" onClick={handleFilterChange}>
+        <Button
+          variant="contained"
+          onClick={handleFilterChange}
+        >
           Check My Appointments
         </Button>
       </Box>
@@ -270,9 +370,33 @@ export default function AppTableP() {
         checkboxSelection
       />
 
-      <Dialog open={isPaymentDialogOpen} onClose={closePaymentDialog}>
+      <Dialog
+        open={isPaymentDialogOpen}
+        onClose={closePaymentDialog}
+      >
         <DialogTitle>Select Payment Method</DialogTitle>
         <DialogContent>
+          <FormControl>
+            <InputLabel id="family-member-label">
+              Family Member
+            </InputLabel>
+            <Select
+              labelId="family-member-label"
+              id="family-member"
+              value={selectedFamilyMember}
+              onChange={handleFamilyMemberChange}
+            >
+              <MenuItem value="myself">Myself</MenuItem>
+              {familyMembers.map((member) => (
+                <MenuItem
+                  key={member._id}
+                  value={member._id}
+                >
+                  {member.patient.fullName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <RadioGroup
             name="paymentOption"
             value={paymentOption}

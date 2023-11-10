@@ -1,53 +1,54 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { useNavigate, useParams } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
 import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
 
 function FamilyMember() {
-  const navigate = useNavigate(); // Initialize the navigate function
-
-  console.log('FamilyMember component is rendering.');
+  const navigate = useNavigate();
+  const { id } = useParams();
 
   const [familyMembers, setFamilyMembers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    const queryParameters = {
-      // Define your query parameters here, if needed
-    };
-
-    const getAllFamilyMembers = async () => {
+    const getFamilyMembersForUser = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/family_members/', {
-          params: queryParameters
-        });
+        const response = await axios.get(`http://localhost:3000/patients/family_members/user/${id}`);
         const responseData = response.data;
-        console.log('Fetched data:', responseData);
         setFamilyMembers(responseData);
       } catch (error) {
         console.error('Error fetching family member data:', error);
       }
     };
 
-    getAllFamilyMembers();
-  }, []);
+    getFamilyMembersForUser();
+  }, [id]);
+
+  // Log the state whenever it changes
+  useEffect(() => {
+    console.log('Family Members State:', familyMembers);
+  }, [familyMembers]);
 
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const filteredRows = familyMembers.filter((row) =>
-    row.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredRows = familyMembers.map((row) => ({
+    id: row._id, // Assuming _id is the unique identifier
+    fullName: row.patient.fullName,
+    relation: row.relation,
+  })).filter((row) =>
+    row &&
+    row.fullName &&
+    row.fullName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const columns = [
-    { field: 'name', headerName: 'Name', flex: 1 },
-    { field: 'age', headerName: 'Age', flex: 1 },
-    { field: 'nationalid', headerName: 'National ID', flex: 1 },
-    { field: 'relationtopatient', headerName: 'Relation to Patient', flex: 1 },
+    { field: 'fullName', headerName: 'Name', flex: 1 },
+    { field: 'relation', headerName: 'Relation to Patient', flex: 1 },
   ];
 
   return (
@@ -62,7 +63,7 @@ function FamilyMember() {
       <Button
         variant="contained"
         color="primary"
-        onClick={() => navigate('/add-family-member')} // Use navigate to go to the add family member route
+        onClick={() => navigate(`/add-family-member/${id}`)}
       >
         Add Family Member
       </Button>
@@ -71,7 +72,7 @@ function FamilyMember() {
           rows={filteredRows}
           columns={columns}
           pageSize={10}
-          getRowId={(row) => row._id}
+          getRowId={(row) => row.id}
         />
       </div>
     </div>
