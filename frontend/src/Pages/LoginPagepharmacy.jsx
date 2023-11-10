@@ -3,7 +3,7 @@ import axios from 'axios';
 import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const containerStyle = {
   display: 'flex',
@@ -28,6 +28,7 @@ const buttonContainerStyle = {
 };
 
 function LoginPage() {
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
@@ -48,8 +49,20 @@ function LoginPage() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+  const errorTextStyle = {
+    color: 'red',
+  };
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/sendOtp', { username: username });
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error("Error sending OTP", error);
+    }
+  };
 
   const handleLogin = async () => {
+    
     try {
       const response = await axios.post('http://localhost:3000/login', {
         username,
@@ -81,11 +94,14 @@ function LoginPage() {
       } else {
         // If the login was not successful, but there was no error thrown
         setError(data.message);
+        
       }
     } catch (error) {
       console.error('Login error', error);
       if (error.response) {
-        // If the server responded with a status other than 2xx, get the message from the server's response
+        if (error.response && error.response.status === 406) {
+          // Set the flag to show forgot password link for 406 status
+          setShowForgotPassword(true);}
         setError(error.response.data.message);
       } else {
         // If the server did not respond or there was a different error, set a generic error message
@@ -120,7 +136,16 @@ function LoginPage() {
             value={password}
             onChange={handlePasswordChange}
           />
-          {error && <div style={{ color: 'red' }}>{error}</div>}
+           {error && (
+          <div style={errorTextStyle}>
+            {error}
+            {showForgotPassword && ( // Only show the link if showForgotPassword is true
+                <Link to={`/Otp/${username}`} onClick={handleForgotPassword} style={{ color: 'red', marginLeft: '30px' }}>
+                  Forgot Password?
+                </Link>
+              )}
+          </div>
+        )}
         </div>
 
         <div style={buttonContainerStyle}>
@@ -142,3 +167,6 @@ function LoginPage() {
 }
 
 export default LoginPage;
+
+
+// onClick={otpemail}

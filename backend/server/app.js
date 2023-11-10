@@ -1,3 +1,4 @@
+//require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
@@ -46,7 +47,7 @@ app.use('/family_members', FamilyMemberRoutes);
 app.use('/HealthRecords',HealthRecRoutes);
 app.use('/Prescription',PrescriptionRoutes);
 app.use('/admin',Adminroutes);
-app.use('/login', authroutes)
+app.use('/', authroutes)
 
 
 
