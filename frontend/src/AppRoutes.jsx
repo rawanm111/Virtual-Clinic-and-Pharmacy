@@ -31,7 +31,6 @@ import AdminRequestsD from "./Pages/AdminReqPageDoc";
 import AdminRequestsP from "./Pages/AdminReqPagePharm";
 import FamilyMember from "./Pages/DisplayPage";
 import Form from "./Pages/Form";
-import HealthRecords from "./Pages/HealthRecPage";
 import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
@@ -40,8 +39,15 @@ import Wallet from "./Pages/wallet";
 import WalletDoc from "./Pages/walletDoc";
 import Cart from "./Pages/Cart";
 import MedHistory from "./Pages/medHistory";
+<<<<<<< HEAD
 import Order from './Pages/OrderPage'
 import Walletclinic from './Pages/walletclinic'
+=======
+import NewHealthRecordPage from "./Pages/NewHealthRecordPage"; 
+import PatientHealthRecordsPage from "./Pages/PatientHealthRecordsPage"; 
+import HealthRecords from "./Pages/HealthRecPage";
+import MedHistoryDoc from "./Pages/MedHistoryDoc";
+>>>>>>> 572778dc6d9d02b8516dd97d55b446b692e1e75d
 
 
 export default function Paths() {
@@ -63,7 +69,7 @@ export default function Paths() {
         <Route path="/admin-meds" element={<AdminMedsPage />} />
         <Route path="/patient-meds/:id" element={<PatientMedsPage />} />
         <Route path="/pharm-meds/:id" element={<PharmacistMedsPage />} />
-        <Route path="/doc-profile" element={<DoctorProfile />} />
+        <Route path="/doc-profile/:id" element={<DoctorProfile />} />
         <Route path="/patient-profile" element={<PatientProfile />} />
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
         <Route path="/new-med" element={<AddMed />} />
@@ -87,12 +93,20 @@ export default function Paths() {
         <Route path="/Prescription/:id" element={<Prescription/>} />
         <Route path="/wallet/:id" element={<Wallet/>} />
         <Route path="/walletDoc/:id" element={<WalletDoc/>} />
-      <Route path="/Cart/:id" element={<Cart/>}/>
+        <Route path="/Cart/:id" element={<Cart/>}/>
         <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
+<<<<<<< HEAD
         <Route path="/Order/:id" element={<Order/>} /> 
         <Route path="/walletclinic/:id" element={<Walletclinic/>} /> 
+=======
+        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
+        <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
+        <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
+        
+>>>>>>> 572778dc6d9d02b8516dd97d55b446b692e1e75d
       </Routes>
     </Router>
   );
 }
+
 

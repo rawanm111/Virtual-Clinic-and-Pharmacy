@@ -2,17 +2,17 @@ import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppbarDoctor from '../Components/Appbar/AppbarDoctor';
-import { useNavigate } from 'react-router-dom';
+import AppbarPatientClinic from '../Components/Appbar/AppbarPatientClinc';
+import { useParams } from 'react-router-dom';
 
 
 
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
+  
   minHeight: '100vh',
   padding: '16px',
 });
@@ -59,13 +59,14 @@ const DataTypography = styled(Typography)({
   marginLeft: '0.5rem',
 });
 
-function HealthRecords() {
+function PatientHealthRecords() {
+  const {id} = useParams();
   const [healthRecords, setHealthRecords] = useState([]);
-  const navigate = useNavigate();
+  
 
   useEffect(() => {
     axios
-      .get('http://localhost:3000/HealthRecords') // Adjust the URL as needed
+      .get(`http://localhost:3000/HealthRecords/patient/${id}`) // Adjust the URL as needed
       .then((response) => {
         setHealthRecords(response.data);
       })
@@ -74,28 +75,23 @@ function HealthRecords() {
       });
   }, []);
 
-  const handleAddRecordClick = () => {
-    navigate('/new-HealthRecord');
-  };
- 
+
   return (
     <div>
-      <AppbarDoctor />
+      <AppbarPatientClinic />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            Health Records
+            Patient Health Records
           </Typography>
-          <Button variant="contained" color="primary" onClick={handleAddRecordClick}>
-            Add New Health Record
-          </Button>
+         
         </HeaderContainer>
         <CardsContainer>
           {healthRecords.map((healthRecord) => (
             <CardWrapper key={healthRecord._id} variant="outlined">
-              <CardContent> 
+              <CardContent>
                 <NameTypography variant="h5" component="div">
-                  {healthRecord.patient.name}
+                {healthRecord.patient ? healthRecord.patient.name : ""}
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -122,4 +118,4 @@ function HealthRecords() {
   );
 }
 
-export default HealthRecords;
+export default PatientHealthRecords;

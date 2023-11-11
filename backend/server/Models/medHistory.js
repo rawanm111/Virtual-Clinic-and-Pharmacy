@@ -9,9 +9,10 @@ const medicalHistorySchema = new mongoose.Schema({
     {
       filename: String, // File name
       data: mongoose.Schema.Types.Mixed, // Store file data
-      contentType: String, // Add this line to store content type
+      contentType: String, // Content type
     },
   ],
+  doctorNotes: String, // New field for doctor notes
 });
 
 module.exports = mongoose.model('medicalHistory', medicalHistorySchema);

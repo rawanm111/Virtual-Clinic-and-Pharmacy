@@ -1,28 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {
-  TextField,
-  Button,
-  Container,
-  Typography,
-  Box,
-} from '@mui/material';
-import PersonAddIcon from '@mui/icons-material/PersonAdd';
-import { useParams } from 'react-router-dom';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
-
-export default function Form() {
-  const {id} = useParams();
-
+export default function NewHealthRecord() {
   const [formData, setFormData] = useState({
-    emailOrPhone: '', // Change "name" to "emailOrPhone" to collect email or phone
-    relation: 'Father', // Set a default value
+    patientname: '',
+    diagnosis: '',
+    date: '',
   });
 
   const handleSubmit = () => {
     axios
-    .post(`http://localhost:3000/patients/api/addFamilyMember/${id}`, formData)
-    .then((response) => {
+      .post('http://localhost:3000/health-recs', formData)
+      .then((response) => {
         console.log('Response:', response.data);
       })
       .catch((error) => {
@@ -38,7 +28,7 @@ export default function Form() {
   return (
     <Box
       style={{
-        backgroundColor: 'lightblue',
+        backgroundColor: 'lightblue', 
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -54,41 +44,42 @@ export default function Form() {
         }}
       >
         <Typography variant="h4" gutterBottom align="center">
-          Family Member Form
+          Health Record Form
         </Typography>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Email or Mobile Number "
+            label="Patient Name"
             variant="outlined"
-            name="emailOrPhone" // Update the name to "emailOrPhone"
-            value={formData.emailOrPhone}
+            name="patientname"
+            value={formData.patientname}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Relation to Patient"
+            label="Diagnosis"
             variant="outlined"
-            select
-            SelectProps={{ native: true }}
-            name="relation" // Update the name to "relation"
-            value={formData.relation}
+            name="diagnosis"
+            value={formData.diagnosis}
             onChange={handleInputChange}
-          >
-            <option value="Wife">Wife</option>
-            <option value="Husband">Husband</option>
-            <option value="Children">Children</option>
-          </TextField>
+          />
         </div>
-        <Button
-          variant="contained"
-          color="primary"
-          startIcon={<PersonAddIcon />}
-          onClick={handleSubmit}
-        >
-          Submit Family Member
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Date"
+            variant="outlined"
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleInputChange}
+          />
+        </div>
+       
+        <Button variant="contained" color="primary" onClick={handleSubmit}>
+          Create Health Record
         </Button>
       </Container>
     </Box>

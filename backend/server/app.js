@@ -105,8 +105,13 @@ app.post('/payment', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [lineItem],
+<<<<<<< HEAD
       success_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
       cancel_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
+=======
+      success_url: `http://localhost:3001/clinic-patient-home/${appId}`,
+      cancel_url: `http://localhost:3001/clinic-patient-home/${appId}`,
+>>>>>>> 572778dc6d9d02b8516dd97d55b446b692e1e75d
     });
 
 
