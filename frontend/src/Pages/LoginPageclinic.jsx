@@ -44,6 +44,7 @@ const buttonContainerStyle = {
 
 
 function LoginPage() {
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [username, setUsername] = useState('');
@@ -65,6 +66,15 @@ function LoginPage() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+  const handleForgotPassword = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/sendOtp', { username: username });
+      console.log(response.data); // Handle the response as needed
+    } catch (error) {
+      console.error("Error sending OTP", error);
+    }
+  };
+
 
   const handleLogin = async () => {
     try {
@@ -79,13 +89,13 @@ function LoginPage() {
         const userId = data.userId;
         
         switch (data.role) {
-          case 'Admin':
+          case 'admin':
             navigate('/admin-home');
             break;
-          case 'Doctor':
+          case 'doctor':
             navigate(`/doc-home/${userId}`); 
             break;
-          case 'Patient':
+          case 'patient':
             navigate(`/clinic-patient-home/${userId}`); 
             break;
           
@@ -99,6 +109,9 @@ function LoginPage() {
     } catch (error) {
       console.error('Login error', error);
       if (error.response) {
+        if (error.response && error.response.status === 406) {
+          // Set the flag to show forgot password link for 406 status
+          setShowForgotPassword(true);}
         setError(error.response.data.message);
       } else {
         setError('An error occurred during login. Please try again.');
@@ -135,6 +148,16 @@ function LoginPage() {
             value={password}
             onChange={handlePasswordChange}
           />
+          {error && (
+          <div style={errorTextStyle}>
+            {error}
+            {showForgotPassword && ( // Only show the link if showForgotPassword is true
+                <Link to={`/Otp/${username}`} onClick={handleForgotPassword} style={{ color: 'red', marginLeft: '30px' }}>
+                  Forgot Password?
+                </Link>
+              )}
+          </div>
+        )}
         </div>
         <div style={buttonContainerStyle}>
           <Button variant="contained" onClick={handleLogin}>

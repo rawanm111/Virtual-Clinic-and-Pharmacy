@@ -34,7 +34,7 @@ const sendOtp = async (req, res) => {
     const { username } = req.body;
     // Define a mapping from role to model
     const Models = [
-      { model: Doctor, role: 'Doctor' },
+      { model: doccs, role: 'Doctor' },
       { model: patients, role: 'Patient' },
       { model: Admin, role: 'Admin' },
       { model: Pharmacist, role: 'Pharmacist' }
