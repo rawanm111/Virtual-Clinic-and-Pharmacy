@@ -13,6 +13,7 @@ const FamilyMemberRoutes = require('./Routes/FamilyMemberRoutes');
 const HealthRecRoutes = require('./Routes/HealthRecRoutes.js');
 const PrescriptionRoutes = require('./Routes/PrescriptionRoutes.js');
 const Adminroutes = require('./Routes/Adminroutes.js');
+const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
 //const Admin = require('./Models/Admin');
 const authroutes = require('./Routes/authenticationRoutes');
 const cors = require('cors');
@@ -47,6 +48,8 @@ app.use('/HealthRecords',HealthRecRoutes);
 app.use('/Prescription',PrescriptionRoutes);
 app.use('/admin',Adminroutes);
 app.use('/login', authroutes)
+app.use('/PatientPackages', PatientPackagesRoutes);
+
 
 
 // MongoDB Configuration
