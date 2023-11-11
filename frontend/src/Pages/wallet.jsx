@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography, Container,CssBaseline } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
+import AppBarComponent from '../Components/Appbar/AppbarPatientPharmacy';
 import { styled } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -80,7 +80,7 @@ const WalletPage = () => {
       </Container>
     </React.Fragment>
 
-      <Box sx={{ width: '100%' }}>
+      {/* <Box sx={{ width: '100%' }}>
 
       <Box sx={{ bgcolor: '#add8e6' }}>
         <StyledTabs
@@ -94,8 +94,8 @@ const WalletPage = () => {
         </StyledTabs>
         <Box sx={{ p: 3,height:"60vh" }} />
       </Box>
-    </Box>
-      <h1>Wallet Page</h1>
+    </Box> */}
+      {/* <h1>Wallet Page</h1>
       <p>Wallet Balance: ${walletBalance}</p>
       <h2>Transaction History</h2>
       <ul>
@@ -104,7 +104,7 @@ const WalletPage = () => {
             {transaction.type === 'debit' ? 'Debit' : 'Credit'} - ${transaction.amount}
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

@@ -198,6 +198,27 @@ exports.updateAddress = async (req, res) => {
     res.status(500).json(err);
   }
 };
+// controllers/cartController.js
+
+// ... (previous methods)
+
+exports.deleteCart = async (req, res) => {
+  try {
+    const patientId = req.params.patientId;
+
+    // Find and delete the patient's cart
+    const deletedCart = await Cart.findOneAndDelete({ patientId });
+
+    if (!deletedCart) {
+      return res.status(404).json({ message: 'Cart not found' });
+    }
+
+    res.status(200).json({ message: 'Cart deleted successfully' });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
 
 
 

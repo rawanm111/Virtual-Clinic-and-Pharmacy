@@ -14,7 +14,7 @@ router.put('/:id', medController.updatemeds);
 router.delete('/:id', medController.deletemeds);
 router.put('/updateDescription/:id', medController.updateDescription);
 router.put('/updatePrice/:id', medController.updatePrice);
-
+router.get('/:medicationId', medController.getMedicationById);
 // Route for updating picture with file upload
 router.put('/updatePicture/:id', upload.single('file'), medController.updatePicture);
 

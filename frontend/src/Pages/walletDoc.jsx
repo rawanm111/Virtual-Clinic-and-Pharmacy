@@ -80,7 +80,7 @@ const WalletPage = () => {
       </Container>
     </React.Fragment>
 
-      <Box sx={{ width: '100%' }}>
+      {/* <Box sx={{ width: '100%' }}>
 
       <Box sx={{ bgcolor: '#add8e6' }}>
         <StyledTabs
@@ -94,8 +94,8 @@ const WalletPage = () => {
         </StyledTabs>
         <Box sx={{ p: 3,height:"60vh" }} />
       </Box>
-    </Box>
-      <h1>Wallet Page</h1>
+    </Box> */}
+      {/* <h1>Wallet Page</h1>
       <p>Wallet Balance: ${walletBalance}</p>
       <h2>Transaction History</h2>
       <ul>
@@ -104,7 +104,7 @@ const WalletPage = () => {
             {transaction.type === 'debit' ? 'Debit' : 'Credit'} - ${transaction.amount}
           </li>
         ))}
-      </ul>
+      </ul> */}
     </div>
   );
 };

@@ -40,7 +40,8 @@ import Wallet from "./Pages/wallet";
 import WalletDoc from "./Pages/walletDoc";
 import Cart from "./Pages/Cart";
 import MedHistory from "./Pages/medHistory";
-
+import Order from './Pages/OrderPage'
+import Walletclinic from './Pages/walletclinic'
 
 
 export default function Paths() {
@@ -88,7 +89,8 @@ export default function Paths() {
         <Route path="/walletDoc/:id" element={<WalletDoc/>} />
       <Route path="/Cart/:id" element={<Cart/>}/>
         <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
-        
+        <Route path="/Order/:id" element={<Order/>} /> 
+        <Route path="/walletclinic/:id" element={<Walletclinic/>} /> 
       </Routes>
     </Router>
   );

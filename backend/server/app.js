@@ -22,7 +22,7 @@ const medicalHistoryRoutes = require('./Routes/medHistoryRoutes');
 const authroutes = require('./Routes/authenticationRoutes');
 const cors = require('cors');
 const meds = require('./Models/meds.js');
-
+const OrderRoutes=require("./Routes/OrderRouter.js")
 const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
@@ -59,6 +59,7 @@ app.use('/cart', CartRoutes);
 app.use('/address',AddressRoutes);
 app.use('/medHistory', medicalHistoryRoutes);
 app.use('/uploads', express.static('uploads'));
+app.use("/Order",OrderRoutes);
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
 const appointment = require('./Models/appointements');
@@ -72,7 +73,8 @@ app.post('/payment', async (req, res) => {
   try {
     const appId = req.body.appId;
     const app = await appointment.findById(appId).populate('doctor');
-console.log(appId); 
+    console.log(appId); 
+    const patientId=req.body.patientId;
     if (!app) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
@@ -83,13 +85,12 @@ console.log(appId);
         product_data: {
           name: app._id.toString(),
         },
-        unit_amount: 200,
+        unit_amount: 20000,
       },
       quantity: 1,
     };
     console.log(lineItem);
-    // Calculate total amount in cents
-    const totalAmountInCents = lineItem.price_data.unit_amount * lineItem.quantity;
+    const totalAmountInCents = lineItem.price_data.unit_amount * lineItem.quantity ;
 
     // Ensure the total amount is at least 50 cents
     if (totalAmountInCents < 50) {
@@ -104,8 +105,8 @@ console.log(appId);
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [lineItem],
-      success_url: `http://localhost/clinic-patient-home/${appId}`,
-      cancel_url: `http://localhost/clinic-patient-home/${appId}`,
+      success_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
     });
 
 
@@ -127,10 +128,10 @@ const Cart = require('./Models/Cart');
 
 app.post('/paymentCart', async (req, res) => {
   try {
-
+    
     const cartId = req.body.cartId;
     const cart = await Cart.findById(cartId).populate('medications.medicationId');
-
+    const patientId= cart.patientId;
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
     }
@@ -142,7 +143,7 @@ app.post('/paymentCart', async (req, res) => {
           product_data: {
             name: medication.medicationId.name,
           },
-          unit_amount: medication.medicationId.price,
+          unit_amount: medication.medicationId.price *100,
         },
         quantity: medication.quantity,
       };
@@ -165,8 +166,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/:${cartId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/:${cartId}`,
+      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
     });
 
     res.json({ url: session.url });
