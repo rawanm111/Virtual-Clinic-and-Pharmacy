@@ -36,6 +36,9 @@ import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
+import HealthPackagesSub from "./Pages/HealthPackagesSub";
+import HealthPackagesView from "./Pages/HealthPackagesView";
+
 
 
 export default function Paths() {
@@ -79,6 +82,9 @@ export default function Paths() {
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="/health-packages-sub/:id" element={<HealthPackagesSub />} />
+        <Route path="/health-packages-VIEW/:id" element={<HealthPackagesView />} />
+
       </Routes>
     </Router>
   );
