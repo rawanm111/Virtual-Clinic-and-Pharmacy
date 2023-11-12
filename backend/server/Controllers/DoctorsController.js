@@ -31,21 +31,18 @@ exports.createDoc = async (req, res) => {
       speciality,
       password: hashedPassword, 
     });
-    const savedDoctor = await newDoctor.save();
+    
     console.log('New Doctor:', newDoctor); 
     const newWallet = new walletModel({
-      doctor: savedDoc._id, 
+      doctor: newDoctor._id, 
       balance: 0,
     });
-
     // Save the wallet
     const savedWallet = await newWallet.save();
-
     // Update the patient with the wallet information
-    savedDoc.walletDoc = savedWallet._id;
-   
+    savedDoc.newDoctor = savedWallet._id;
+    const savedDoctor = await newDoctor.save();
     console.log('Saved Doctor:', savedDoctor); 
-
     res.status(201).json(savedDoctor);
 
   } catch (err) {

@@ -32,6 +32,53 @@ exports.createPatient = async (req, res) => {
   }
 };
 
+
+exports.createPatient = async (req, res) => {
+  const {
+    fullName,
+    email,
+    dateOfBirth,
+    gender,
+    mobileNumber,
+    emergencyContactFullName,
+    emergencyContactMobileNumber,
+    emergencyContactRelationToPatient,
+    password, 
+    username,
+  } = req.body;
+  try {
+ 
+      const salt = await bcrypt.genSalt(); 
+      const hashedPassword = await bcrypt.hash(password, salt);
+      const newPatient= new patientModel({
+        username,
+        fullName,
+        email,
+        dateOfBirth,
+        gender,
+        mobileNumber ,
+        emergencyContactFullName ,
+        emergencyContactMobileNumber,
+        emergencyContactRelationToPatient,
+        password: hashedPassword,
+      });
+
+      const newWallet = new walletModel({
+        patient: newPatient._id, // Assuming patientModel has an _id field
+        balance: 0, // You can set an initial balance if needed
+      });
+      // Save the wallet
+      const savedWallet = await newWallet.save();
+      // Update the patient with the wallet information
+      newPatient.wallet = savedWallet._id;
+      const savedPatient = await newPatient.save();
+      res.status(200).json(savedPatient)
+  } catch (error) {
+      console.error(error);
+      res.status(400).json({ error: error.message })
+  } };
+
+
 exports.getPatient = async (req, res) => {
   try {
     const patient = await patientModel.find();
