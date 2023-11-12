@@ -19,6 +19,8 @@ const walletDoc=require('./Routes/walletRoutesDoc.js')
 const CartRoutes = require('./Routes/CartRoutes'); 
 const AddressRoutes=require('./Routes/Adressroutes.js')
 const medicalHistoryRoutes = require('./Routes/medHistoryRoutes');
+const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
+//const Admin = require('./Models/Admin');
 const authroutes = require('./Routes/authenticationRoutes');
 const cors = require('cors');
 const meds = require('./Models/meds.js');
@@ -174,6 +176,9 @@ app.post('/paymentCart', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+app.use('/login', authroutes)
+app.use('/PatientPackages', PatientPackagesRoutes);
+
 
 
 // MongoDB Configuration

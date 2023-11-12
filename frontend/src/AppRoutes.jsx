@@ -43,6 +43,9 @@ import NewHealthRecordPage from "./Pages/NewHealthRecordPage";
 import PatientHealthRecordsPage from "./Pages/PatientHealthRecordsPage"; 
 import HealthRecords from "./Pages/HealthRecPage";
 import MedHistoryDoc from "./Pages/MedHistoryDoc";
+import HealthPackagesSub from "./Pages/HealthPackagesSub";
+import HealthPackagesView from "./Pages/HealthPackagesView";
+
 
 
 export default function Paths() {
@@ -85,15 +88,7 @@ export default function Paths() {
         <Route path="/appPageDoc/:id" element={<AppTable />} /> 
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
-        <Route path="/Prescription/:id" element={<Prescription/>} />
-        <Route path="/wallet/:id" element={<Wallet/>} />
-        <Route path="/walletDoc/:id" element={<WalletDoc/>} />
-        <Route path="/Cart/:id" element={<Cart/>}/>
-        <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
-        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
-        <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
-        <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
-        
+        <Route path="/Prescription/:id" element={<Prescription/>} /> 
       </Routes>
     </Router>
   );
