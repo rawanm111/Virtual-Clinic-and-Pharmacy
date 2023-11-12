@@ -24,6 +24,8 @@ import { useParams } from 'react-router-dom';
 import { Card, CardContent, Typography, Grid, ButtonGroup  } from '@mui/material';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate } from 'react-router-dom';
+
 const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.alternativeLabel}`]: {
     top: 22,
@@ -428,10 +430,55 @@ const [medicationDetails, setMedicationDetails] = useState([]);
 const [editedQuantity, setEditedQuantity] = useState({});
 const [paymentOption, setPaymentOption] = useState('wallet');
 const [totalAmount, setTotalAmount] = useState(0); // State to store the total amount
+const navigate = useNavigate();
+
+const handleFinish = () => {
+  // Make an API call to add the cart to orders
+  axios.post('http://localhost:3000/Order/place-order', {
+    patientId: id, // Assuming patient ID is available in the component
+    // Add other necessary data for the order
+  })
+  .then((response) => {
+    // If the order is successfully placed, delete the cart
+    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
+    .then(() => {
+      // Redirect to a confirmation or thank-you page
+      navigate(`/patient-meds/${id}`);
+      // Change '/confirmation' to the desired route
+    })
+    .catch((error) => {
+      console.error('Error deleting cart:', error);
+    });
+  })
+  .catch((error) => {
+    console.error('Error placing order:', error);
+  });
+};
+const handleFinishVisa = () => {
+  // Make an API call to add the cart to orders
+  axios.post('http://localhost:3000/Order/place-order', {
+    patientId: id, // Assuming patient ID is available in the component
+    // Add other necessary data for the order
+  })
+  .then((response) => {
+    // If the order is successfully placed, delete the cart
+    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
+    .then(() => {
+      
+    })
+    .catch((error) => {
+      console.error('Error deleting cart:', error);
+    });
+  })
+  .catch((error) => {
+    console.error('Error placing order:', error);
+  });
+};
 
 
 const handlePaymentOptionChange = (event) => {
   setPaymentOption(event.target.value);
+
 };
 
 useEffect(() => {
@@ -441,9 +488,6 @@ useEffect(() => {
       if (response.data && Array.isArray(response.data.medications)) {
         // Access the medications array within cartData
         setCartData(response.data.medications);
-
-        // Calculate total amount when cart data is updated
-        calculateTotalAmount(response.data.medications);
       } else {
         console.error('Cart data is not as expected:', response.data);
       }
@@ -451,9 +495,11 @@ useEffect(() => {
     .catch((error) => {
       console.error('Error fetching cart data:', error);
     });
+}, [id]);
 
-  axios
-    .get('http://localhost:3000/meds/') // Use the appropriate URL
+useEffect(() => {
+  // Fetch medication details
+  axios.get('http://localhost:3000/meds/')
     .then((response) => {
       // Handle the response and set the medication details in state
       setMedicationDetails(response.data);
@@ -461,13 +507,16 @@ useEffect(() => {
     .catch((error) => {
       console.error('Error fetching medication details:', error);
     });
-}, [id]);
+}, []);
+
+useEffect(() => {
+  // Calculate total amount when cart data or medication details change
+  calculateTotalAmount(cartData);
+}, [cartData, medicationDetails]);
 
 const calculateTotalAmount = (medications) => {
-  // Calculate the total amount based on medication details and quantities
   const total = medications.reduce((acc, item) => {
     const medicationDetail = medicationDetails.find((detail) => detail._id === item.medicationId);
-    console.log(medicationDetail)
 
     if (medicationDetail) {
       return acc + item.quantity * medicationDetail.price;
@@ -479,11 +528,14 @@ const calculateTotalAmount = (medications) => {
   setTotalAmount(total);
 };
 
+{console.log(totalAmount)}
+
 
   const getCartItems = async () => {
     try {
       const response = await axios.get(`http://localhost:3000/Cart/${id}`);
       console.log(response.data);
+
       if (response.status === 200) {
         // Ensure that medications array exists in cart data
         if (Array.isArray(response.data.medications)) {
@@ -520,7 +572,7 @@ const calculateTotalAmount = (medications) => {
         })),
       });
       console.log(response.data);
-  
+      
       if (response.status === 200) {
         window.location = response.data.url;
         console.log(response.data.url);
@@ -528,7 +580,7 @@ const calculateTotalAmount = (medications) => {
         console.error('Error:', response.data);
       }
     } catch (error) {
-      console.error('Error:', error.response.data); // Log the detailed error message
+      console.error('Error:', error.response.data); 
     }
   };
 
@@ -545,14 +597,14 @@ const calculateTotalAmount = (medications) => {
         // const prev= response.data.balance - 200;
         console.log(response.data)
 
-        if (response.data.balance < 200) {
+        if (response.data.balance < totalAmount) {
           console.error("Insufficient balance");
           
         }
         else{
         if (response && response.status === 200) {
           console.log('Wallet payment successful!');
-          // Optionally, you can handle any additional logic after a successful wallet payment
+          // Optionally, you c baan handle any additional logic after a successful wallet payment
           
           // Update the user's wallet balance (assuming you have a state for wallet balance)
           // setWalletBalance(prev);
@@ -561,7 +613,7 @@ const calculateTotalAmount = (medications) => {
           const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
             
             patientId: id,
-            balance: response.data.balance - 200,
+            balance: response.data.balance - totalAmount,
           });
 
           
@@ -626,14 +678,33 @@ const calculateTotalAmount = (medications) => {
             />
           </RadioGroup>
           
-          <Button onClick={() => paymentOption === 'visa' ? getCartItems() : handleWallet()} color="primary">
-            Submit
-          </Button>
+          <Button
+  onClick={() => {
+    if (paymentOption === 'visa') {
+      getCartItems();
+      handleFinishVisa();
+
+    } else if (paymentOption === 'COD') {
+        handleFinish();
+      
+    } else {
+      handleWallet();
+      handleFinish();
+
+    }
+  }}
+  color="primary"
+>
+  Submit
+</Button>
+
           <div>
         <Typography variant="h6">Total Amount: ${totalAmount}</Typography>
+       
       </div>
 
   </div>
+ 
   );
 }
 
@@ -652,7 +723,11 @@ export default function CustomizedSteppers() {
     setSelectedAddress(address);
   };
   const handleNext = () => {
+    if (activeStep === 1 && !selectedAddress) {
+      return;
+    }
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
+
   };
   const handleBack = () => {
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
@@ -696,14 +771,17 @@ export default function CustomizedSteppers() {
             Back
           </Button>
         )}
+        {!isLastStep ?
         <Button
           variant="contained"
           color="primary"
           onClick={handleNext}
           disabled={isLastStep}
         >
-          {isLastStep ? 'Finish' : 'Next'}
+
+          Next
         </Button>
+        : ''}
       </Stack>
     </Stack>
   );

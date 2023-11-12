@@ -179,6 +179,7 @@ export default function AppTableP() {
   
       const response = await axios.post('http://localhost:3000/payment', {
         appId: selectedAppointmentId, 
+        patientId:id,
         items: [{
           id: selectedAppointmentId,
           quantity: 1,

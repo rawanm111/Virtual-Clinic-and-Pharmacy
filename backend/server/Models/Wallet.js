@@ -10,6 +10,9 @@ const walletSchema = new mongoose.Schema({
   balance: {
     type: Number,
     default: 500,
+    
+
+
   },
 });
 

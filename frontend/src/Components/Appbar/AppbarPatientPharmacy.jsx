@@ -110,7 +110,24 @@ function AppBarComponent({ userName}) {
               to={`/patient-meds/${id}`}
               selected={location.pathname === `/patient-meds/${id}`}
             />
+          
+          <Tab
+              label="Orders"
+              sx={tabStyle}
+              component={Link}
+              to={`/Order/${id}`}
+              selected={location.pathname === `/Order/${id}`}
+            />
+          
+          <Tab
+              label="Wallet"
+              sx={tabStyle}
+              component={Link}
+              to={`/wallet/${id}`}
+              selected={location.pathname === `/wallet/${id}`}
+            />
           </Tabs>
+
         </div>
       </AppBar>
     </ThemeProvider>

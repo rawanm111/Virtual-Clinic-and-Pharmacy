@@ -16,5 +16,5 @@ router.get('/addresses/:patientId', cartController.getAddressesByPatientId);
 // Add new route for selecting a medication for a cart
 router.put('/select-medication', cartController.selectMedication);
 router.put('/update-address', cartController.updateAddress);
-
+router.delete('/delete/:patientId', cartController.deleteCart);
 module.exports = router;

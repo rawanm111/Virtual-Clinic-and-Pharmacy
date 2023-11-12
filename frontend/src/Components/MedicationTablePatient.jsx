@@ -47,7 +47,7 @@ function MedicationTablePatient() {
   const handleGoToCart = () => {
     
     // Navigate to your cart page when the button is clicked
-    navigate('/Cart'); // Replace '/cart' with your actual cart page URL
+    navigate(`/Cart/${id}`); // Replace '/cart' with your actual cart page URL
   };
 
   const filteredRows = medicationData.filter((row) =>
