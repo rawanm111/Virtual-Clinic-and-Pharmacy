@@ -28,7 +28,17 @@ const DoctorRegistrationHome = () => {
 
   const navigate = useNavigate();
 
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+
   const handleSubmit = async () => {
+
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
     try {
       const formDataToSend = new FormData();
 
@@ -80,6 +90,7 @@ const DoctorRegistrationHome = () => {
               label="Password"
               variant="outlined"
               name="password"
+              type = "password"
               value={formData.password}
               onChange={handleInputChange}
             />

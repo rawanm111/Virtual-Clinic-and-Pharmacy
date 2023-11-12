@@ -86,9 +86,18 @@ function AdminForm() {
     username: '',
     password: '',
   });
+  
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
 
   const handleSubmit = () => {
-    axios.post('http://localhost:3000/admin', formData) // Use '/admin' for the POST request
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
+    axios.post('http://localhost:3000/admin/', formData) // Use '/admin' for the POST request
       .then(response => {
         console.log('Response:', response.data);
 

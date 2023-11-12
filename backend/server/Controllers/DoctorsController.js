@@ -1,16 +1,41 @@
 const doctors = require('../Models/doccs');
-const walletModel = require('../Models/walletDoc'); // Import the wallet model
+const walletModel = require('../Models/walletDoc'); 
+const bcrypt = require('bcrypt');
 
-exports.createNewDoc = async (req, res) => {
+exports.createDoc = async (req, res) => {
   try {
-    // Create a new patient
-    const newDoc = new doctors(req.body);
-    const savedDoc = await newDoc.save();
+    const {
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password,
+    } = req.body;
+    console.log('Received data:', req.body); 
 
-    // Create a wallet for the new patient
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newDoctor = new doctors({
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password: hashedPassword, 
+    });
+    const savedDoctor = await newDoctor.save();
+    console.log('New Doctor:', newDoctor); 
     const newWallet = new walletModel({
       doctor: savedDoc._id, 
-      balance: 0, // You can set an initial balance if needed
+      balance: 0,
     });
 
     // Save the wallet
@@ -18,10 +43,13 @@ exports.createNewDoc = async (req, res) => {
 
     // Update the patient with the wallet information
     savedDoc.walletDoc = savedWallet._id;
-    await savedDoc.save();
+   
+    console.log('Saved Doctor:', savedDoctor); 
 
-    res.status(201).json(savedDoc);
+    res.status(201).json(savedDoctor);
+
   } catch (err) {
+    console.error(err); 
     res.status(500).json(err);
   }
 };

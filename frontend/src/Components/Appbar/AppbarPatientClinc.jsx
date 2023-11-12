@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
+import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar,Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
 import { Link, useLocation, useNavigate , useParams} from 'react-router-dom';
@@ -74,6 +74,11 @@ function AppBarComponent({ userName}) {
   const handleAvatarClick = () => {
     navigate(`/patient-profile/${id}`);
   };
+  const handleSignOut = () => {
+    // Sign out logic goes here
+    navigate('/clinic'); // Redirects to the login page
+  };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -85,6 +90,9 @@ function AppBarComponent({ userName}) {
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
             {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
           </Typography>
+          <Button color="primary" onClick={handleSignOut}>
+            Sign Out
+          </Button>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>
         <div style={tabContainerStyle}>

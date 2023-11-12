@@ -1,16 +1,49 @@
 const pharmacistModel = require('../Models/pharmacists');
 const { default: mongoose } = require('mongoose');
 const e = require('express');
+const bcrypt = require('bcrypt');
 
-exports.createPharmacist = async(req,res) => {
-   try {
-    const newPharmacist = new pharmacistModel(req.body);
+exports.createPharmacist = async (req, res) => {
+  try {
+    const {
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      password
+    } = req.body;
+
+    console.log('Received data:', req.body); // Log the data received
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newPharmacist = new pharmacistModel({
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      password: hashedPassword 
+    });
+
+    console.log('New Pharmacist:', newPharmacist); 
+
     const savedPharmacist = await newPharmacist.save();
+    console.log('Saved Pharmacist:', savedPharmacist); 
+
     res.status(201).json(savedPharmacist);
   } catch (err) {
+    console.error(err); 
     res.status(500).json(err);
   }
 };
+
 
 exports.getPharmacist = async (req, res) => {
     try {
@@ -80,6 +113,9 @@ exports.updatePharmacistByUsername = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
+
 
 
 

@@ -32,14 +32,21 @@ const PatientRegistrationHome = () => {
   });
 
 
-
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
 
   const handleSubmit = () => {
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
     axios
       .post('http://localhost:3000/patients', formData)
       .then((response) => {
         console.log('Response:', response.data);
-        navigate('/pharm-patient-home')
+        navigate('/pharm')
       })
       .catch((error) => {
         console.error('Error:', error);
@@ -84,6 +91,7 @@ const PatientRegistrationHome = () => {
               variant="outlined"
               className="text-field"
               name="password"
+              type = "password"
             value={formData.password}
             onChange={handleInputChange}
             />

@@ -47,7 +47,8 @@ import HealthRecords from "./Pages/HealthRecPage";
 import MedHistoryDoc from "./Pages/MedHistoryDoc";
 import HealthPackagesSub from "./Pages/HealthPackagesSub";
 import HealthPackagesView from "./Pages/HealthPackagesView";
-
+import Otp from "./Pages/otp";
+import ChangePassword from "./Pages/changepassword";
 
 
 export default function Paths() {
@@ -105,7 +106,9 @@ export default function Paths() {
         <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
-        
+        <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="/otp/:username" element={<Otp/>} />
+        <Route path="/changepass/:username"element={<ChangePassword/>} />
       </Routes>
     </Router>
   );
