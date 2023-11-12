@@ -122,6 +122,14 @@ function AppBarComponent({ userName}) {
               to={`/health-recs/${id}`}
               selected={location.pathname === `/health-recs/${id}`}
             />
+            <Tab
+              label="Medical History"
+              sx={tabStyle}
+              component={Link}
+              to={`/MedicalHistory`}
+              selected={location.pathname === `/MedicalHistory`}
+            />
+          
           </Tabs>
         </div>
       </AppBar>

@@ -36,8 +36,9 @@ import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
-
-
+import MedicalHistory from "./Pages/MedicalHistory";
+import EmploymentContract from "./Pages/EmploymentContract";
+import NewMedicalHistory from "./Pages/NewMedicalHistory";
 export default function Paths() {
   return (
     <Router> 
@@ -79,6 +80,10 @@ export default function Paths() {
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="MedicalHistory" element={<MedicalHistory/>} /> 
+        <Route path="EmploymentContract" element={<EmploymentContract/>} /> 
+        <Route path="NewMedicalHistory" element={<NewMedicalHistory/>} />
+
       </Routes>
     </Router>
   );
