@@ -1,5 +1,6 @@
 const doctors = require('../Models/doccs');
-const walletModel = require('../Models/walletDoc'); 
+const walletModel = require('../Models/walletDoc');
+const EmploymentContract = require('../Models/EmploymentContract'); 
 const bcrypt = require('bcrypt');
 
 exports.createDoc = async (req, res) => {
@@ -15,7 +16,7 @@ exports.createDoc = async (req, res) => {
       speciality,
       password,
     } = req.body;
-    console.log('Received data:', req.body); 
+    console.log('Received data:', req.body);
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -29,27 +30,51 @@ exports.createDoc = async (req, res) => {
       affiliation,
       educationalBackground,
       speciality,
-      password: hashedPassword, 
+      password: hashedPassword,
     });
-    
-    console.log('New Doctor:', newDoctor); 
+
+    console.log('New Doctor:', newDoctor);
+
     const newWallet = new walletModel({
-      doctor: newDoctor._id, 
+      doctor: newDoctor._id,
       balance: 0,
     });
+
     // Save the wallet
     const savedWallet = await newWallet.save();
-    // Update the patient with the wallet information
-    savedDoc.newDoctor = savedWallet._id;
+
+    // Update the doctor with the wallet information
+    newDoctor.wallet = savedWallet._id;
+
+    // Save the doctor
     const savedDoctor = await newDoctor.save();
-    console.log('Saved Doctor:', savedDoctor); 
+
+    // Create an employment contract for the doctor
+    const newContract = new EmploymentContract({
+      employeeName: fullName,
+      employeeId: newDoctor._id,
+      jobTitle: 'Doctor',
+      startDate: new Date(),
+      salary: hourlyRate,
+      status: 'Inactive',  // Set the default status to "Inactive"
+    });
+
+    // Save the employment contract
+    const savedContract = await newContract.save();
+
+    console.log('Saved Doctor:', savedDoctor);
+    console.log('Saved Employment Contract:', savedContract);
+
     res.status(201).json(savedDoctor);
 
   } catch (err) {
-    console.error(err); 
+    console.error(err);
     res.status(500).json(err);
   }
 };
+
+// Rest of the code remains the same...
+
 
 exports.getAllDoctors = async (req, res) => {
   try {

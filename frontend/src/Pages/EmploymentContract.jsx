@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -23,7 +24,7 @@ const HeaderContainer = styled('div')({
 const CardsContainer = styled('div')({
   display: 'flex',
   justifyContent: 'space-between',
-  flexWrap: 'wrap', // Add this to wrap cards to the next row
+  flexWrap: 'wrap',
 });
 
 const CardWrapper = styled(Card)({
@@ -56,71 +57,89 @@ const DataTypography = styled(Typography)({
 });
 
 function EmploymentContracts() {
-  const [EmploymentContracts, setEmploymentContracts] = useState([]);
+  const [employmentContract, setEmploymentContract] = useState({});
+  const { userId } = useParams();
+  const doctorId = userId;
   const navigate = useNavigate();
 
+  const fetchEmploymentContract = async () => {
+    try {
+      const response = await axios.get(`http://localhost:3000/employmentContract/details/${doctorId}`);
+      setEmploymentContract(response.data);
+    } catch (error) {
+      console.error('Error fetching employment contract:', error);
+    }
+  };
+
+  const handleAcceptContract = async () => {
+    try {
+      await axios.put(`http://localhost:3000/employmentContract/updateStatus/${doctorId}`);
+      navigate('/clinic');
+    } catch (error) {
+      console.error('Error accepting employment contract:', error);
+    }
+  };
+
+  const handleRejectContract = () => {
+    navigate('/clinic');
+  };
+
   useEffect(() => {
-    axios
-      .get('http://localhost:3000/EmploymentContracts') // Adjust the URL as needed
-      .then((response) => {
-        setEmploymentContracts(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching health records:', error);
-      });
-  }, []);
+    fetchEmploymentContract();
+  }, [doctorId]);
 
   return (
-    <div>    
-      <AppbarAdmin />
+    <div>
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            EmploymentContract
+            Employment Contract
           </Typography>
         </HeaderContainer>
         <CardsContainer>
-          {EmploymentContracts.map((EmploymentContract) => (
-            <CardWrapper key={EmploymentContract.employeeName} variant="outlined">
-              <CardContent>
-                <NameTypography variant="h5" component="div">
-                  {EmploymentContract.employeeid}
-                </NameTypography>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    jobTitle:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {EmploymentContract.jobTitle}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Start Date:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {EmploymentContract.startDate}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    end date:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {EmploymentContract.endDate}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    salary:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {EmploymentContract.salary}
-                  </DataTypography>
-                </div>
-              </CardContent>
-            </CardWrapper>
-          ))}
+          <CardWrapper>
+            <CardContent>
+              <NameTypography variant="h6" sx={{ color: '#000080' }}>
+                {employmentContract.employeeName || 'Unknown Doctor'}
+              </NameTypography>
+              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
+                Job Title:
+              </SubtitleTypography>
+              <DataTypography variant="body1" sx={{ color: '#000080' }}>
+                {employmentContract.jobTitle || 'N/A'}
+              </DataTypography>
+              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
+                Start Date:
+              </SubtitleTypography>
+              <DataTypography variant="body1" sx={{ color: '#000080' }}>
+                {employmentContract.startDate || 'N/A'}
+              </DataTypography>
+              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
+                End Date:
+              </SubtitleTypography>
+              <DataTypography variant="body1" sx={{ color: '#000080' }}>
+                {employmentContract.endDate || 'N/A'}
+              </DataTypography>
+              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
+                Salary:
+              </SubtitleTypography>
+              <DataTypography variant="body1" sx={{ color: '#000080' }}>
+                {employmentContract.salary || 'N/A'}
+              </DataTypography>
+              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
+                Employment Contract Status:
+              </SubtitleTypography>
+              <DataTypography variant="body1" sx={{ color: '#000080' }}>
+                {employmentContract.status || 'N/A'}
+              </DataTypography>
+              <Button variant="contained" color="primary" onClick={handleAcceptContract}>
+                Accept Employment Contract
+              </Button>
+              <Button variant="contained" color="secondary" onClick={handleRejectContract}>
+                Reject Employment Contract
+              </Button>
+            </CardContent>
+          </CardWrapper>
         </CardsContainer>
       </PageContainer>
     </div>

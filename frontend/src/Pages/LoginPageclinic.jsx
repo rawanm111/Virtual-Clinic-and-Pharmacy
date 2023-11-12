@@ -90,18 +90,25 @@ function LoginPage() {
   
       if (data.success) {
         const userId = data.userId;
-        
+  
         switch (data.role) {
           case 'admin':
             navigate('/admin-home');
             break;
           case 'doctor':
-            navigate(`/doc-home/${userId}`); 
+            // Check employment contract status
+            const contractStatusResponse = await axios.get(`http://localhost:3000/employmentContract/status/${userId}`);
+            const contractStatus = contractStatusResponse.data.status;
+  
+            if (contractStatus === 'Inactive') {
+              navigate(`/EmploymentContract/${userId}`);
+            } else {
+              navigate(`/doc-home/${userId}`);
+            }
             break;
           case 'patient':
-            navigate(`/clinic-patient-home/${userId}`); 
+            navigate(`/clinic-patient-home/${userId}`);
             break;
-          
           default:
             setError('User role is not recognized.');
             break;
@@ -114,13 +121,15 @@ function LoginPage() {
       if (error.response) {
         if (error.response && error.response.status === 406) {
           // Set the flag to show forgot password link for 406 status
-          setShowForgotPassword(true);}
+          setShowForgotPassword(true);
+        }
         setError(error.response.data.message);
       } else {
         setError('An error occurred during login. Please try again.');
       }
     }
   };
+  
   
 
   return (

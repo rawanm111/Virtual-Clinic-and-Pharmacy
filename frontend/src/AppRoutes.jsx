@@ -109,7 +109,7 @@ export default function Paths() {
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
-        <Route path="EmploymentContract" element={<EmploymentContract/>} /> 
+        <Route path="/EmploymentContract/:userId" element={<EmploymentContract/>} /> 
         <Route path="/otp/:username" element={<Otp/>} />
         <Route path="/changepass/:username"element={<ChangePassword/>} />
       </Routes>

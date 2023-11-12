@@ -100,9 +100,10 @@ const getAllReq = async (req, res) => {
 
 const deletereqs = async (req, res) => {
   try {
-    await PharmacistReq.findByIdAndDelete(req.params.id);  // Fixed the model reference
+    await drReqModel.findByIdAndDelete(req.params.id);  
     res.status(204).end();
   } catch (err) {
+    console.error(err);
     res.status(500).json(err);
   }
 };
