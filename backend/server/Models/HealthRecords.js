@@ -1,19 +1,20 @@
+
 const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
 const healthRecordsSchema= new mongoose.Schema ({
+    patient: {
+        type: Schema.Types.ObjectId,
+        ref: './patients',
+        required: false,
+      },
 
-    patientname: {
-        type: String,
-        required : true,
-    },
-
-    patientId: {
-        type: Number,
-        required:true,
-    },
     diagnosis: {
         type: String,
         required: true,
+    },
+    date: {
+        type: Date,
     },
 
 

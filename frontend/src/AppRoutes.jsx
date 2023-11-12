@@ -31,14 +31,28 @@ import AdminRequestsD from "./Pages/AdminReqPageDoc";
 import AdminRequestsP from "./Pages/AdminReqPagePharm";
 import FamilyMember from "./Pages/DisplayPage";
 import Form from "./Pages/Form";
-import HealthRecords from "./Pages/HealthRecPage";
 import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
-import MedicalHistory from "./Pages/MedicalHistory";
 import EmploymentContract from "./Pages/EmploymentContract";
 import NewMedicalHistory from "./Pages/NewMedicalHistory";
+import Wallet from "./Pages/wallet";
+import WalletDoc from "./Pages/walletDoc";
+import Cart from "./Pages/Cart";
+import MedHistory from "./Pages/medHistory";
+import Order from './Pages/OrderPage'
+import Walletclinic from './Pages/walletclinic'
+import NewHealthRecordPage from "./Pages/NewHealthRecordPage"; 
+import PatientHealthRecordsPage from "./Pages/PatientHealthRecordsPage"; 
+import HealthRecords from "./Pages/HealthRecPage";
+import MedHistoryDoc from "./Pages/MedHistoryDoc";
+import HealthPackagesSub from "./Pages/HealthPackagesSub";
+import HealthPackagesView from "./Pages/HealthPackagesView";
+import Otp from "./Pages/otp";
+import ChangePassword from "./Pages/changepassword";
+
+
 export default function Paths() {
   return (
     <Router> 
@@ -58,7 +72,7 @@ export default function Paths() {
         <Route path="/admin-meds" element={<AdminMedsPage />} />
         <Route path="/patient-meds/:id" element={<PatientMedsPage />} />
         <Route path="/pharm-meds/:id" element={<PharmacistMedsPage />} />
-        <Route path="/doc-profile" element={<DoctorProfile />} />
+        <Route path="/doc-profile/:id" element={<DoctorProfile />} />
         <Route path="/patient-profile" element={<PatientProfile />} />
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
         <Route path="/new-med" element={<AddMed />} />
@@ -69,7 +83,7 @@ export default function Paths() {
         <Route path="/patientsTable/:id" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/health-packages" element={<HealthPackages />} />
-        <Route path="/add-family-member" element={<Form />} />
+        <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
         <Route path="/update-package/:id" element={<UpdatePackage />} /> 
@@ -79,13 +93,28 @@ export default function Paths() {
         <Route path="/appPageDoc/:id" element={<AppTable />} /> 
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
+        <Route path="/Prescription/:id" element={<Prescription/>} />
+        <Route path="/wallet/:id" element={<Wallet/>} />
+        <Route path="/walletDoc/:id" element={<WalletDoc/>} />
+        <Route path="/Cart/:id" element={<Cart/>}/>
+        <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
+        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
+        <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
+        <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
+        <Route path="/health-packages-sub/:id" element={<HealthPackagesSub />} />
+        <Route path="/health-packages-VIEW/:id" element={<HealthPackagesView />} />
+        <Route path="/Order/:id" element={<Order/>} /> 
+        <Route path="/walletclinic/:id" element={<Walletclinic/>} /> 
+        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
+        <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
+        <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
-        <Route path="MedicalHistory" element={<MedicalHistory/>} /> 
         <Route path="EmploymentContract" element={<EmploymentContract/>} /> 
-        <Route path="NewMedicalHistory" element={<NewMedicalHistory/>} />
-
+        <Route path="/otp/:username" element={<Otp/>} />
+        <Route path="/changepass/:username"element={<ChangePassword/>} />
       </Routes>
     </Router>
   );
 }
+
 

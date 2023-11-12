@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar } from '@mui/material';
+import { AppBar, Tabs, Tab, Avatar, Typography, Toolbar,Button } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { AccountCircle } from '@mui/icons-material';
 import { Link, useLocation, useNavigate , useParams} from 'react-router-dom';
@@ -74,6 +74,11 @@ function AppBarComponent({ userName}) {
   const handleAvatarClick = () => {
     navigate(`/patient-profile/${id}`);
   };
+  const handleSignOut = () => {
+    // Sign out logic goes here
+    navigate('/clinic'); // Redirects to the login page
+  };
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -85,6 +90,9 @@ function AppBarComponent({ userName}) {
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
             {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
           </Typography>
+          <Button color="primary" onClick={handleSignOut}>
+            Sign Out
+          </Button>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>
         <div style={tabContainerStyle}>
@@ -124,12 +132,48 @@ function AppBarComponent({ userName}) {
               to={`/doctorsTable/${id}`}
               selected={location.pathname === `/doctorsTable/${id}`}
             />
+            {/* <Tab
+              label="Health Records"
+              sx={tabStyle}
+              component={Link}
+              to={`/HealthRecordPatient/${id}`}
+              selected={location.pathname === `/HealthRecordPatient/${id}`}
+            /> */}
             <Tab
               label="Prescriptions"
               sx={tabStyle}
               component={Link}
               to={`/Prescription/${id}`}
               selected={location.pathname === `/Prescription/${id}`}
+            />
+             <Tab
+               label="Health Records"
+              sx={tabStyle}
+              component={Link}
+              to={`/MedHistory/${id}`}
+              selected={location.pathname === `/MedHistory/${id}`}
+            />
+              <Tab
+              label="Health Packages"
+              sx={tabStyle}
+              component={Link}
+              to={`/health-packages-view/${id}`}
+              selected={location.pathname === `/health-packages-view/${id}`}
+            />
+            <Tab
+              label="My Subcriptions"
+              sx={tabStyle}
+              component={Link}
+              to={`/health-packages-sub/${id}`}
+              selected={location.pathname === `/health-packages-sub/${id}`}
+            />
+
+           <Tab
+              label="Wallet"
+              sx={tabStyle}
+              component={Link}
+              to={`/Walletclinic/${id}`}
+              selected={location.pathname === `/Walletclinic/${id}`}
             />
           </Tabs>
         </div>
@@ -139,3 +183,6 @@ function AppBarComponent({ userName}) {
 }
 
 export default AppBarComponent;
+
+
+

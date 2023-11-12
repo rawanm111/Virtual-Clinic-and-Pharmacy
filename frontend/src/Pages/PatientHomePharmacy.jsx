@@ -1,42 +1,47 @@
-import patient from '../Components/Logo/patient.png';
-import Button from '@mui/material/Button';
-//import TextField from '@mui/material/TextField'; // Import TextField
 import React from 'react';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Paper from '@mui/material/Paper';
+import img from '../Components/Logo/patient.png'; // Updated image import
 import './PatientHomePharmacy.css';
-import Box from '@mui/material/Box';
 import AppBarComponent from '../Components/Appbar/AppbarPatientPharmacy';
 
-
-
 const PatientHomePharmacy = () => {
-    return(
-        <div>
-        <AppBarComponent />
+  const containerStyle = {
+    backgroundColor: 'lightblue',
+    position: 'relative',
+    height: '50vh',
+  };
 
-        <div className="content-wrapper">
-        <Typography variant="h6" className="custom-text" style={{ fontSize: '40px' }}>
-        Welcome to MetaCare, where your health<br />
-        takes center stage. Partner with us to schedule <br />
-        appointments, access records,and take control <br />
-        of your well-being. Together, we're on the path<br />
-        to better health and a brighter future.
-        
+  const textWrapperStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '20px',
+    color: '#007BFF',
+    lineHeight: '1.2',
+    fontSize: '40px',
+  };
 
-</Typography>
+  const imageStyle = {
+    position: 'absolute',
+    top: '40%',
+    left: '900px',
+    width: '35%',
+  };
 
-            
-            <img src={patient} alt="Homepage Logo" className="custom-image" />
-        </div>
+  return (
+    <div>
+      <AppBarComponent />
+      <div style={containerStyle}>
+        <Typography variant="h6" style={textWrapperStyle}>
+          Welcome to MetaCare, where your health<br />
+          takes center stage. Partner with us to schedule <br />
+          appointments, access records, and take control <br />
+          of your well-being. Together, we're on the path<br />
+          to better health and a brighter future.
+        </Typography>
+        <img src={img} alt="Homepage Logo" style={imageStyle} />
+      </div>
     </div>
+  );
+};
 
-
-
-    )
-
-}
 export default PatientHomePharmacy;

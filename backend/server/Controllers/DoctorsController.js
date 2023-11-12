@@ -1,11 +1,52 @@
 const doctors = require('../Models/doccs');
+const walletModel = require('../Models/walletDoc'); 
+const bcrypt = require('bcrypt');
 
-exports.createNewDoc = async (req, res) => {
+exports.createDoc = async (req, res) => {
   try {
-    const newDoc = new doctors(req.body);
-    const savedDoc = await newDoc.save();
-    res.status(201).json(savedDoc);
+    const {
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password,
+    } = req.body;
+    console.log('Received data:', req.body); 
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newDoctor = new doctors({
+      username,
+      fullName,
+      email,
+      dateOfBirth,
+      hourlyRate,
+      affiliation,
+      educationalBackground,
+      speciality,
+      password: hashedPassword, 
+    });
+    
+    console.log('New Doctor:', newDoctor); 
+    const newWallet = new walletModel({
+      doctor: newDoctor._id, 
+      balance: 0,
+    });
+    // Save the wallet
+    const savedWallet = await newWallet.save();
+    // Update the patient with the wallet information
+    savedDoc.newDoctor = savedWallet._id;
+    const savedDoctor = await newDoctor.save();
+    console.log('Saved Doctor:', savedDoctor); 
+    res.status(201).json(savedDoctor);
+
   } catch (err) {
+    console.error(err); 
     res.status(500).json(err);
   }
 };
@@ -92,9 +133,22 @@ exports.getDoctorByUsername = async (req, res) => {
   try {
     const patient = await doctors.findOne({ username: username });
     if (!patient) {
-      return res.status(404).json({ message: 'Patient not found' });
+      return res.status(404).json({ message: 'doc not found' });
     }
     res.status(200).json(patient);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.getDoctorById = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const doctor = await doctors.findById(id); 
+    if (!doctor) {
+      return res.status(404).json({ message: 'Doctor not found' });
+    }
+    res.status(200).json(doctor);
   } catch (err) {
     res.status(500).json(err);
   }

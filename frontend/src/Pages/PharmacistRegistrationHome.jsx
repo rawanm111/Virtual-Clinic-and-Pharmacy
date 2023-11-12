@@ -7,7 +7,7 @@ import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Import the file upload icon
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'; 
 
 const PharmacistRegistrationHome = () => {
   const [formData, setFormData] = useState({
@@ -25,27 +25,60 @@ const PharmacistRegistrationHome = () => {
   const [workingLicenseFile, setWorkingLicenseFile] = useState(null);
 
   const navigate = useNavigate();
+  
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+  
 
+  // const handleSubmit = async () => {
+  //   try {
+  //     const formDataToSend = new FormData();
+
+  //     for (const key in formData) {
+  //       formDataToSend.append(key, formData[key]);
+  //     }
+
+  //     formDataToSend.append('nationalIdFile', nationalIdFile);
+  //     formDataToSend.append('pharmacyDegreeFile', pharmacyDegreeFile);
+  //     formDataToSend.append('workingLicenseFile', workingLicenseFile);
+
+  //     const response = await axios.post('http://localhost:3000/api/pharmcistReq', formDataToSend);
+
+  //     console.log('Response:', response.data);
+  //     navigate('/pharm');
+  //   } catch (error) {
+  //     console.error('Error:', error);
+  //   }
+  // };
   const handleSubmit = async () => {
+    
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
+  
     try {
       const formDataToSend = new FormData();
-
+  
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-
+  
       formDataToSend.append('nationalIdFile', nationalIdFile);
       formDataToSend.append('pharmacyDegreeFile', pharmacyDegreeFile);
       formDataToSend.append('workingLicenseFile', workingLicenseFile);
-
+  
       const response = await axios.post('http://localhost:3000/api/pharmcistReq', formDataToSend);
-
+  
       console.log('Response:', response.data);
       navigate('/pharm');
     } catch (error) {
       console.error('Error:', error);
     }
   };
+  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -80,6 +113,7 @@ const PharmacistRegistrationHome = () => {
               label="Password"
               variant="outlined"
               name="password"
+              type="password"
               value={formData.password}
               onChange={handleInputChange}
             />

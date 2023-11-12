@@ -2,10 +2,14 @@ import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import AppbarDoctor from '../Components/Appbar/AppbarDoctor';
 import { useNavigate } from 'react-router-dom';
+
+
+
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -70,21 +74,28 @@ function HealthRecords() {
       });
   }, []);
 
+  const handleAddRecordClick = () => {
+    navigate('/new-HealthRecord');
+  };
+ 
   return (
-    <div>     
+    <div>
       <AppbarDoctor />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
             Health Records
           </Typography>
+          <Button variant="contained" color="primary" onClick={handleAddRecordClick}>
+            Add New Health Record
+          </Button>
         </HeaderContainer>
         <CardsContainer>
           {healthRecords.map((healthRecord) => (
             <CardWrapper key={healthRecord._id} variant="outlined">
-              <CardContent>
+              <CardContent> 
                 <NameTypography variant="h5" component="div">
-                  {healthRecord.patientname}
+                  {healthRecord.patient.name}
                 </NameTypography>
                 <div>
                   <SubtitleTypography variant="subtitle1">
@@ -92,6 +103,14 @@ function HealthRecords() {
                   </SubtitleTypography>
                   <DataTypography variant="body2">
                     {healthRecord.diagnosis}
+                  </DataTypography>
+                </div>
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Date:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    {healthRecord.date}
                   </DataTypography>
                 </div>
               </CardContent>

@@ -1,6 +1,6 @@
 import AppbarPatientPharmacy from '../Components/Appbar/AppbarPatientPharmacy';
 import './AdminMedsPage.css'
-import MedicationTable from '../Components/MedicationTable'
+import MedicationTablePatient from '../Components/MedicationTablePatient'
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 function PatientMedsPage() {
@@ -9,7 +9,7 @@ function PatientMedsPage() {
     <div > 
       <AppbarPatientPharmacy userName="Gera"></AppbarPatientPharmacy>
       <p className="centered-text">Available Medications</p>
-      <MedicationTable /> 
+      <MedicationTablePatient /> 
     </div>
   );
 }

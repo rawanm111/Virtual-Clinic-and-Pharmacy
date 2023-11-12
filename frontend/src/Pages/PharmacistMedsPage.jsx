@@ -7,7 +7,7 @@ function PharmacistMedsPage() {
   
   return (
     <div > 
-      <Appbar userName="Gera"></Appbar>
+      <Appbar ></Appbar>
       <p className="centered-text">Available Medications</p>
       <PharmacistMedicationTable /> 
     </div>

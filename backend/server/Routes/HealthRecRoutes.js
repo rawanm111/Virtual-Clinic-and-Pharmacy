@@ -7,6 +7,10 @@ router.post('/', HealthRecControllers.createHealthRecords);
 
 // Get all health records
 router.get('/', HealthRecControllers.getAllHealthRecords);
+// Get patient health records
+
+router.get('/patient/:id', HealthRecControllers.getallHealthRecordsPatient);
+
 
 // Update a health record by ID
 router.put('/:id', HealthRecControllers.updateHealthRecords);

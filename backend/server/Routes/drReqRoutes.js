@@ -1,7 +1,8 @@
 // Import the necessary modules
 const express = require('express');
 const router = express.Router();
-const { submitDrReq, getReq, getAllReq } = require('../Controllers/drReqController');
+const { submitDrReq, getReq, getAllReq ,
+  deletereqs } = require('../Controllers/drReqController');
 const multer = require('multer');
 
 // Configure multer for file uploads
@@ -15,12 +16,16 @@ router.post('/', upload.fields([
   { name: 'medicalLicenseFile', maxCount: 1 },
   { name: 'medicalDegreeFile', maxCount: 1 }
 ]), submitDrReq);
+ 
 
-// GET endpoint to retrieve all doctor registration requests
-router.get('/', getAllReq);
+router.delete('/delete/:id', deletereqs) 
 
-// GET endpoint to retrieve a single doctor registration request
-router.get('/:id', getReq);
+//get all phamcist requests
+router.get('/',getAllReq)
 
+//get a single req 
+router.get('/:id',getReq)
 // Export the router
+
+
 module.exports = router;
