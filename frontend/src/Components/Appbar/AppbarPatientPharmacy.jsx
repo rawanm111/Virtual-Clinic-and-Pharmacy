@@ -78,6 +78,10 @@ function AppBarComponent({ userName}) {
   const handleAvatarClick = () => {
     navigate(`/patient-profile/${id}`);
   };
+  const handleChangePass = () => {
+    navigate(`/changepassTwo/${id}`); 
+  };
+
  
 
   return (
@@ -88,10 +92,13 @@ function AppBarComponent({ userName}) {
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
-            {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
+           
           </Typography>
+          <Button color="primary" onClick={handleChangePass}>
+            Change Password
+          </Button>
           <Button color="primary" onClick={handleSignOut}>
-            Sign Out
+           Log Out
           </Button>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>

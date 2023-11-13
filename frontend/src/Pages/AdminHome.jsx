@@ -20,8 +20,8 @@ const AdminHome = () => {
         <div>
             <AppBarComponent />
 
-            <div className="content-wrapper">
-            <Typography variant="h6" className="custom-text" style={{ fontSize: '40px' }}>
+            <div >
+            <Typography variant="h6" className="custom-text" style={{ fontSize: '40px', marginLeft:'-300px' }}>
     Welcome to the admin dashboard,<br />
     your central hub for managing<br />
     our healthcare platform

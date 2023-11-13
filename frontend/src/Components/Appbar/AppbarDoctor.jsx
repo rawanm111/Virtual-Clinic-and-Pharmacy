@@ -77,18 +77,25 @@ function AppBarComponent({ userName}) {
     navigate('/clinic'); // Redirects to the login page
   };
 
+  const handleChangePass = () => {
+    navigate(`/changepassTwo/${id}`); 
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <AppBar position="static" style={appBarStyle}>
         <Toolbar style={toolbarStyle}>
           <Link to={`/doc-profile/${id}`} onClick={handleAvatarClick}>
-            <Avatar src={AccountCircle} alt="Zeina Avatar" />
+            <Avatar src={AccountCircle} alt="U" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
-            {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
+
           </Typography>
+          <Button color="primary" onClick={handleChangePass}>
+            Change Password
+          </Button>
           <Button color="primary" onClick={handleSignOut}>
-            Sign Out
+           Log Out
           </Button>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>

@@ -24,7 +24,7 @@ import AdminHome from  "./Pages/AdminHome";
 import PatientsTable from "./Pages/PatientsTable";
 import DoctorsTable from "./Pages/DoctorsTable";
 import UserManagement from "./Pages/UserManagement";
-import HealthPackages from "./Pages/HealthPackagesPage";
+import HealthPackagesMain from "./Pages/HealthPackagesPage";
 import NewPackage from "./Pages/NewPackagePage";
 import UpdatePackage from "./Pages/UpdatePackage";
 import AdminRequestsD from "./Pages/AdminReqPageDoc";
@@ -51,7 +51,7 @@ import HealthPackagesSub from "./Pages/HealthPackagesSub";
 import HealthPackagesView from "./Pages/HealthPackagesView";
 import Otp from "./Pages/otp";
 import ChangePassword from "./Pages/changepassword";
-
+import ChangePasswordTwo from "./Pages/changePasswordTwo";
 
 export default function Paths() {
   return (
@@ -82,7 +82,7 @@ export default function Paths() {
         <Route path="/doctorsTable/:id" element={<DoctorsTable />} />
         <Route path="/patientsTable/:id" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
-        <Route path="/health-packages" element={<HealthPackages />} />
+        <Route path="/health-packages" element={<HealthPackagesMain />} />
         <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
@@ -112,6 +112,7 @@ export default function Paths() {
         <Route path="/EmploymentContract/:userId" element={<EmploymentContract/>} /> 
         <Route path="/otp/:username" element={<Otp/>} />
         <Route path="/changepass/:username"element={<ChangePassword/>} />
+        <Route path="/changepassTwo/:id"element={<ChangePasswordTwo/>} />
       </Routes>
     </Router>
   );

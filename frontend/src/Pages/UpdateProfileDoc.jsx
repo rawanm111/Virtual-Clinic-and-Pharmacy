@@ -79,16 +79,6 @@ export default function UpdateDoctor() {
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Password"
-            variant="outlined"
-            name="password"
-            value={formData.password}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
             label="Full Name"
             variant="outlined"
             name="fullName"

@@ -95,7 +95,6 @@ const UpdatePackage = (id) => {
   </NameTypography>
   <div>  <DataTypography variant="body2">Name: {DoctorProfile.fullName}</DataTypography>  </div>
   <div> <DataTypography variant="body2">Email: {DoctorProfile.email}</DataTypography>  </div>
-  <div> <DataTypography variant="body2">Password: {DoctorProfile.password}</DataTypography>  </div>
   <div>
     <DataTypography variant="body2">
       Date of Birth: {DoctorProfile.dateOfBirth}

@@ -132,12 +132,14 @@ function EmploymentContracts() {
               <DataTypography variant="body1" sx={{ color: '#000080' }}>
                 {employmentContract.status || 'N/A'}
               </DataTypography>
+              <div>
               <Button variant="contained" color="primary" onClick={handleAcceptContract}>
                 Accept Employment Contract
               </Button>
               <Button variant="contained" color="secondary" onClick={handleRejectContract}>
                 Reject Employment Contract
               </Button>
+              </div>
             </CardContent>
           </CardWrapper>
         </CardsContainer>

@@ -34,11 +34,11 @@ const DoctorRegistrationHome = () => {
   };
 
   const handleSubmit = async () => {
-
     if (!validatePassword(formData.password)) {
       alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
       return;
     }
+
     try {
       const formDataToSend = new FormData();
 
@@ -65,191 +65,193 @@ const DoctorRegistrationHome = () => {
   };
 
   const handleFileChange = (event, fileSetter) => {
-    fileSetter(event.target.files[0]);
+    const file = event.target.files[0];
+    fileSetter(file);
   };
 
   return (
     <Box>
-      <Container maxWidth="md" className="text-field-container">
-        <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Username"
-              variant="outlined"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Password"
-              variant="outlined"
-              name="password"
-              type = "password"
-              value={formData.password}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Full Name"
-              variant="outlined"
-              name="fullName"
-              value={formData.fullName}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Email"
-              variant="outlined"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Hourly Rate"
-              variant="outlined"
-              type="number"
-              name="hourlyRate"
-              value={formData.hourlyRate}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Affiliation(hospital)"
-              variant="outlined"
-              name="affiliation"
-              value={formData.affiliation}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Educational Background"
-              variant="outlined"
-              name="educationalBackground"
-              value={formData.educationalBackground}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Date of Birth"
-              variant="outlined"
-              name="dateOfBirth"
-              value={formData.dateOfBirth}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Speciality"
-              variant="outlined"
-              name="speciality"
-              value={formData.speciality}
-              onChange={handleInputChange}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="National ID"
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-                startAdornment: (
-                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('nationalIdFileInput').click()} />
-                ),
-              }}
-            />
-            <input
-              type="file"
-              accept=".jpg, .jpeg, .png"
-              style={{ display: 'none' }}
-              id="nationalIdFileInput"
-              onChange={(e) => handleFileChange(e, setNationalIdFile)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Medical License"
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-                startAdornment: (
-                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalLicenseFileInput').click()} />
-                ),
-              }}
-            />
-            <input
-              type="file"
-              accept=".pdf"
-              style={{ display: 'none' }}
-              id="medicalLicenseFileInput"
-              onChange={(e) => handleFileChange(e, setMedicalLicenseFile)}
-            />
-          </Grid>
-          <Grid item xs={6}>
-            <TextField
-              fullWidth
-              margin="normal"
-              label="Medical Degree"
-              variant="outlined"
-              InputProps={{
-                readOnly: true,
-                startAdornment: (
-                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalDegreeFileInput').click()} />
-                ),
-              }}
-            />
-            <input
-              type="file"
-              accept=".pdf"
-              style={{ display: 'none' }}
-              id="medicalDegreeFileInput"
-              onChange={(e) => handleFileChange(e, setMedicalDegreeFile)}
-            />
-          </Grid>
+      <h1 className="title-text">Doctor Registration</h1>
+      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Username"
+            variant="outlined"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
         </Grid>
-        <h1 className="title-text">Doctor Registration</h1>
-        <div>
-          <img src={img} alt="Doctor Image" className="adjustable-image" />
-        </div>
-        <div className="button-container">
-          <Button variant="contained" onClick={handleSubmit}>
-            Register
-          </Button>
-        </div>
-        <div className="button-container-1">
-          <Button variant="contained">Cancel</Button>
-        </div>
-      </Container>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Password"
+            variant="outlined"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Full Name"
+            variant="outlined"
+            name="fullName"
+            value={formData.fullName}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Email"
+            variant="outlined"
+            name="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Hourly Rate"
+            variant="outlined"
+            type="number"
+            name="hourlyRate"
+            value={formData.hourlyRate}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Affiliation(hospital)"
+            variant="outlined"
+            name="affiliation"
+            value={formData.affiliation}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Educational Background"
+            variant="outlined"
+            name="educationalBackground"
+            value={formData.educationalBackground}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Date of Birth"
+            variant="outlined"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Speciality"
+            variant="outlined"
+            name="speciality"
+            value={formData.speciality}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="National ID"
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+              startAdornment: (
+                <React.Fragment>
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('nationalIdFileInput').click()} />
+                  {nationalIdFile && <span style={{ marginLeft: '8px' }}>{nationalIdFile.name}</span>}
+                </React.Fragment>
+              ),
+            }}
+          />
+          <input
+            type="file"
+            accept=".jpg, .jpeg, .png"
+            style={{ display: 'none' }}
+            id="nationalIdFileInput"
+            onChange={(e) => handleFileChange(e, setNationalIdFile)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Medical License"
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+              startAdornment: (
+                <React.Fragment>
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalLicenseFileInput').click()} />
+                  {medicalLicenseFile && <span style={{ marginLeft: '8px' }}>{medicalLicenseFile.name}</span>}
+                </React.Fragment>
+              ),
+            }}
+          />
+          <input
+            type="file"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            id="medicalLicenseFileInput"
+            onChange={(e) => handleFileChange(e, setMedicalLicenseFile)}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <TextField
+            fullWidth
+            margin="normal"
+            label="Medical Degree"
+            variant="outlined"
+            InputProps={{
+              readOnly: true,
+              startAdornment: (
+                <React.Fragment>
+                  <CloudUploadIcon style={{ cursor: 'pointer' }} onClick={() => document.getElementById('medicalDegreeFileInput').click()} />
+                  {medicalDegreeFile && <span style={{ marginLeft: '8px' }}>{medicalDegreeFile.name}</span>}
+                </React.Fragment>
+              ),
+            }}
+          />
+          <input
+            type="file"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            id="medicalDegreeFileInput"
+            onChange={(e) => handleFileChange(e, setMedicalDegreeFile)}
+          />
+        </Grid>
+      </Grid>
+      <div className="button-container">
+        <Button variant="contained" onClick={handleSubmit}>
+          Register
+        </Button>
+      </div>
     </Box>
   );
 };

@@ -3,11 +3,10 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import { useParams } from 'react-router-dom';
-import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
+import AppBarAdmin from '../Components/Appbar/AppbarAdmin';
+import { useNavigate } from 'react-router-dom';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
@@ -20,6 +19,12 @@ const HeaderContainer = styled('div')({
   justifyContent: 'space-between',
   alignItems: 'center',
   marginBottom: '16px',
+});
+
+const CardsContainer = styled('div')({
+  display: 'flex',
+  flexWrap: 'wrap',
+  justifyContent: 'space-between',
 });
 
 const CardWrapper = styled(Card)(({ theme }) => ({
@@ -38,166 +43,125 @@ const NameTypography = styled(Typography)({
   fontWeight: 'bold',
 });
 
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'white',
-  border: '2px solid #000',
-  boxShadow: 24,
-  padding: '16px',
-  overflow: 'auto',
-};
+const SubtitleTypography = styled(Typography)({
+  color: '#0050C0',
+  fontWeight: 'bold',
+  marginBottom: '10px',
+});
 
-function MedHistory() {
-  const { id } = useParams();
+const DataTypography = styled(Typography)({
+  color: '#000080',
+  marginBottom: '0.5rem',
+  marginLeft: '0.5rem',
+});
 
-  const [histories, setHistories] = useState([]);
-  const [selectedFile, setSelectedFile] = useState(null);
-  const [openModal, setOpenModal] = useState(false);
-  const [fileData, setFileData] = useState('');
-
-  const handleFileSelect = (e) => {
-    setSelectedFile(e.target.files[0]);
-  };
-
-  const handleUploadFile = () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append('file', selectedFile);
-
-      axios.post(`http://localhost:3000/med-history/upload/${id}`, formData)
-        .then((response) => {
-          console.log('File uploaded successfully');
-          fetchMedicalHistories(); // Trigger refetch after upload
-        })
-        .catch((error) => {
-          console.error('Error uploading file:', error);
-        });
-    } else {
-      console.error('No file selected');
-    }
-  };
-
-  const handleDownloadFile = (documentName, contentType, data) => {
-    const blobData = base64toBlob(data, contentType);
-    const blobUrl = URL.createObjectURL(blobData);
-
-    const a = document.createElement('a');
-    a.href = blobUrl;
-    a.download = documentName;
-    a.click();
-  };
-
-  const handleDeleteFile = (documentId) => {
-    axios.delete(`http://localhost:3000/med-history/delete/${id}/${documentId}`)
-      .then((response) => {
-        console.log('File deleted successfully');
-        fetchMedicalHistories();
-      })
-      .catch((error) => {
-        console.error('Error deleting file:', error);
-      });
-  };
-  
-
-  const base64toBlob = (base64Data, contentType) => {
-    const byteCharacters = atob(base64Data);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += 512) {
-      const slice = byteCharacters.slice(offset, offset + 512);
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-      const byteArray = new Uint8Array(byteNumbers);
-      byteArrays.push(byteArray);
-    }
-
-    return new Blob(byteArrays, { type: contentType });
-  };
-
-  const fetchMedicalHistories = () => {
-    axios.get(`http://localhost:3000/medHistory/patient/${id}`)
-      .then((response) => {
-        setHistories(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching medical histories:', error);
-      });
-  };
+function HealthPackages() {
+  const [healthPackages, setHealthPackages] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetchMedicalHistories();
-  }, [id]);
+    axios
+      .get('http://localhost:3000/health-packages')
+      .then((response) => {
+        setHealthPackages(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching health packages:', error);
+      });
+  }, []);
+
+  const handleAddPackageClick = () => {
+    navigate('/new-package');
+  };
+
+  const handleDeletePackage = (id) => {
+    axios
+      .delete(`http://localhost:3000/health-packages/${id}`)
+      .then((response) => {
+        console.log('Deleted health package:', response.data);
+        setHealthPackages((prevPackages) =>
+          prevPackages.filter((healthPackage) => healthPackage._id !== id)
+        );
+      })
+      .catch((error) => {
+        console.error('Error deleting health package:', error);
+      });
+  };
+
+  const handleUpdatePackage = (id) => {
+    navigate(`/update-package/${id}`);
+  };
 
   return (
     <div>
-      <AppBarComponent />
+      <AppBarAdmin />
       <PageContainer>
         <HeaderContainer>
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            My Medical History
+            Health Packages
           </Typography>
+          <Button variant="contained" color="primary" onClick={handleAddPackageClick}>
+            Add New Package
+          </Button>
         </HeaderContainer>
-        {histories.map((history) => (
-          <CardWrapper key={history._id}>
-            <CardContent>
-              <NameTypography variant="h6" sx={{ color: '#000080' }}>
-                {history.description}
-              </NameTypography>
-              <div>
-                {history.documents && history.documents.map((document) => (
-                  <Card key={document._id} style={{ marginBottom: '16px', border: '1px solid #0070F3', backgroundColor: '#f0f8ff', marginRight: '16px', boxShadow: '0px 6px 6px rgba(0, 0, 0, 0.9)', borderRadius: '5px', marginLeft: '5px' }}>
-                    <CardContent>
-                      <NameTypography variant="h6" sx={{ color: '#000080' }}>
-                        {document.filename}
-                      </NameTypography>
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={() => {
-                          handleDownloadFile(document.filename, document.contentType, document.data);
-                        }}
-                      >
-                        Download Document
-                      </Button>
-                      <Button
-              variant="contained"
-              color="secondary"
-              onClick={() => {
-                handleDeleteFile(document._id);
-              }}
-            >
-              Delete Document
-            </Button>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </CardContent>
-          </CardWrapper>
-        ))}
-        <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={handleFileSelect} />
-        <Button variant="contained" color="primary" onClick={handleUploadFile}>
-          Upload Medical History
-        </Button>
+        <CardsContainer>
+          {healthPackages.map((healthPackage) => (
+            <CardWrapper key={healthPackage._id} variant="outlined">
+              <CardContent>
+                <NameTypography variant="h5" component="div">
+                  {healthPackage.name}
+                </NameTypography>
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Annual Price:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    ${healthPackage.annualPrice}
+                  </DataTypography>
+                </div>
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Discount on Doctor Session Price:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    {healthPackage.discountOnDoctorSessionPrice}%
+                  </DataTypography>
+                </div>
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Discount on Medicine Orders:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    {healthPackage.discountOnMedicineOrders}%
+                  </DataTypography>
+                </div>
+                <div>
+                  <SubtitleTypography variant="subtitle1">
+                    Discount on Family Member Subscription:
+                  </SubtitleTypography>
+                  <DataTypography variant="body2">
+                    {healthPackage.discountOnFamilyMemberSubscription}%
+                  </DataTypography>
+                </div>
+                <div>
+                  <Button
+                    onClick={() => handleDeletePackage(healthPackage._id)}
+                  >
+                    Delete
+                  </Button>
+                  <Button
+                    onClick={() => handleUpdatePackage(healthPackage._id)}
+                  >
+                    Update
+                  </Button>
+                </div>
+              </CardContent>
+            </CardWrapper>
+          ))}
+        </CardsContainer>
       </PageContainer>
-      <Modal open={openModal} onClose={() => setOpenModal(false)}>
-        <div style={modalStyle}>
-          <h2 id="modal-modal-title">Medical History File</h2>
-          <p id="modal-modal-description">
-            {fileData}
-            <Button variant="contained" color="secondary" onClick={() => setOpenModal(false)}>
-              Close
-            </Button>
-          </p>
-        </div>
-      </Modal>
     </div>
   );
 }
 
-export default MedHistory;
+export default HealthPackages;
