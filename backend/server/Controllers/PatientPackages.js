@@ -57,41 +57,46 @@ exports.getAllPatientPackages = async (req, res) => {
       }
   }
 
-  exports.cancelPatientPackage = async (req, res) => {
-    try {
-      const { patientId,packageName } = req.params;
-    
-      console.log(packageName);
-      // Replace the first occurrence of hyphen with a space
-      packageNameNew = packageName.replace('-', ' ');
-      console.log(packageNameNew);
-      // Check if the package exists with case-insensitive comparison
-      const existingPackage = await PatientPackages.findOne({
-        patient: patientId,
-        'package.name': packageNameNew,
-      });
-  
-      if (!existingPackage) {
-        return res.status(404).json({ message: "Package not found." });
-      }
-  
-      // Update the package status to "cancelled"
-      const updatedPackage = await PatientPackages.findByIdAndUpdate(
-        existingPackage._id,
-        { $set: { status: 'Cancelled' } },
-        { new: true }
-      );
-  
-      res.status(200).json(updatedPackage);
-    } catch (err) {
-      console.error(err);
-      res.status(500).json(err);
+const HealthPackage = require('../Models/HealthPackage');
+
+exports.cancelPatientPackage = async (req, res) => {
+  try {
+    const { patientId, packageName } = req.params;
+
+    // Replace the first occurrence of hyphen with a space
+    const packageNameNew = packageName.replace('-', ' ');
+
+    // Find the HealthPackage by name
+    const healthPackage = await HealthPackage.findOne({ name: packageNameNew });
+
+    if (!healthPackage) {
+      return res.status(404).json({ message: 'HealthPackage not found.' });
     }
-  };
-  
-  
-  
-  
+
+    // Find the corresponding entry in PatientPackages using the HealthPackage ID
+    const existingPackage = await PatientPackages.findOne({
+      patient: patientId,
+      package: healthPackage._id,
+    });
+
+    if (!existingPackage) {
+      return res.status(404).json({ message: 'Package not found.' });
+    }
+
+    // Update the package status to "Cancelled"
+    const updatedPackage = await PatientPackages.findByIdAndUpdate(
+      existingPackage._id,
+      { $set: { status: 'Cancelled' } },
+      { new: true }
+    );
+
+    res.status(200).json(updatedPackage);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+};
+
   
 
   
