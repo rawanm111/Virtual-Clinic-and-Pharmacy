@@ -132,20 +132,15 @@ export default function AppTableP() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`http://localhost:3000/apps/available-appointments`)
+    axios.get(`http://localhost:3000/apps/available-appointments`)
       .then((response) => {
         if (response.data) {
-          const availableData = response.data
-            .map((item) => ({
-              id: item._id,
-              DoctorName: item.doctor
-                ? item.doctor.fullName
-                : 'Doctor Not Found',
-              date: new Date(item.date),
-              healthPackage: item.healthPackage,
-            }))
-            .filter((item) => item.date >= currentDate);
+          const availableData = response.data.map((item) => ({
+            id: item._id,
+            DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
+            date: new Date(item.date),
+          })).filter((item) => item.date >= currentDate);
+
           setAvailableApps(availableData);
         } else {
           console.error('No data received from the API');
@@ -154,7 +149,7 @@ export default function AppTableP() {
       .catch((error) => {
         console.error('Error fetching available appointments:', error);
       });
-  }, [currentDate]);
+  }, []);
   
   const calculateDiscountedPrice = (appointment) => {
     // console.log(appointment, 'appointment');
@@ -250,6 +245,7 @@ export default function AppTableP() {
     });
     setAvailableApps(filteredAvailableApps);
   };
+
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const handleBookAppointment = (appointmentId,discountedPrice) => {
     setSelectedAppointmentId(appointmentId);
@@ -596,10 +592,7 @@ export default function AppTableP() {
           value={checkAvailabilityDate}
           onChange={(e) => setCheckAvailabilityDate(e.target.value)}
         />
-        <Button
-          variant="contained"
-          onClick={handleFilterChangeOne}
-        >
+                <Button variant="contained" onClick={handleFilterChangeOne}>
           Check Availability
         </Button>
         <Button
@@ -607,19 +600,14 @@ export default function AppTableP() {
           onClick={() => {
             setCheckAvailabilityDate('');
 
-            axios
-              .get(`http://localhost:3000/apps/available-appointments`)
+            axios.get(`http://localhost:3000/apps/available-appointments`)
               .then((response) => {
                 if (response.data) {
-                  const availableData = response.data
-                    .map((item) => ({
-                      id: item._id,
-                      DoctorName: item.doctor
-                        ? item.doctor.fullName
-                        : 'Doctor Not Found',
-                      date: new Date(item.date),
-                    }))
-                    .filter((item) => item.date >= currentDate);
+                  const availableData = response.data.map((item) => ({
+                    id: item._id,
+                    DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
+                    date: new Date(item.date),
+                  })).filter((item) => item.date >= currentDate);
 
                   setAvailableApps(availableData);
                 } else {
@@ -627,15 +615,13 @@ export default function AppTableP() {
                 }
               })
               .catch((error) => {
-                console.error(
-                  'Error fetching available appointments:',
-                  error
-                );
+                console.error('Error fetching available appointments:', error);
               });
           }}
         >
           Reset
         </Button>
+
       </Box>
 
       <h2>Available Appointments</h2>
