@@ -66,6 +66,9 @@ app.use('/', authroutes)
 app.use('/employmentContract',EmploymentContract);
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
+const Packages = require('./Models/PatientPackages'); 
+const healthPackage = require('./Models/HealthPackage');
+
 
 const appointment = require('./Models/appointements');
 const { cp } = require('fs');
@@ -74,11 +77,14 @@ const storeItems = new Map([
   [2, { priceInCents: 20000, name: "karol" }]
 ]);
 
+
 app.post('/payment', async (req, res) => {
   try {
     const appId = req.body.appId;
+    const price = req.body.price;
     const app = await appointment.findById(appId).populate('doctor');
-console.log(appId); 
+    const patientId = req.body.patientId;
+    console.log(price,"price");
     if (!app) {
       return res.status(404).json({ error: 'Appointment not found' });
     }
@@ -89,7 +95,7 @@ console.log(appId);
         product_data: {
           name: app._id.toString(),
         },
-        unit_amount: 20000,
+        unit_amount: price * 100,
       },
       quantity: 1,
     };
@@ -110,8 +116,8 @@ console.log(appId);
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [lineItem],
-      success_url: `http://localhost:3001/clinic-patient-home/${appId}`,
-      cancel_url: `http://localhost:3001/clinic-patient-home/${appId}`,
+      success_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
     });
 
 
@@ -134,6 +140,7 @@ app.post('/paymentCart', async (req, res) => {
 
     const cartId = req.body.cartId;
     const cart = await Cart.findById(cartId).populate('medications.medicationId');
+    const patientId = req.body.patientId;
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
@@ -169,8 +176,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/:${cartId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/:${cartId}`,
+      success_url: `http://localhost:3001/pharm-patient-home/:${patientId}`,
+      cancel_url: `http://localhost:3001/pharm-patient-home/:${patientId}`,
     });
 
     res.json({ url: session.url });
@@ -179,8 +186,6 @@ app.post('/paymentCart', async (req, res) => {
   }
 });
 
-const Packages = require('./Models/PatientPackages'); 
-const healthPackage = require('./Models/HealthPackage');
 
 
 
@@ -216,8 +221,8 @@ app.post('/paymentPack', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/${packageId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/${packageId}`,
+      success_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/clinic-patient-home/${patientId}`,
     });
 
     res.json({ url: session.url });

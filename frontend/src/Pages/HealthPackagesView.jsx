@@ -166,16 +166,19 @@ function HealthPackagesView() {
     };
 
     try {
+
       const response = await axios.post('http://localhost:3000/PatientPackages', packageData);
       console.log('Package created:', response.data);
       // Handle successful package creation here, e.g., show a success message
       // or redirect to a different page using navigate('/path')
+
     } catch (error) {
       console.error('Error creating package:', error.response ? error.response.data : error.message);
       // Handle errors here, e.g., show an error message to the user
     }
   };
 
+  
   const handleCardPayment = async () => {
     try {
       

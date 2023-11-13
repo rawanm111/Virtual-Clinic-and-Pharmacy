@@ -17,8 +17,9 @@ export default function DoctorsTable() {
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [availableDoctors, setAvailableDoctors] = useState([]);
   const [availableDoctorsResult, setAvailableDoctorsResult] = useState([]);
-  const [patientHealthPackage, setPatientHealthPackage] = useState(null);
+  const [patientHealthPackage, setPatientHealthPackage] = useState([]);
   const { id } = useParams();
+  const [allHealthPackages, setAllHealthPackages] = useState([]);
   const patientId = id;
 
   useEffect(() => {
@@ -53,11 +54,29 @@ export default function DoctorsTable() {
       .get(`http://localhost:3000/PatientPackages/${patientId}`)
       .then((response) => {
         setPatientHealthPackage(response.data);
+        console.log(response.data,"response.data")
+        console.log(patientHealthPackage,"patientHealthPackage")
+
       })
       .catch((error) => {
         console.error('Error fetching patient health package:', error);
       });
-  }, [patientId]);
+}, [patientId]);
+
+useEffect(() => {
+  axios
+    .get('http://localhost:3000/health-packages')
+    .then((response) => {
+      const packagesWithId = response.data.map((pkg) => ({
+        ...pkg,
+        id: pkg._id,
+      }));
+      setAllHealthPackages(packagesWithId);
+    })
+    .catch((error) => {
+      console.error('Error fetching health packages:', error);
+    });
+}, []);
 
   const popOverStyle = {
     display: 'flex',
@@ -91,33 +110,71 @@ export default function DoctorsTable() {
     setFilteredDoctors(filteredRows);
   };
 
+  const [packName, setPackName] = useState("");
+
   const columns = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'speciality', headerName: 'Speciality', width: 200 },
-    { field: 'hourly_rate', headerName: 'Session Price (LE)', width: 200 },
+    { field: "name", headerName: "Name", width: 200 },
+    { field: "speciality", headerName: "Speciality", width: 200 },
+    { field: "hourly_rate", headerName: "Session Price (LE)", width: 200 },
     {
-      field: 'sessionPriceAfterHealthPackage',
-      headerName: 'Discounted Session Price (LE) ',
+      field: "sessionPriceAfterHealthPackage",
+      headerName: "Discounted Session Price (LE)",
       width: 250,
       renderCell: (params) => {
         const sessionPrice = params.row.hourly_rate;
-        const discount = patientHealthPackage?.package.discountOnDoctorSessionPrice || 0;
-        const sessionPriceAfterDiscount = sessionPrice - discount;
+        console.log(params,"params")
+        console.log(params.row,"sessionPriceAfterHealthPackage");
+        console.log(patientHealthPackage, "patientHealthPackage");
+        console.log(allHealthPackages, "allHealthPackages");
+        let discount = 0;
+        let sessionPriceAfterDiscount = sessionPrice;
+
+        // Use forEach to find the pack name
+        patientHealthPackage.forEach((pack) => {
+          setPackName(pack.package);
+          return;
+        });
+
+        // Use find instead of map for better logic
+        const selectedPackage = allHealthPackages.find(
+          (pkg) => pkg.name === packName
+        );
+
+        if (selectedPackage) {
+          console.log(selectedPackage, "selectedPackage");
+          console.log(
+            selectedPackage.discountOnDoctorSessionPrice,
+            "selectedPackage.discountOnDoctorSessionPrice"
+          );
+
+          discount =
+            (selectedPackage.discountOnDoctorSessionPrice / 100) * sessionPrice;
+          sessionPriceAfterDiscount = sessionPrice - discount;
+          console.log(discount, "discount");
+        }
+
+        console.log(
+          sessionPriceAfterDiscount,
+          "sessionPriceAfterDiscount"
+        );
+
         return <Typography>{sessionPriceAfterDiscount.toFixed(2)}</Typography>;
       },
     },
     {
-      field: 'actions',
-      headerName: '',
+      field: "actions",
+      headerName: "",
       width: 120,
       renderCell: (params) => (
-        <Button variant="outlined" onClick={() => handleViewClick(params.row)}>
+        <Button
+          variant="outlined"
+          onClick={() => handleViewClick(params.row)}
+        >
           VIEW
         </Button>
       ),
     },
   ];
-
   const handleViewClick = (row) => {
     setSelectedDoctorData(row);
     setPopoverAnchor(row);
