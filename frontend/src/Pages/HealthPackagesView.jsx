@@ -180,13 +180,13 @@ function HealthPackagesView() {
     try {
       
       // Check if a health package is selected
-      if (!packageType) {
+      if (!selectedHealthPackage) {
         console.error('No health package selected.');
         return;
       }
   
       // Find the selected health package by its ID
-      const selectedPackage = healthPackages.find((Package) => Package.name === packageType);
+      const selectedPackage = healthPackages.find((Package) => Package.name === selectedHealthPackage.name);
       console.log(healthPackages)
       if (!selectedPackage) {
         console.error('Invalid health package selected.');
