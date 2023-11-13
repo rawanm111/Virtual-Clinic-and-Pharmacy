@@ -15,7 +15,7 @@ const pharmcistReqRoutes = require('./Routes/pharmcistReqRoutes');
 const HealthRecRoutes = require('./Routes/HealthRecRoutes.js');
 const PrescriptionRoutes = require('./Routes/PrescriptionRoutes.js');
 const Adminroutes = require('./Routes/AdminRoutes.js');
-const wallet = require('./Routes/walletRoutes');
+const wallet = require('./Routes/walletRoutes.js');
 const walletDoc=require('./Routes/walletRoutesDoc.js')
 const CartRoutes = require('./Routes/CartRoutes'); 
 const AddressRoutes=require('./Routes/Adressroutes.js')
@@ -86,7 +86,7 @@ console.log(appId);
         product_data: {
           name: app._id.toString(),
         },
-        unit_amount: 200,
+        unit_amount: 20000,
       },
       quantity: 1,
     };
@@ -125,8 +125,6 @@ const Cart = require('./Models/Cart');
 
 
 ///start
-
-
 
 app.post('/paymentCart', async (req, res) => {
   try {
@@ -177,6 +175,57 @@ app.post('/paymentCart', async (req, res) => {
     res.status(500).json({ error: e.message });
   }
 });
+
+const Packages = require('./Models/PatientPackages'); 
+const healthPackage = require('./Models/HealthPackage');
+
+
+
+///start
+
+app.post('/paymentPack', async (req, res) => {
+  try {
+    const packageId = req.body.packageId;
+    const patientId = req.body.patientId;
+    console.log(patientId);
+
+    const healthPackageItem = await healthPackage.findById(packageId);
+
+    if (!healthPackageItem) {
+      return res.status(404).json({ error: 'Package not found' });
+    }
+
+    const lineItems = [
+      {
+        price_data: {
+          currency: 'usd',
+          product_data: {
+            name: healthPackageItem.name,
+          },
+          unit_amount: healthPackageItem.annualPrice * 100, // Amount should be in cents
+        },
+        quantity: 1,
+      }
+    ];
+
+    // Create a Stripe session for payment
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode: 'payment',
+      line_items: lineItems,
+      success_url: `http://localhost:3001/pharm-patient-home/${packageId}`,
+      cancel_url: `http://localhost:3001/pharm-patient-home/${packageId}`,
+    });
+
+    res.json({ url: session.url });
+  } catch (error) {
+    console.error('Error processing payment:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
 app.use('/login', authroutes)
 app.use('/PatientPackages', PatientPackagesRoutes);
 

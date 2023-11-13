@@ -172,8 +172,8 @@ function AppBarComponent({ userName}) {
               label="Wallet"
               sx={tabStyle}
               component={Link}
-              to={`/Walletclinic/${id}`}
-              selected={location.pathname === `/Walletclinic/${id}`}
+              to={`/walletclinic/${id}`}
+              selected={location.pathname === `/walletclinic/${id}`}
             />
           </Tabs>
         </div>

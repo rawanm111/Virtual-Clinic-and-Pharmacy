@@ -15,7 +15,7 @@ import Select from '@mui/material/Select';
 import TextField from '@mui/material/TextField';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
-
+import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
 import Box from '@mui/material/Box';
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -76,12 +76,24 @@ function HealthPackagesView() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [startDate, setStartDate] = useState('');
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [paymentOption, setPaymentOption] = useState('wallet');
+
 
 
   const [selectedPackageId, setSelectedPackageId] = useState('');
 
   const handleSelectPackage = (event, packageId) => {
     setSelectedPackageId(event.target.checked ? packageId : '');
+  };
+  const openPaymentDialog = () => {
+    setIsPaymentDialogOpen(true);
+  };
+  const closePaymentDialog = () => {
+    setIsPaymentDialogOpen(false);
+  };
+  const handlePaymentOptionChange = (event) => {
+    setPaymentOption(event.target.value);
   };
 
 
@@ -120,8 +132,11 @@ function HealthPackagesView() {
   // const [endDate, setEndDate] = useState('');
 
   const handlePackageTypeChange = (event) => {
-    setPackageType(event.target.value);
+    setPackageType(event.target.value, () => {
+      console.log('Updated Package Type:', packageType);
+    });
   };
+  
 
   // const handleStartDateChange = (event) => {
   //   setStartDate(event.target.value);
@@ -139,7 +154,7 @@ function HealthPackagesView() {
   
 
   const handleSubmit = async (event) => {
-    event.preventDefault();
+    // event.preventDefault();
 
   // Function to format date in dd/mm/yyyy
   const formatDate = (date) => {
@@ -186,17 +201,141 @@ function HealthPackagesView() {
     }
   };
 
-  const handleCardPayment = () => {
-    // Logic for handling payment with card
-    console.log('Card payment initiated');
-    // You can add your payment processing logic here
+  const handleCardPayment = async () => {
+    try {
+      
+      // Check if a health package is selected
+      if (!packageType) {
+        console.error('No health package selected.');
+        return;
+      }
+  
+      // Find the selected health package by its ID
+      const selectedPackage = healthPackages.find((Package) => Package.name === packageType);
+      console.log(healthPackages)
+      if (!selectedPackage) {
+        console.error('Invalid health package selected.');
+        return;
+      }
+  
+      // Extract necessary data for payment
+      const packageId = selectedPackage.id;
+      const items = [selectedPackage]; // Put the selected package in an array
+  
+      console.log(packageId,"id");
+      console.log(items,"items")
+      // Check if items is an array
+      if (!items || !Array.isArray(items)) {
+        console.error('No health package data found.');
+        return;
+      }
+
+      // Perform the payment logic
+      const response = await axios.post('http://localhost:3000/paymentPack', {
+        packageId: packageId,
+        patientId: id,
+        items: items.map((item) => ({
+          id: item._id,
+          quantity: 1,
+        })),
+      });
+      {handleSubmit()}
+
+      if (response.status === 200) {
+        window.location = response.data.url;
+        console.log(response.data.url);
+      } else {
+        console.error('Error:', response.data);
+      }
+      // Handle the response as needed
+      console.log('Card payment initiated:', response.data);
+      // rest of the code...
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error.message);
+    }
   };
   
-  const handleWalletPayment = () => {
-    // Logic for handling payment with wallet
-    console.log('Wallet payment initiated');
-    // You can add your payment processing logic here
+  
+  const [walletBalance, setWalletBalance] = useState(0); // Add wallet balance state
+
+  const handleWalletPayment = async () => {
+    try {
+      healthPackages.map((healthPackage) => (
+        healthPackage.name === packageType ? setSelectedHealthPackage(healthPackage) : null
+      ));
+      const response = await axios.get(`http://localhost:3000/wallet/${id}`);
+      
+      if (response.data.balance < 200) {
+        console.error("Insufficient balance");
+      } else {
+        // Move handleSubmit inside the block to ensure it's called after a successful payment
+        // handleSubmit();
+        
+        // Update the user's wallet balance (assuming you have a state for wallet balance)
+        const updatedBalance = response.data.balance - selectedHealthPackage.annualPrice;
+        setWalletBalance(updatedBalance);
+        console.log(walletBalance);
+        console.log(selectedHealthPackage.annualPrice)
+        const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
+          patientId: id,
+          balance: updatedBalance,
+        });
+        
+        if (response1 && response1.status === 200) {
+          console.log('Wallet payment successful!');
+        } else {
+          console.error('Failed to update wallet balance:', response1 && response1.data);
+        }
+      }
+    } catch (error) {
+      console.error('Error processing wallet payment:', error);
+    }
   };
+  
+
+
+  // const handleWallet = async () => {
+  //   try {
+      
+  //       // Make a request to your backend to process wallet payment
+        
+  //       const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
+          
+  //       });
+  //       // const prev= response.data.balance - 200;
+  //       console.log(response.data)
+
+  //       if (response.data.balance < 200) {
+  //         console.error("Insufficient balance");
+          
+  //       }
+  //       else{
+  //         {handleSubmitPayment()}
+  //       if (response && response.status === 200) {
+  //         console.log('Wallet payment successful!');
+  //         // Optionally, you can handle any additional logic after a successful wallet payment
+          
+  //         // Update the user's wallet balance (assuming you have a state for wallet balance)
+  //         // setWalletBalance(prev);
+  //         // console.log(walletBalance)
+          
+  //         const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
+            
+  //           patientId: id,
+  //           balance: response.data.balance - 200,
+  //         });
+
+          
+  //       } else {
+  //         console.error('Wallet payment failed:', response && response.data);
+  //         // Handle wallet payment failure (e.g., show error message to the user)
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error processing wallet payment:', error);
+  //     // Handle error (e.g., show error message to the user)
+  //   }
+  // };
   
 
 
@@ -275,20 +414,18 @@ function HealthPackagesView() {
             onChange={handlePackageTypeChange}
             sx={{ mb: 2 }}
           >
-            <MenuItem value="silver">Silver</MenuItem>
-            <MenuItem value="gold">Gold</MenuItem>
-            <MenuItem value="platinum">Platinum</MenuItem>
+            <MenuItem value="Silver Package">Silver</MenuItem>
+            <MenuItem value="gold package ">Gold</MenuItem>
+            <MenuItem value="Platinum Package">Platinum</MenuItem>
           </Select>
         </FormControl>
 
 
      
 
-        <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
+       
 
-
+{/* 
       <Button
   variant="contained"
   color="secondary"
@@ -298,7 +435,6 @@ function HealthPackagesView() {
   Pay with Card
 </Button>
 
-{/* Payment with Wallet Button */}
 <Button
   variant="contained"
   color="success"
@@ -306,13 +442,53 @@ function HealthPackagesView() {
   //sx={{ mt: 2 }}
 >
   Pay with Wallet
-</Button>
+</Button>  */}
+
+
+
+<Button onClick={openPaymentDialog} variant='contained'>Choose Payment Options</Button>
+
+<Dialog
+        open={isPaymentDialogOpen}
+        onClose={closePaymentDialog}
+      >
+        <DialogTitle>Select Payment Method</DialogTitle>
+        <DialogContent>
+          
+          <RadioGroup
+            name="paymentOption"
+            value={paymentOption}
+            onChange={handlePaymentOptionChange}
+          >
+            <FormControlLabel
+              value="wallet"
+              control={<Radio />}
+              label="Payment by Wallet"
+            />
+            <FormControlLabel
+              value="visa"
+              control={<Radio />}
+              label="Payment by Visa"
+            />
+          </RadioGroup>
+        </DialogContent>
+        <DialogActions>
+          
+          <Button onClick={closePaymentDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => paymentOption === 'visa' ? handleCardPayment() : handleWalletPayment()} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
       </form>
 
 
 
 
     </div>
+    
   );
 }
 

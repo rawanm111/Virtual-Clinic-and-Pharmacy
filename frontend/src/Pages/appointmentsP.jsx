@@ -319,6 +319,8 @@ const handleFilterChange = () => {
               if (response.data) {
                 const transformedData = response.data.map((item) => ({
                   id: item._id,
+                  patientId: id,
+
                   DoctorName: item.doctor
                     ? item.doctor.fullName
                     : 'Doctor Not Found',

@@ -7,28 +7,30 @@ const walletModel = require('../Models/Wallet'); // Import the wallet model
 const patients = require('../Models/patients');
 const bcrypt = require('bcrypt');
 
+
 exports.createPatient = async (req, res) => {
   try {
     // Create a new patient
     const newPatient = new patientModel(req.body);
     const savedPatient = await newPatient.save();
 
-    // Create a wallet for the new patient
+    // Create a wallet for the patient
     const newWallet = new walletModel({
-      patient: savedPatient._id, // Assuming patientModel has an _id field
-      balance: 0, // You can set an initial balance if needed
+      patient: savedPatient._id,
+      balance: 0,
     });
-
-    // Save the wallet
     const savedWallet = await newWallet.save();
 
-    // Update the patient with the wallet information
+    // Associate the wallet with the patient
     savedPatient.wallet = savedWallet._id;
     await savedPatient.save();
 
+    // Respond with the created patient
     res.status(201).json(savedPatient);
   } catch (err) {
-    res.status(500).json(err);
+    // Handle errors
+    console.error(err);  // Log the error for debugging purposes
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
