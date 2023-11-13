@@ -86,9 +86,6 @@ function AppBarComponent({ userName }) {
           <div style={{ display: 'flex', alignItems: 'center', marginRight: 'auto', marginLeft: '20px' }}>
             <Avatar src={AccountCircle} alt="U" />
           </div>
-          <Button color="primary" onClick={handleChangePass}>
-            Change Password
-          </Button>
           <Button color="primary" onClick={handleSignOut}>
             Log Out
           </Button>

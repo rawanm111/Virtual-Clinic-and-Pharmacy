@@ -23,6 +23,7 @@ const medicalHistoryRoutes = require('./Routes/medHistoryRoutes');
 const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
 const authroutes = require('./Routes/authenticationRoutes');
 const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
+const OrderRoutes=require("./Routes/OrderRouter.js")
 const cors = require('cors');
 
 const app = express();
@@ -64,6 +65,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/admin',Adminroutes);
 app.use('/', authroutes)
 app.use('/employmentContract',EmploymentContract);
+app.use("/Order",OrderRoutes);
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const Packages = require('./Models/PatientPackages'); 
@@ -176,8 +178,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/:${patientId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/:${patientId}`,
+      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
     });
 
     res.json({ url: session.url });
@@ -210,7 +212,7 @@ app.post('/paymentPack', async (req, res) => {
           product_data: {
             name: healthPackageItem.name,
           },
-          unit_amount: healthPackageItem.annualPrice * 100, // Amount should be in cents
+          unit_amount: healthPackageItem.annualPrice * 1000, // Amount should be in cents
         },
         quantity: 1,
       }

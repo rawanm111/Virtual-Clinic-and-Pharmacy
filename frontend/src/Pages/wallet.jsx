@@ -56,7 +56,7 @@ const WalletPage = () => {
       .then((response) => {
         console.log(response.data)
         if (response.data) {
-          setWalletBalance(response.data.balance || 10);
+          setWalletBalance(response.data.balance );
           setTransactions(response.data.transactions || []);
         }
       })

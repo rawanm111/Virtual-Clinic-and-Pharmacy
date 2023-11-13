@@ -23,7 +23,7 @@ export default function PatientsTable() {
           const transformedData = response.data.map((item) => ({
             id: item._id,
             name: item.username,
-            password: item.password,
+  
             fullName: item.fullName,
             email: item.email,
             dateOfBirth: item.dateOfBirth,
@@ -71,7 +71,6 @@ export default function PatientsTable() {
 
   const columns = [
     { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'password', headerName: 'Password', width: 200 },
     { field: 'fullName', headerName: 'Full Name', width: 200 },
     { field: 'email', headerName: 'Email', width: 200 },
     { field: 'dateOfBirth', headerName: 'Date of Birth', width: 200 },
@@ -170,7 +169,6 @@ export default function PatientsTable() {
         {selectedPatientData && (
           <Box p={2}>
             <Typography>Name: {selectedPatientData.name}</Typography>
-            <Typography>Password: {selectedPatientData.password}</Typography>
             <Typography>Full Name: {selectedPatientData.fullName}</Typography>
             <Typography>Email: {selectedPatientData.email}</Typography>
             <Typography>Date of Birth: {selectedPatientData.dateOfBirth}</Typography>

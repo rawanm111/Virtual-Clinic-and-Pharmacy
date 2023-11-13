@@ -13,8 +13,8 @@ const pharmacists = require('../Models/pharmacists');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'zeinaelmofty@gmail.com',
-    pass: 'udsg rmzv vmqu uhxj'
+    user: 'Marwantest70@gmail.com',
+    pass: 'zech uxtr bhsu zbec'
   }
 });
 const otpStorage = new Map();

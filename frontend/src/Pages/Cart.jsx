@@ -206,6 +206,7 @@ const handlePayment = async (cartData) => {
 
     const response = await axios.post('http://localhost:3000/paymentCart', {
       cartId: cartId,
+      patientId: id,
       items: items.map((item) => ({
         id: item.medicationId,
         quantity: item.quantity,

@@ -79,7 +79,7 @@ function PharmacistMedicationTable() {
       const index = updatedData.findIndex((item) => item.id === row.id);
       updatedData[index].isEditingDescription = false;
 
-      await axios.put(`http://localhost:2002/meds/updateDescription/${row.id}`, { description: row.description });
+      await axios.put(`http://localhost:3000/meds/updateDescription/${row.id}`, { description: row.description });
 
       setMedicationData(updatedData);
     } catch (error) {
@@ -93,7 +93,7 @@ function PharmacistMedicationTable() {
       const index = updatedData.findIndex((item) => item.id === row.id);
       updatedData[index].isEditingPrice = false;
 
-      await axios.put(`http://localhost:2002/meds/updatePrice/${row.id}`, { price: row.price });
+      await axios.put(`http://localhost:3000/meds/updatePrice/${row.id}`, { price: row.price });
 
       setMedicationData(updatedData);
     } catch (error) {
