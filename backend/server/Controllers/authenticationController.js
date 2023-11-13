@@ -13,8 +13,8 @@ const pharmacists = require('../Models/pharmacists');
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: 'marwanayman678@gmail.com',
-    pass: 'heyw zirn mmih qowd'
+    user: 'zeinaelmofty@gmail.com',
+    pass: 'udsg rmzv vmqu uhxj'
   }
 });
 const otpStorage = new Map();
@@ -64,13 +64,15 @@ const sendOtp = async (req, res) => {
       };
       transporter.sendMail(mailOptions, function(error, info){
         if (error) {
-          console.log(error);
+          console.error(error);
         } else {
-          return res.send({Status: "Success"})
+          console.log('Email sent: ' + info.response);
+          return res.send({ Status: "Success" });
         }
       });
+      
 
-      return res.status(200).json({ message: 'OTP sent to mail successfully' });
+      return res.status(200).json({ message: 'OTP sent to mail successfully bgad' });
     }
   }  
       return res.status(404).json({ message: 'User not kabab' });
@@ -112,27 +114,6 @@ const verifyOtp = async (req, res) => {
 };
 
 
-
-
-
-// for (const userType of userTypes) {
-//   const user = await userType.model.findOne({ username: username });
-//   if (user) {
-//     //console.log('User found:', user); // Log the user object
-//     const otp = `${Math.floor(100000 + Math.random() * 900000)}`;
-
-//   // Send the email with the OTP
-//   await transporter.sendMail({
-//     from: process.env.EMAIL_USERNAME,
-//     to: user.email,
-//     subject: 'Password Reset OTP',
-//     text: `Your OTP for resetting your password is: ${otp}`,
-//     // You can also use HTML body content
-//   });
-// } 
-// }
-
-
 const models = [patients, doccs, pharmacists]; // Add all your user models here
 
 const resetPass = async (req, res) => {
@@ -171,36 +152,42 @@ const resetPass = async (req, res) => {
   }
 };
 
-// module.exports = {
-//   resetPass
-// };
 
+const changePass = async (req, res) => {
+  const { id } = req.body;
+  const { newPassword } = req.body;
 
+  if (!newPassword) {
+    return res.status(400).json({ message: 'New password is required' });
+  }
 
+  try {
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
 
+    let updatedUser = null;
+    for (const model of models) {
+      updatedUser = await model.findOneAndUpdate(
+        { _id: id },
+        { password: hashedPassword },
+        { new: true }
+      );
+      if (updatedUser) break;
+    }
 
+    if (!updatedUser) {
+      return res.status(404).json({ message: 'User not found' });
+    }
 
+    // Optionally, remove the password from the response for security
+    updatedUser.password = undefined;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    res.status(200).json(updatedUser);
+  } catch (err) {
+    console.error('Error updating password:', err);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
 
 const login = async (req, res) => {
   try {
@@ -281,5 +268,5 @@ const login = async (req, res) => {
 
 
 module.exports = {
-  sendOtp,verifyOtp,login,resetPass
+  sendOtp,verifyOtp,login,resetPass, changePass
 };

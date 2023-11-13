@@ -76,7 +76,7 @@ function HealthPackagesSub() {
         // Fetch health packages for each family member
         const familyDataPromises = familyMembers.map(async (familyMember, index) => {
           const familyMemberPackages = await axios.get(`http://localhost:3000/PatientPackages/${familyMember._id}`);
-          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}` }));
+          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}`, familyMember: familyMember._id }));
         });
 
         const familyData = await Promise.all(familyDataPromises);
@@ -87,10 +87,14 @@ function HealthPackagesSub() {
     fetchData();
   }, [id, familyMembers]);
 
-  const handleCancel = async (patientId, packageName) => {
+  const handleCancel = async (patientId, packageName, isFamilyMember, familyMemberId) => {
     try {
       packageName = packageName.replace(' ', '-');
-      await axios.put(`http://localhost:3000/PatientPackages/${patientId}/cancel-package/${packageName}`);
+      const cancelUrl = isFamilyMember
+        ? `http://localhost:3000/PatientPackages/${familyMemberId}/cancel-package/${packageName}`
+        : `http://localhost:3000/PatientPackages/${patientId}/cancel-package/${packageName}`;
+
+      await axios.put(cancelUrl);
       console.log('Package status updated');
 
       // Refetch and update the tables
@@ -103,7 +107,7 @@ function HealthPackagesSub() {
         // Fetch health packages for each family member
         const familyDataPromises = familyMembers.map(async (familyMember, index) => {
           const familyMemberPackages = await axios.get(`http://localhost:3000/PatientPackages/${familyMember._id}`);
-          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}` }));
+          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}`, familyMember: familyMember._id }));
         });
 
         const familyData = await Promise.all(familyDataPromises);
@@ -129,7 +133,28 @@ function HealthPackagesSub() {
         <Button
           variant="outlined"
           color="primary"
-          onClick={() => handleCancel(id, params.row.package)}
+          onClick={() => handleCancel(id, params.row.package, false)}
+        >
+          Cancel
+        </Button>
+      ),
+    },
+  ];
+
+  const familyColumns = [
+    { field: 'package', headerName: 'Package Type', flex: 1 },
+    { field: 'status', headerName: 'Status', flex: 1 },
+    { field: 'startdate', headerName: 'Start Date', flex: 1 },
+    { field: 'enddate', headerName: 'End Date', flex: 1 },
+    {
+      field: 'button',
+      headerName: '',
+      width: 200,
+      renderCell: (params) => (
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleCancel(params.row.familyMember, params.row.package, true, params.row.familyMember)}
         >
           Cancel
         </Button>
@@ -166,7 +191,7 @@ function HealthPackagesSub() {
             </div>
             <DataGrid
               rows={familyHealthPackages}
-              columns={columns}
+              columns={familyColumns}
               pageSize={5}
               checkboxSelection
               disableRowSelectionOnClick

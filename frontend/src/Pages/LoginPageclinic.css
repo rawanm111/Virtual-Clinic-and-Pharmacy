@@ -8,7 +8,7 @@
   }
   
   .adjustable-image {
-    width: 50%; /* Increase the width to make the image larger */
+    width: 100%; /* Increase the width to make the image larger */
     max-height: 100vh; /* Set the maximum height to the viewport height */
     border: 1px solid #cccccc00; /* Add a border to the image (optional) */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* Add a box shadow to the image (optional) */

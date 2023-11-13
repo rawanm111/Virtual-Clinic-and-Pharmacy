@@ -91,7 +91,7 @@ function MedHistory() {
   };
 
   const handleDeleteFile = (documentId) => {
-    axios.delete(`http://localhost:3000/med-history/delete/${id}/${documentId}`)
+    axios.delete(`http://localhost:3000/medHistory/delete/${id}/${documentId}`)
       .then((response) => {
         console.log('File deleted successfully');
         fetchMedicalHistories();

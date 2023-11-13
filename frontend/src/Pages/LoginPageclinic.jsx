@@ -27,6 +27,12 @@ const buttonContainerStyle = {
   marginTop: '10px',
 };
 
+const image = {
+  width: '70%',
+  marginLeft: '100px',
+  marginTop: '-10px',
+}
+
 // function LoginPage() {
 //   const navigate = useNavigate();
 
@@ -134,11 +140,10 @@ function LoginPage() {
 
   return (
     <div style={containerStyle}>
-      <div className="image-container">
+      <div className="image">
         <img
           src={img}
           alt=""
-          className="adjustable-image"
         />
       </div>
       <div style={rightContentStyle}>
@@ -180,6 +185,8 @@ function LoginPage() {
           <Button variant="outlined" onClick={handleDoctorRegistration}>
             REGISTER AS DOCTOR
           </Button>
+          </div>
+          <div style={buttonContainerStyle}>
           <Button variant="outlined" onClick={handlePatientRegistration}>
             REGISTER AS PATIENT
           </Button>

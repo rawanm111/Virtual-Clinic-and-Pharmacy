@@ -213,14 +213,6 @@ function AdminRequests() {
                 </div>
                 <div>
                   <SubtitleTypography variant="subtitle1">
-                    Password:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.password}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
                     Birthdate:
                   </SubtitleTypography>
                   <DataTypography variant="body2">

@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { Container, Typography, TextField, Button, Box } from '@mui/material';
 import axios from 'axios'; // Import axios for API calls
 import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
 
 const ChangePassword = () => {
   const [passwords, setPasswords] = useState({
@@ -10,8 +9,7 @@ const ChangePassword = () => {
     newPassword: '',
     confirmNewPassword: '',
   });
-  const Navigate = useNavigate();
-  const { username } = useParams();
+  const { id } = useParams();
   const [success, setSuccess] = useState(false); 
 
   const handleChange = (prop) => (event) => {
@@ -27,10 +25,9 @@ const ChangePassword = () => {
   const updatePassword = async (newPassword) => {
     try {
       // Replace '/api/reset-password' with your actual API endpoint
-      const response = await axios.put('http://localhost:3000/resetpassword', { username, newPassword });
+      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
       alert('Password successfully updated');
-      Navigate('/');
     } catch (error) {
       console.error('Error updating password:', error);
       alert('Error updating password');

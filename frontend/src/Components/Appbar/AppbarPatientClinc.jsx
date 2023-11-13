@@ -25,6 +25,9 @@ function AppBarComponent({ userName}) {
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+  const handleChangePass = () => {
+    navigate(`/changepassTwo/${id}`); 
+  };
 
   const appBarStyle = {
     backgroundColor: 'white',
@@ -78,6 +81,7 @@ function AppBarComponent({ userName}) {
     // Sign out logic goes here
     navigate('/clinic'); // Redirects to the login page
   };
+
   
 
   return (
@@ -88,10 +92,13 @@ function AppBarComponent({ userName}) {
             <Avatar src={AccountCircle} alt="Zeina Avatar" />
           </Link>
           <Typography variant="h6" component="div" color="primary" style={nameStyle}>
-            {/* {userName} will be later on edited depending on the logged-in user */} Zeina Elmofty
+            
           </Typography>
+          <Button color="primary" onClick={handleChangePass}>
+            Change Password
+          </Button>
           <Button color="primary" onClick={handleSignOut}>
-            Sign Out
+            Log Out
           </Button>
           <img src={Logo} style={imgStyle} alt="Logo" />
         </Toolbar>
