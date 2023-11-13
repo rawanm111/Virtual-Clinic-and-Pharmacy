@@ -25,22 +25,6 @@ const HeaderContainer = styled('div')({
   marginBottom: '16px',
 });
 
-const CardsContainer = styled('div')({
-  display: 'flex',
-  flexWrap: 'wrap',
-  justifyContent: 'space-between',
-});
-
-const CardWrapper = styled(Card)(({ theme }) => ({
-  marginBottom: '16px',
-  border: '1px solid #0070F3',
-  backgroundColor: '#f0f8ff',
-  marginRight: '16px',
-  boxShadow: '0px 6px 6px rgba(0, 0, 0, 0.9)',
-  borderRadius: '5px',
-  marginLeft: '5px',
-}));
-
 const NameTypography = styled(Typography)({
   color: '#000080',
   marginBottom: '1rem',
@@ -60,94 +44,83 @@ const DataTypography = styled(Typography)({
 });
 
 function HealthPackagesSub() {
-
-  console.log('Health Package component is rendering.');
-  
   const [healthPackages, setHealthPackages] = useState([]);
-  const [allHealthPackages, setAllHealthPackages] = useState([]);
-  const [selectedHealthPackage, setSelectedHealthPackage] = useState(null);
+  const [familyHealthPackages, setFamilyHealthPackages] = useState([]);
+  const [familyMembers, setFamilyMembers] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/patients/family_members/user/${id}`)
+      .then((response) => {
+        if (response.data) {
+          setFamilyMembers(response.data);
+        } else {
+          console.error('No family members data received from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching family members:', error);
+      });
+  }, [id]);
 
   useEffect(() => {
-    if (id) {  // Only attempt to fetch individual package data if 'id' is available
-      const fetchPackageData = async () => {
-        try {
-          const response = await axios.get(`http://localhost:3000/PatientPackages/${id}`);
-          if (response.status === 200) {
-            // Again, ensure each package data object has a unique 'id' field
-            const responseData = response.data.map((row) => ({
-              ...row,
-              id: row._id,
-            }));
-            console.log('Fetched data:', responseData);
-            setHealthPackages(responseData);
-          } else {
-            console.error('Unexpected status code:', response.status);
-          }
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
+    const fetchData = async () => {
+      if (id) {
+        // Fetch individual's health packages
+        const individualPackages = await axios.get(`http://localhost:3000/PatientPackages/${id}`);
+        const individualData = individualPackages.data.map((row, index) => ({ ...row, id: `individual-${index}` }));
+        setHealthPackages(individualData);
+
+        // Fetch health packages for each family member
+        const familyDataPromises = familyMembers.map(async (familyMember, index) => {
+          const familyMemberPackages = await axios.get(`http://localhost:3000/PatientPackages/${familyMember._id}`);
+          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}` }));
+        });
+
+        const familyData = await Promise.all(familyDataPromises);
+        setFamilyHealthPackages(familyData.flat());
+      }
+    };
+
+    fetchData();
+  }, [id, familyMembers]);
+
+  const handleCancel = async (patientId, packageName) => {
+    try {
+      packageName = packageName.replace(' ', '-');
+      await axios.put(`http://localhost:3000/PatientPackages/${patientId}/cancel-package/${packageName}`);
+      console.log('Package status updated');
+
+      // Refetch and update the tables
+      const fetchData = async () => {
+        // Fetch individual's health packages
+        const individualPackages = await axios.get(`http://localhost:3000/PatientPackages/${id}`);
+        const individualData = individualPackages.data.map((row, index) => ({ ...row, id: `individual-${index}` }));
+        setHealthPackages(individualData);
+
+        // Fetch health packages for each family member
+        const familyDataPromises = familyMembers.map(async (familyMember, index) => {
+          const familyMemberPackages = await axios.get(`http://localhost:3000/PatientPackages/${familyMember._id}`);
+          return familyMemberPackages.data.map((row, innerIndex) => ({ ...row, id: `family-${index}-${innerIndex}` }));
+        });
+
+        const familyData = await Promise.all(familyDataPromises);
+        setFamilyHealthPackages(familyData.flat());
       };
 
-      fetchPackageData();
-    }
-
-    const handleCancel = async () => {
-    const hardcodedId = "6544106d3311e5f2fd5d6320"; // Your hardcoded ID
-    try {
-      const response = await axios.put(`http://localhost:3000/PatientPackages/${id}`,{
-        
-      });
-      console.log('Package status updated:', response.data);
-      // Update local state or refresh data grid as needed
+      fetchData();
     } catch (error) {
       console.error('Error updating package status:', error);
     }
   };
 
-
-
-  }, [id]); 
-
-  
-
-  const handleCancel = async () => {
-   
-    try {
-      const response = await axios.put(`http://localhost:3000/PatientPackages/${id}`,{
-        
-      });
-      console.log('Package status updated:', response.data);
-      // Update local state or refresh data grid as needed
-    } catch (error) {
-      console.error('Error updating package status:', error);
-    }
-  };
-
- 
-
-
-
-
-  
-  
   const columns = [
     { field: 'package', headerName: 'Package Type', flex: 1 },
     { field: 'status', headerName: 'Status', flex: 1 },
-    {
-      field: 'startdate',
-      headerName: 'Start Date',
-      flex: 1,
-      
-    },
-    {
-      field: 'enddate',
-      headerName: 'End Date',
-      flex: 1,
-     
-    },
+    { field: 'startdate', headerName: 'Start Date', flex: 1 },
+    { field: 'enddate', headerName: 'End Date', flex: 1 },
     {
       field: 'button',
       headerName: '',
@@ -156,46 +129,51 @@ function HealthPackagesSub() {
         <Button
           variant="outlined"
           color="primary"
-          onClick={handleCancel} // Call handleCancel directly without parameters
-          
+          onClick={() => handleCancel(id, params.row.package)}
         >
           Cancel
-        </Button>)
-      },
+        </Button>
+      ),
+    },
   ];
-  
 
   return (
     <div>
       <AppBarComponent />
-      
+      <PageContainer>
+        <HeaderContainer>
+          <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
+            Health Packages
+          </Typography>
+        </HeaderContainer>
 
-
-      <div>
-      
-    
-    <div  style={{ backgroundColor: '#ADD8E6', height: '100vh', }}>
-      <div style={{ textAlign: 'center', color: '#00008B' }}>
-  <h1>My Packages</h1>
-</div>
-
-
-      <Box sx={{ height: 400, width: '100%' }}>
-        <DataGrid
-          rows={healthPackages}
-          columns={columns}
-          pageSize={5}
-          checkboxSelection
-          disableRowSelectionOnClick
-        />
-      </Box>
-
-      </div>
-    </div>
-
-
-
-
+        <Box sx={{ width: '100%' }}>
+          <div style={{ backgroundColor: '#ADD8E6', marginBottom: '16px' }}>
+            <div style={{ textAlign: 'center', color: '#00008B' }}>
+              <h1>My Packages</h1>
+            </div>
+            <DataGrid
+              rows={healthPackages}
+              columns={columns}
+              pageSize={5}
+              checkboxSelection
+              disableRowSelectionOnClick
+            />
+          </div>
+          <div style={{ backgroundColor: '#ADD8E6' }}>
+            <div style={{ textAlign: 'center', color: '#00008B' }}>
+              <h1>Family Members' Packages</h1>
+            </div>
+            <DataGrid
+              rows={familyHealthPackages}
+              columns={columns}
+              pageSize={5}
+              checkboxSelection
+              disableRowSelectionOnClick
+            />
+          </div>
+        </Box>
+      </PageContainer>
     </div>
   );
 }

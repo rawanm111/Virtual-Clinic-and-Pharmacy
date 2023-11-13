@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
+import { useParams } from 'react-router-dom';
 
 export default function DoctorsTable() {
   const [doctors, setDoctors] = useState([]);
@@ -16,8 +17,12 @@ export default function DoctorsTable() {
   const [selectedDateTime, setSelectedDateTime] = useState(null);
   const [availableDoctors, setAvailableDoctors] = useState([]);
   const [availableDoctorsResult, setAvailableDoctorsResult] = useState([]);
+  const [patientHealthPackage, setPatientHealthPackage] = useState(null);
+  const { id } = useParams();
+  const patientId = id;
 
   useEffect(() => {
+    // Fetch doctors data
     axios
       .get('http://localhost:3000/doctors')
       .then((response) => {
@@ -43,23 +48,23 @@ export default function DoctorsTable() {
         console.error('Error fetching doctors:', error);
       });
 
-      // axios
-      // .get('http://localhost:3000/apps/available-appointments')
-      // .then((response) => {
-      //   if (response.data) {
-      //     const transformedAppointments = response.data.map((appointment) => ({
-      //       id: appointment.doctor.id,  
-      //       availableAppointments: appointment.availableAppointments.map((app) => new Date(app.date).toISOString()),
-      //     }));
-      //     setAvailableDoctors(transformedAppointments);
-      //   } else {
-      //     console.error('No data received for available appointments from the API');
-      //   }
-      // })
-      // .catch((error) => {
-      //   console.error('Error fetching available appointments:', error);
-      // });
-  }, []);
+    // Fetch patient health package
+    axios
+      .get(`http://localhost:3000/PatientPackages/${patientId}`)
+      .then((response) => {
+        setPatientHealthPackage(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching patient health package:', error);
+      });
+  }, [patientId]);
+
+  const popOverStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '16px',
+  };
 
   const handleFilterChange = (e) => {
     const value = e.target.value.toLowerCase();
@@ -78,28 +83,29 @@ export default function DoctorsTable() {
   };
 
   const handleDoctorFilter = () => {
-    const filteredRows = doctors.filter((row) =>
-      row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedSpeciality === '' || row.speciality === selectedSpeciality)
+    const filteredRows = doctors.filter(
+      (row) =>
+        row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (selectedSpeciality === '' || row.speciality === selectedSpeciality)
     );
     setFilteredDoctors(filteredRows);
   };
 
-  // const handleCheckAvailability = () => {
-  //   if (selectedDateTime) {
-  //     const selectedDateISO = new Date(selectedDateTime).toISOString();
-  //     const filteredResults = availableDoctors.filter((doctor) => {
-  //       return doctor.availableAppointments.some((date) => date === selectedDateISO);
-  //     });
-  //     setAvailableDoctorsResult(filteredResults);
-  //   }
-  // };
-  
-
   const columns = [
     { field: 'name', headerName: 'Name', width: 200 },
     { field: 'speciality', headerName: 'Speciality', width: 200 },
-    { field: 'hourly_rate', headerName: 'Session Price', width: 200 },
+    { field: 'hourly_rate', headerName: 'Session Price (LE)', width: 200 },
+    {
+      field: 'sessionPriceAfterHealthPackage',
+      headerName: 'Discounted Session Price (LE) ',
+      width: 250,
+      renderCell: (params) => {
+        const sessionPrice = params.row.hourly_rate;
+        const discount = patientHealthPackage?.package.discountOnDoctorSessionPrice || 0;
+        const sessionPriceAfterDiscount = sessionPrice - discount;
+        return <Typography>{sessionPriceAfterDiscount.toFixed(2)}</Typography>;
+      },
+    },
     {
       field: 'actions',
       headerName: '',
@@ -147,48 +153,30 @@ export default function DoctorsTable() {
         </Button>
       </Box>
 
-      {/* <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'right',
-          gap: '16px',
-          padding: '10px',
-        }}
-      >
-        <TextField
-          type="datetime-local"
-          variant="outlined"
-          value={selectedDateTime}
-          onChange={(e) => setSelectedDateTime(e.target.value)}
-        />
-        <Button onClick={handleCheckAvailability}>Check Availability</Button>
-      </Box> */}
-
       <DataGrid
-      rows={filteredDoctors}
-      columns={columns}
-      pageSize={5}
-      checkboxSelection
-      disableRowSelectionOnClick
+        rows={filteredDoctors}
+        columns={columns}
+        pageSize={5}
+        checkboxSelection
+        disableRowSelectionOnClick
       />
-
 
       <Popover
         open={Boolean(selectedDoctorData)}
         anchorEl={popoverAnchor}
         onClose={handleClosePopover}
         anchorOrigin={{
-          vertical: 'bottom',
+          vertical: 'center',
           horizontal: 'center',
         }}
         transformOrigin={{
-          vertical: 'top',
+          vertical: 'center',
           horizontal: 'center',
         }}
       >
         {selectedDoctorData && (
-          <Box p={2}>
+          <Box p={2} style={popOverStyle}>
+            <Typography variant="h6">Doctor Details</Typography>
             <Typography>Name: {selectedDoctorData.name}</Typography>
             <Typography>Educational Background: {selectedDoctorData.educational_bg}</Typography>
             <Typography>Email: {selectedDoctorData.email}</Typography>

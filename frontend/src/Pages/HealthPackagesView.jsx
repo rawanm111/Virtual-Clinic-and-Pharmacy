@@ -21,7 +21,6 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const PageContainer = styled('div')({
   backgroundColor: 'lightblue',
-  //minHeight: '100vh',
   padding: '16px',
 });
 
@@ -67,32 +66,45 @@ const DataTypography = styled(Typography)({
 });
 
 function HealthPackagesView() {
-
-  console.log('Health Package component is rendering.');
-  
   const [healthPackages, setHealthPackages] = useState([]);
-  const [allHealthPackages, setAllHealthPackages] = useState([]);
-  const [selectedHealthPackage, setSelectedHealthPackage] = useState(null);
+  const [selectedHealthPackage, setSelectedHealthPackage] = useState('');
+  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
+  const [familyMembers, setFamilyMembers] = useState([]);
   const navigate = useNavigate();
   const { id } = useParams();
   const [startDate, setStartDate] = useState('');
-
-
   const [selectedPackageId, setSelectedPackageId] = useState('');
+  const [selectedPackageName, setSelectedPackageName] = useState(''); // New state
 
-  const handleSelectPackage = (event, packageId) => {
-    setSelectedPackageId(event.target.checked ? packageId : '');
+  const handleSelectPackage = (event) => {
+    const selectedPackage = event.target.value;
+    setSelectedHealthPackage(selectedPackage);
+    setSelectedPackageId(selectedPackage.id);
+    setSelectedPackageName(selectedPackage.name); // Update the selected package name
   };
 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/patients/family_members/user/${id}`)
+      .then((response) => {
+        if (response.data) {
+          setFamilyMembers(response.data);
+        } else {
+          console.error('No family members data received from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching family members:', error);
+      });
+  }, [id]);
 
   useEffect(() => {
     axios
       .get('http://localhost:3000/health-packages')
       .then((response) => {
-        // Map over each package and ensure it has an 'id' field set to the unique '_id'
         const packagesWithId = response.data.map((pkg) => ({
           ...pkg,
-          id: pkg._id,  // Ensuring each package has an 'id' field for the DataGrid
+          id: pkg._id,
         }));
         setHealthPackages(packagesWithId);
       })
@@ -101,105 +113,58 @@ function HealthPackagesView() {
       });
   }, []);
 
-
-  
-
-
-
-  
-
-
-
-
-  
-
-
-
   const [packageType, setPackageType] = useState('');
-  // const [startDate, setStartDate] = useState('');
-  // const [endDate, setEndDate] = useState('');
 
   const handlePackageTypeChange = (event) => {
     setPackageType(event.target.value);
   };
 
-  // const handleStartDateChange = (event) => {
-  //   setStartDate(event.target.value);
-  // };
-
-  // const handleEndDateChange = (event) => {
-  //   setEndDate(event.target.value);
-  // };
-
-//   const handleSubmit = (event) => {
-//     event.preventDefault();
-//     // Submit logic goes here. For example, you could send a POST request to your server.
-//     console.log(`Package: ${packageType}, Start: ${startDate}, End: ${endDate}`);
-//   };
-  
+  const handleFamilyMemberChange = (event) => {
+    setSelectedFamilyMember(event.target.value);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-  // Function to format date in dd/mm/yyyy
-  const formatDate = (date) => {
-    let day = date.getDate();
-    let month = date.getMonth() + 1; // getMonth() returns 0-11
-    let year = date.getFullYear();
+    const formatDate = (date) => {
+      let day = date.getDate();
+      let month = date.getMonth() + 1;
+      let year = date.getFullYear();
 
-    // Ensuring two digits for day and month
-    day = day < 10 ? '0' + day : day;
-    month = month < 10 ? '0' + month : month;
+      day = day < 10 ? '0' + day : day;
+      month = month < 10 ? '0' + month : month;
 
-    return `${day}/${month}/${year}`;
-  };
+      return `${day}/${month}/${year}`;
+    };
 
-  // Get the current date
-  const currentDate = new Date();
+    const currentDate = new Date();
+    const startDate = formatDate(currentDate);
+    currentDate.setFullYear(currentDate.getFullYear() + 1);
+    const endDate = formatDate(currentDate);
 
-  // Set startDate to the current date
-  const startDate = formatDate(currentDate);
-
-  // Set endDate to one year from the current date
-  currentDate.setFullYear(currentDate.getFullYear() + 1);
-  const endDate = formatDate(currentDate);
-
-  // Construct the payload from the state values
-  const packageData = {
-    patient: id,
-    package: packageType,
-    status: 'Subscribed',
-    startdate: startDate,
-    enddate: endDate,
-     // Hardcoded for now
-    // Add other necessary fields as per your PatientPackages model
-  };
+    const packageData = {
+      patient: selectedFamilyMember === 'myself' ? id : selectedFamilyMember,
+      package: selectedPackageId,
+      status: 'Subscribed',
+      startdate: startDate,
+      enddate: endDate,
+    };
 
     try {
       const response = await axios.post('http://localhost:3000/PatientPackages', packageData);
       console.log('Package created:', response.data);
-      // Handle successful package creation here, e.g., show a success message
-      // or redirect to a different page using navigate('/path')
     } catch (error) {
       console.error('Error creating package:', error.response ? error.response.data : error.message);
-      // Handle errors here, e.g., show an error message to the user
     }
   };
 
   const handleCardPayment = () => {
-    // Logic for handling payment with card
     console.log('Card payment initiated');
-    // You can add your payment processing logic here
   };
-  
+
   const handleWalletPayment = () => {
-    // Logic for handling payment with wallet
     console.log('Wallet payment initiated');
-    // You can add your payment processing logic here
   };
-  
-
-
 
   return (
     <div>
@@ -209,13 +174,9 @@ function HealthPackagesView() {
           <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
             Health Packages
           </Typography>
-        
         </HeaderContainer>
 
-
-        
         <CardsContainer>
-
           {healthPackages.map((healthPackage) => (
             <CardWrapper key={healthPackage._id} variant="outlined">
               <CardContent>
@@ -254,64 +215,74 @@ function HealthPackagesView() {
                     {healthPackage.discountOnFamilyMemberSubscription}%
                   </DataTypography>
                 </div>
-                <div>
-                 
-                </div>
               </CardContent>
             </CardWrapper>
           ))}
         </CardsContainer>
       </PageContainer>
 
-    <br/>    <br/>    <br/>
+      <br /> <br /> <br />
       <form onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <InputLabel id="package-type-label">Package Type</InputLabel>
           <Select
             labelId="package-type-label"
             id="package-type-select"
-            value={packageType}
+            value={selectedHealthPackage} // Updated state
             label="Package Type"
-            onChange={handlePackageTypeChange}
+            onChange={handleSelectPackage}
             sx={{ mb: 2 }}
           >
-            <MenuItem value="silver">Silver</MenuItem>
-            <MenuItem value="gold">Gold</MenuItem>
-            <MenuItem value="platinum">Platinum</MenuItem>
+            {healthPackages.map((pkg) => (
+              <MenuItem key={pkg.id} value={pkg}>
+                {pkg.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel id="family-member-label">
+            Subscription for:
+          </InputLabel>
+          <Select
+            labelId="family-member-label"
+            id="family-member"
+            value={selectedFamilyMember}
+            onChange={handleFamilyMemberChange}
+          >
+            <MenuItem value="myself">Myself</MenuItem>
+            {familyMembers.map((member) => (
+              <MenuItem
+                key={member._id}
+                value={member._id}
+              >
+                {member.patient.fullName}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
-
-     
-
+        <div></div>
         <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
+          Submit
+        </Button>
 
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={handleCardPayment}
+        >
+          Pay with Card
+        </Button>
 
-      <Button
-  variant="contained"
-  color="secondary"
-  onClick={handleCardPayment}
-  //sx={{ mt: 2, mr: 1 }}
->
-  Pay with Card
-</Button>
-
-{/* Payment with Wallet Button */}
-<Button
-  variant="contained"
-  color="success"
-  onClick={handleWalletPayment}
-  //sx={{ mt: 2 }}
->
-  Pay with Wallet
-</Button>
+        <Button
+          variant="contained"
+          color="success"
+          onClick={handleWalletPayment}
+        >
+          Pay with Wallet
+        </Button>
       </form>
-
-
-
-
     </div>
   );
 }
