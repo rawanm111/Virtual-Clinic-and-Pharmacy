@@ -136,6 +136,7 @@ function AppBarComponent({ userName}) {
               to={`/walletDoc/${id}`}
               selected={location.pathname === `/walletDoc/${id}`}
             />
+            
           </Tabs>
         </div>
       </AppBar>

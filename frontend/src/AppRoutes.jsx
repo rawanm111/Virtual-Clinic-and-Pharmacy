@@ -35,6 +35,8 @@ import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
 import AdminForm from "./Pages/adminform";
 import Prescription from "./Pages/prescription";
+import EmploymentContract from "./Pages/EmploymentContract";
+import NewMedicalHistory from "./Pages/NewMedicalHistory";
 import Wallet from "./Pages/wallet";
 import WalletDoc from "./Pages/walletDoc";
 import Cart from "./Pages/Cart";
@@ -107,6 +109,7 @@ export default function Paths() {
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
+        <Route path="/EmploymentContract/:userId" element={<EmploymentContract/>} /> 
         <Route path="/otp/:username" element={<Otp/>} />
         <Route path="/changepass/:username"element={<ChangePassword/>} />
       </Routes>

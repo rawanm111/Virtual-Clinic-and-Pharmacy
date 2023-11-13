@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, Button, TextField, Popover, Typography, Container,CssBaseline } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
+import AppBarComponent from '../Components/Appbar/AppbarDoctor';
 import { styled } from '@mui/material/styles';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';

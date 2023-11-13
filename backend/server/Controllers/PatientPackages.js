@@ -2,16 +2,6 @@ const mongoose= require('mongoose');
 const PatientPackages = require('../Models/PatientPackages');
 const patients = require('../Models/patients');
 
-
-// exports.createPatientPackages = async (req, res) => {
-//   try {
-//     const newPatientPackages = new PatientPackages(req.body);
-//     const savedPatientPackages = await newPatientPackages.save();
-//     res.status(201).json(savedPatientPackages);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// }
 exports.createPatientPackages = async (req, res) => {
   try {
     const { patient, package } = req.body;
@@ -34,13 +24,28 @@ exports.createPatientPackages = async (req, res) => {
 
 
 exports.getAllPatientPackages = async (req, res) => {
-    try {
-        const allPatientPackages = await PatientPackages.find();
-        res.status(200).json(allPatientPackages);
-    } catch (err) {
-        res.status(500).json(err);
-    }
-    }
+  try {
+    const patientId = req.params.id; // Assuming the patient ID is passed in the request params
+
+    const patientPackages = await PatientPackages.find({ patient: patientId })
+      .populate('package')
+      .select('package status startdate enddate');
+
+    // Extracting the required fields from the populated 'package' field
+    const simplifiedPackages = patientPackages.map((package) => ({
+      package: package.package.name, 
+      status: package.status,
+      startdate: package.startdate,
+      enddate: package.enddate,
+    }));
+
+    res.status(200).json(simplifiedPackages);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json(err);
+  }
+};
+
     
     exports.getPatientPackagesById = async (req, res) => {
       try {
@@ -52,26 +57,58 @@ exports.getAllPatientPackages = async (req, res) => {
       }
   }
 
-  exports.cancelAllPatientPackages = async (req, res) => {
+  exports.cancelPatientPackage = async (req, res) => {
     try {
-        const patientId = req.params.patientId; // using patient ID from the URL parameter
-        const canceledStatus = 'canceled'; // the status we want to set
-
-        // Update the status of all packages for this patient to 'canceled'
-        const updatedPatientPackages = await mongoose.model('PatientPackages').updateMany(
-            { patient: patientId }, // filter to match documents related to the patient
-            { status: canceledStatus }, // update operation to set status to 'canceled'
-            { new: true } // this option is not used with updateMany, but you can use { multi: true }
-        );
-
-        // Check if any documents were updated
-        res.status(200).json({ message: 'Patient packages canceled successfully', data: updatedPatientPackages });
+      const { patientId,packageName } = req.params;
+    
+      console.log(packageName);
+      // Replace the first occurrence of hyphen with a space
+      packageNameNew = packageName.replace('-', ' ');
+      console.log(packageNameNew);
+      // Check if the package exists with case-insensitive comparison
+      const existingPackage = await PatientPackages.findOne({
+        patient: patientId,
+        'package.name': packageNameNew,
+      });
+  
+      if (!existingPackage) {
+        return res.status(404).json({ message: "Package not found." });
+      }
+  
+      // Update the package status to "cancelled"
+      const updatedPackage = await PatientPackages.findByIdAndUpdate(
+        existingPackage._id,
+        { $set: { status: 'Cancelled' } },
+        { new: true }
+      );
+  
+      res.status(200).json(updatedPackage);
     } catch (err) {
-        res.status(500).json({ message: 'Error updating patient packages', error: err });
+      console.error(err);
+      res.status(500).json(err);
     }
-}
+  };
+  
+  
+  
+  
+  
 
-
+  
+  exports.getPatientHealthPackage = async (req, res) => {
+    try {
+      const { patientId } = req.params;
+      const healthPackage = await PatientPackages.findOne({
+        patient: patientId,
+        status: 'Subscribed',
+      }).populate('package');
+  
+      res.status(200).json(healthPackage);
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
+  
 
 
 

@@ -22,6 +22,7 @@ const AddressRoutes=require('./Routes/Adressroutes.js')
 const medicalHistoryRoutes = require('./Routes/medHistoryRoutes');
 const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
 const authroutes = require('./Routes/authenticationRoutes');
+const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
 const cors = require('cors');
 
 const app = express();
@@ -62,6 +63,8 @@ app.use('/medHistory', medicalHistoryRoutes);
 app.use('/uploads', express.static('uploads'));
 app.use('/admin',Adminroutes);
 app.use('/', authroutes)
+app.use('/employmentContract',EmploymentContract);
+
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 
 const appointment = require('./Models/appointements');

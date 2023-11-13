@@ -132,6 +132,7 @@ function AdminRequests() {
             setAdminRequests(adminRequests.filter((req) => req._id !== requestId));
           })
           .catch((error) => {
+            console.log(requestId)
             console.error('Error removing request:', error);
           });
       })
