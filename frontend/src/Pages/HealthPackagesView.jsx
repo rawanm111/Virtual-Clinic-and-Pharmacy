@@ -73,14 +73,9 @@ function HealthPackagesView() {
   const navigate = useNavigate();
   const { id } = useParams();
   const [startDate, setStartDate] = useState('');
-<<<<<<< HEAD
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [paymentOption, setPaymentOption] = useState('wallet');
 
-
-
-=======
->>>>>>> 9989276af96af3464d4a169e5a01c69acd31517e
   const [selectedPackageId, setSelectedPackageId] = useState('');
   const [selectedPackageName, setSelectedPackageName] = useState(''); // New state
 
@@ -89,15 +84,6 @@ function HealthPackagesView() {
     setSelectedHealthPackage(selectedPackage);
     setSelectedPackageId(selectedPackage.id);
     setSelectedPackageName(selectedPackage.name); // Update the selected package name
-  };
-  const openPaymentDialog = () => {
-    setIsPaymentDialogOpen(true);
-  };
-  const closePaymentDialog = () => {
-    setIsPaymentDialogOpen(false);
-  };
-  const handlePaymentOptionChange = (event) => {
-    setPaymentOption(event.target.value);
   };
 
   useEffect(() => {
@@ -113,7 +99,16 @@ function HealthPackagesView() {
       .catch((error) => {
         console.error('Error fetching family members:', error);
       });
-  }, [id]);
+  }, [id]);  const openPaymentDialog = () => {
+    setIsPaymentDialogOpen(true);
+  };
+  const closePaymentDialog = () => {
+    setIsPaymentDialogOpen(false);
+  };
+  const handlePaymentOptionChange = (event) => {
+    setPaymentOption(event.target.value);
+  };
+
 
   useEffect(() => {
     axios
@@ -173,12 +168,14 @@ function HealthPackagesView() {
     try {
       const response = await axios.post('http://localhost:3000/PatientPackages', packageData);
       console.log('Package created:', response.data);
+      // Handle successful package creation here, e.g., show a success message
+      // or redirect to a different page using navigate('/path')
     } catch (error) {
       console.error('Error creating package:', error.response ? error.response.data : error.message);
+      // Handle errors here, e.g., show an error message to the user
     }
   };
 
-<<<<<<< HEAD
   const handleCardPayment = async () => {
     try {
       
@@ -238,19 +235,21 @@ function HealthPackagesView() {
 
   const handleWalletPayment = async () => {
     try {
+
+      console.log(selectedHealthPackage)
+
       healthPackages.map((healthPackage) => (
         healthPackage.name === packageType ? setSelectedHealthPackage(healthPackage) : null
       ));
       const response = await axios.get(`http://localhost:3000/wallet/${id}`);
-      
-      if (response.data.balance < 200) {
+      const price=selectedHealthPackage.annualPrice;
+      console.log(price)
+      if (response.data.balance < price ) {
         console.error("Insufficient balance");
       } else {
-        // Move handleSubmit inside the block to ensure it's called after a successful payment
-        // handleSubmit();
+        handleSubmit();
         
-        // Update the user's wallet balance (assuming you have a state for wallet balance)
-        const updatedBalance = response.data.balance - selectedHealthPackage.annualPrice;
+        const updatedBalance = response.data.balance - price;
         setWalletBalance(updatedBalance);
         console.log(walletBalance);
         console.log(selectedHealthPackage.annualPrice)
@@ -317,15 +316,6 @@ function HealthPackagesView() {
   
 
 
-=======
-  const handleCardPayment = () => {
-    console.log('Card payment initiated');
-  };
-
-  const handleWalletPayment = () => {
-    console.log('Wallet payment initiated');
-  };
->>>>>>> 9989276af96af3464d4a169e5a01c69acd31517e
 
   return (
     <div>
@@ -337,7 +327,10 @@ function HealthPackagesView() {
           </Typography>
         </HeaderContainer>
 
+
+        
         <CardsContainer>
+
           {healthPackages.map((healthPackage) => (
             <CardWrapper key={healthPackage._id} variant="outlined">
               <CardContent>
@@ -376,14 +369,17 @@ function HealthPackagesView() {
                     {healthPackage.discountOnFamilyMemberSubscription}%
                   </DataTypography>
                 </div>
+                <div>
+                 
+                </div>
               </CardContent>
             </CardWrapper>
           ))}
         </CardsContainer>
       </PageContainer>
 
-      <br /> <br /> <br />
-      <form onSubmit={handleSubmit}>
+    <br/>    <br/>    <br/>
+    <form onSubmit={handleSubmit}>
         <FormControl fullWidth>
           <InputLabel id="package-type-label">Package Type</InputLabel>
           <Select
@@ -394,14 +390,39 @@ function HealthPackagesView() {
             onChange={handleSelectPackage}
             sx={{ mb: 2 }}
           >
-<<<<<<< HEAD
-            <MenuItem value="Silver Package">Silver</MenuItem>
-            <MenuItem value="gold package ">Gold</MenuItem>
-            <MenuItem value="Platinum Package">Platinum</MenuItem>
+            {healthPackages.map((pkg) => (
+              <MenuItem key={pkg.id} value={pkg}>
+                {pkg.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel id="family-member-label">
+            Subscription for:
+          </InputLabel>
+          <Select
+            labelId="family-member-label"
+            id="family-member"
+            value={selectedFamilyMember}
+            onChange={handleFamilyMemberChange}
+          >
+            <MenuItem value="myself">Myself</MenuItem>
+            {familyMembers.map((member) => (
+              <MenuItem
+                key={member._id}
+                value={member._id}
+              >
+                {member.patient.fullName}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
 
+        <div></div>
+        
 
+        
      
 
        
@@ -463,58 +484,14 @@ function HealthPackagesView() {
           </Button>
         </DialogActions>
       </Dialog>
-=======
-            {healthPackages.map((pkg) => (
-              <MenuItem key={pkg.id} value={pkg}>
-                {pkg.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
-          <InputLabel id="family-member-label">
-            Subscription for:
-          </InputLabel>
-          <Select
-            labelId="family-member-label"
-            id="family-member"
-            value={selectedFamilyMember}
-            onChange={handleFamilyMemberChange}
-          >
-            <MenuItem value="myself">Myself</MenuItem>
-            {familyMembers.map((member) => (
-              <MenuItem
-                key={member._id}
-                value={member._id}
-              >
-                {member.patient.fullName}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <div></div>
-        <Button type="submit" variant="contained" color="primary">
-          Submit
-        </Button>
-
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={handleCardPayment}
-        >
-          Pay with Card
-        </Button>
-
-        <Button
-          variant="contained"
-          color="success"
-          onClick={handleWalletPayment}
-        >
-          Pay with Wallet
-        </Button>
->>>>>>> 9989276af96af3464d4a169e5a01c69acd31517e
+      
+      
+      
       </form>
+
+
+
+
     </div>
     
   );
