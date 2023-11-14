@@ -16,7 +16,7 @@ export default function Form() {
 
   const [formData, setFormData] = useState({
     emailOrPhone: '', // Change "name" to "emailOrPhone" to collect email or phone
-    relation: 'Father', // Set a default value
+    relation: '', // Set a default value
   });
 
   const handleSubmit = () => {
