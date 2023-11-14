@@ -86,7 +86,7 @@ exports.cancelOrder = async (req, res) => {
       }
   
       // Update the order status to "canceled"
-      order.status = 'canceled';
+      order.status = 'Cancelled';
   
       // Save the updated order
       const updatedOrder = await order.save();

@@ -26,6 +26,12 @@ const textfieldStyle = {
 const buttonContainerStyle = {
   marginTop: '10px',
 };
+const image = {
+  width: '70%',
+  marginLeft: '100px',
+  marginTop: '-10px',
+}
+
 
 function LoginPage() {
   const [showForgotPassword, setShowForgotPassword] = useState(false);
@@ -111,7 +117,10 @@ function LoginPage() {
   return (
     <div style={containerStyle}>
       <div className="image-container">
-        <img src={img} alt="" className="adjustable-image" />
+      <img
+          src={img}
+          alt=""
+        />
       </div>
 
       <div style={rightContentStyle}>
@@ -155,6 +164,8 @@ function LoginPage() {
           <Button variant="outlined" onClick={handlePatientRegistration}>
             REGISTER AS PATIENT
           </Button>
+          </div>
+          <div style={buttonContainerStyle}>
           <Button variant="outlined" onClick={handlePharmacistRegistration}>
             REGISTER AS PHARMACIST
           </Button>

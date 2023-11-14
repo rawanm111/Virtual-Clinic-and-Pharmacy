@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import { useNavigate } from 'react-router-dom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'; 
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const PharmacistRegistrationHome = () => {
   const [formData, setFormData] = useState({
@@ -20,80 +19,64 @@ const PharmacistRegistrationHome = () => {
     affiliation: '',
     educationalBackground: '',
   });
+
   const [nationalIdFile, setNationalIdFile] = useState(null);
   const [pharmacyDegreeFile, setPharmacyDegreeFile] = useState(null);
   const [workingLicenseFile, setWorkingLicenseFile] = useState(null);
 
+  // File name states
+  const [nationalIdFileName, setNationalIdFileName] = useState('');
+  const [pharmacyDegreeFileName, setPharmacyDegreeFileName] = useState('');
+  const [workingLicenseFileName, setWorkingLicenseFileName] = useState('');
+
   const navigate = useNavigate();
-  
+
   const validatePassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
   };
-  
 
-  // const handleSubmit = async () => {
-  //   try {
-  //     const formDataToSend = new FormData();
-
-  //     for (const key in formData) {
-  //       formDataToSend.append(key, formData[key]);
-  //     }
-
-  //     formDataToSend.append('nationalIdFile', nationalIdFile);
-  //     formDataToSend.append('pharmacyDegreeFile', pharmacyDegreeFile);
-  //     formDataToSend.append('workingLicenseFile', workingLicenseFile);
-
-  //     const response = await axios.post('http://localhost:3000/api/pharmcistReq', formDataToSend);
-
-  //     console.log('Response:', response.data);
-  //     navigate('/pharm');
-  //   } catch (error) {
-  //     console.error('Error:', error);
-  //   }
-  // };
   const handleSubmit = async () => {
-    
     if (!validatePassword(formData.password)) {
       alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
       return;
     }
-  
+
     try {
       const formDataToSend = new FormData();
-  
+
       for (const key in formData) {
         formDataToSend.append(key, formData[key]);
       }
-  
+
       formDataToSend.append('nationalIdFile', nationalIdFile);
       formDataToSend.append('pharmacyDegreeFile', pharmacyDegreeFile);
       formDataToSend.append('workingLicenseFile', workingLicenseFile);
-  
+
       const response = await axios.post('http://localhost:3000/api/pharmcistReq', formDataToSend);
-  
+
       console.log('Response:', response.data);
       navigate('/pharm');
     } catch (error) {
       console.error('Error:', error);
     }
   };
-  
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleFileChange = (event, fileSetter) => {
-    fileSetter(event.target.files[0]);
+  const handleFileChange = (event, fileSetter, fileNameSetter) => {
+    const file = event.target.files[0];
+    fileSetter(file);
+    fileNameSetter(file.name);
   };
 
   return (
     <Box>
-       <Container maxWidth="md" className="text-field-container">
-        <h1 >Pharmacist Registration</h1>
-        {/* <img src={img} alt="Pharmacist Image" className="adjustable-image" /> */}
+     
+        <h1>Pharmacist Registration</h1>
         <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
           <Grid item xs={6}>
             <TextField
@@ -166,7 +149,7 @@ const PharmacistRegistrationHome = () => {
             <TextField
               fullWidth
               margin="normal"
-              label="Affiliation(hospital)"
+              label="Affiliation (hospital)"
               variant="outlined"
               name="affiliation"
               value={formData.affiliation}
@@ -199,13 +182,14 @@ const PharmacistRegistrationHome = () => {
                   />
                 ),
               }}
+              value={nationalIdFileName} // Display the file name
             />
             <input
               type="file"
               accept=".jpg, .jpeg, .png"
               style={{ display: 'none' }}
               id="nationalIdFileInput"
-              onChange={(e) => handleFileChange(e, setNationalIdFile)}
+              onChange={(e) => handleFileChange(e, setNationalIdFile, setNationalIdFileName)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -223,13 +207,14 @@ const PharmacistRegistrationHome = () => {
                   />
                 ),
               }}
+              value={pharmacyDegreeFileName} // Display the file name
             />
             <input
               type="file"
               accept=".pdf"
               style={{ display: 'none' }}
               id="pharmacyDegreeFileInput"
-              onChange={(e) => handleFileChange(e, setPharmacyDegreeFile)}
+              onChange={(e) => handleFileChange(e, setPharmacyDegreeFile, setPharmacyDegreeFileName)}
             />
           </Grid>
           <Grid item xs={6}>
@@ -247,13 +232,14 @@ const PharmacistRegistrationHome = () => {
                   />
                 ),
               }}
+              value={workingLicenseFileName} // Display the file name
             />
             <input
               type="file"
               accept=".pdf"
               style={{ display: 'none' }}
               id="workingLicenseFileInput"
-              onChange={(e) => handleFileChange(e, setWorkingLicenseFile)}
+              onChange={(e) => handleFileChange(e, setWorkingLicenseFile, setWorkingLicenseFileName)}
             />
           </Grid>
         </Grid>
@@ -261,10 +247,9 @@ const PharmacistRegistrationHome = () => {
           <Button variant="contained" onClick={handleSubmit}>
             Register
           </Button>
-          <Button variant="contained">Cancel</Button>
+          
         </div>
-       
-      </Container>
+
     </Box>
   );
 };

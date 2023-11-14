@@ -221,7 +221,7 @@ const handlePayment = async (cartData) => {
       console.error('Error:', response.data);
     }
   } catch (error) {
-    console.error('Error:', error.response.data); // Log the detailed error message
+    console.error('Error:', error.response.data); 
   }
 };
 
@@ -567,6 +567,7 @@ const calculateTotalAmount = (medications) => {
   
       const response = await axios.post('http://localhost:3000/paymentCart', {
         cartId: cartId,
+        patientId: id,
         items: items.map((item) => ({
           id: item.medicationId,
           quantity: item.quantity,

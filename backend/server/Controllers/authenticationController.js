@@ -114,7 +114,7 @@ const verifyOtp = async (req, res) => {
 };
 
 
-const models = [patients, doccs, pharmacists]; // Add all your user models here
+const models = [Admin,patients, doccs, pharmacists]; // Add all your user models here
 
 const resetPass = async (req, res) => {
   const { username } = req.body;
@@ -213,8 +213,12 @@ const login = async (req, res) => {
             userId: user._id
           });
         } else {
-          // await sendOtp(user);
-          return res.status(406).json({ success: false, message: 'Wrong password' });
+          // Check if user is an admin
+          if (user.role === 'admin') {
+            return res.status(402).json({ success: false, message: 'Admin password incorrect' });
+          } else {
+            return res.status(406).json({ success: false, message: 'Wrong password' });
+          }
         }
       }
     }

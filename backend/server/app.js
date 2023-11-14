@@ -155,7 +155,7 @@ app.post('/paymentCart', async (req, res) => {
           product_data: {
             name: medication.medicationId.name,
           },
-          unit_amount: medication.medicationId.price,
+          unit_amount: medication.medicationId.price *100,
         },
         quantity: medication.quantity,
       };

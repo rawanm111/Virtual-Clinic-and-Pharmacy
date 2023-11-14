@@ -19,8 +19,8 @@ const PharmacistHome = () => {
         <AppBarComponent />
 
         <div className="content-wrapper">
-        <Typography variant="h6" className="custom-text" style={{ fontSize: '40px' }}>
-        Welcome, Dr.Zeina ! With MetaCare,<br />
+        <Typography variant="h6" className="custom-text" style={{ fontSize: '35px' , marginLeft: '110px'}}>
+        Welcome! With MetaCare,<br />
         providing top-quality healthcare is easier than ever.<br />
         Manage appointments, access records, and elevate <br />
         your practice with our user-friendly platform. Together,<br />

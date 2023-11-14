@@ -26,7 +26,7 @@ function OrderPage() {
   const cancelOrder = async (orderId) => {
     try {
       await axios.put(`http://localhost:3000/Order/cancel-order/${orderId}`);
-      setOrderDetails(prevOrder => ({ ...prevOrder, status: 'canceled' }));
+      setOrderDetails(prevOrder => ({ ...prevOrder, status: 'cancelled' }));
       window.location.reload();
     } catch (error) {
       console.error('Error canceling order:', error);

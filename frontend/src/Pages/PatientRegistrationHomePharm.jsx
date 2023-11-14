@@ -68,8 +68,8 @@ const PatientRegistrationHome = () => {
         justifyContent: 'center',
       }}
     >   
-        
- <Container maxWidth="md" className="text-field-container">
+   <h1 class="title-text">Patient Registration</h1>
+ 
  <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
   <Grid item xs={6}>
   <TextField
@@ -199,28 +199,20 @@ const PatientRegistrationHome = () => {
 
 
 </Grid>
-<h1 class="title-text">Patient Registration</h1>;
+
 <div className="button-container">
 <Button
               variant="contained"
               onClick={handleSubmit}
             > Register</Button>
       </div>
-      <div className="button-container-1">
-        <Button variant="contained">Cancel</Button>
-      </div>
+   
 
       <div className="container">
-      <div className="image-container">
-        <img
-          src={img} // Use the imported variable 'img' as the source
-          alt="" // Add an alt attribute for accessibility
-          className="adjustable-image"
-        />
-      </div>
+
       </div>
 
-</Container>
+
 </Box>
  
     )
