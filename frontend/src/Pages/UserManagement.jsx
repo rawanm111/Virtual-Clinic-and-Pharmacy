@@ -292,6 +292,27 @@ export default function UserManagement() {
 
 //admin
 
+// const columnsA = [
+//   {
+//     field: 'adminName',
+//     headerName: 'Admin Name',
+//     flex: 1,
+//   },
+//   {
+//     headerName: 'Reset Password',
+//     flex: 1,
+//     renderCell: (params) => (
+//       <div>
+//         <Button
+//           variant="contained"
+//           onClick={() => handleResetPassword(params.row.adminId)}
+//         >
+//           Reset Pass
+//         </Button>
+//       </div>
+//     ),
+//   },
+// ];
 
 
 const [admins, setAdmins] = useState([]);
@@ -348,36 +369,40 @@ const handleDeleteA = (id) => {
       console.error('Error deleting admin:', error);
     });
 };
-
+const handleResetPassword = (adminusername) => {
+  // Implement the logic to reset password
+  navigate(`/changepass/${adminusername}`);
+  console.log(`Reset password for adminId: ${adminusername}`);
+  // Example: axios.post(`http://localhost:3000/admin/reset-password/${adminId}`);
+};
 
 const columnsA = [
-  { field: 'username', headerName: 'Name', width: 200 },
-  // { field: 'id', headerName: 'patientid', width: 200 },
-  // {
-  //     field: 'actions',
-  //     headerName: '',
-  //     width: 120,
-  //     renderCell: (params) => (
-  //       <div>
-  //         <Button variant="outlined" onClick={() => handleButtonClickA(params.row)}>
-  //           VIEW
-  //         </Button>
-          
-  //       </div>
-  //     ),
-  //   },
-    {field:'action',headerName:"",width:100,
+  { field: 'username', headerName: 'Username', width: 200 },
+  // ... [other columns] ...
+  {
+    field: 'action',
+    headerName: 'Action',
+    width: 300,
     renderCell: (params) => (
       <div>
-        
-        <Button variant="outlined" onClick={() => handleDeleteA(params.row.id)}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => handleResetPassword(params.row.username)}
+          style={{ marginRight: 10 }}
+        >
+          Reset Password
+        </Button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => handleDeleteA(params.row.id)}
+        >
           DELETE
         </Button>
       </div>
     ),
-    
-  }
-
+  },
 ];
 const handleButtonClickA = (row) => {
   // Implement the action you want to perform when the button is clicked

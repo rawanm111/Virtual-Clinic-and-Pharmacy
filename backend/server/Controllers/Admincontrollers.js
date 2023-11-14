@@ -1,3 +1,4 @@
+const Admin = require('../Models/Admin.js');
 const admin = require('../Models/Admin.js');
 const bcrypt = require('bcrypt');
 
@@ -26,6 +27,27 @@ exports.createAdmin = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
+exports.updateAdmin = async (req, res) => {
+  const { username } = req.params;
+  try {
+    const updated = await Admin.findOneAndUpdate(
+      { username: username },
+      req.body,
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ message: 'Admin not found' });
+    }
+    res.status(200).json(updated);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+
+
 
 
 exports.getAlladmin = async (req, res) => {
