@@ -41,6 +41,8 @@ export default function AppTableP() {
   const [rate, setRate] = useState(0);
   const [packName, setPackName] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
+  const [selectedSpecialty, setSelectedSpecialty] = useState('');
+
   
 
   const patientId = id;
@@ -231,20 +233,55 @@ export default function AppTableP() {
     setFilteredRows(filteredApps);
   };
 
+  // const handleFilterChangeOne = () => {
+  //   console.log(docs.speciality, "docs");
+  //   //map on docs.speciality
+  //   //filter on docs.speciality
+  //   //setAvailableApps(filteredApps);
+
+  //   const checkDate = new Date(checkAvailabilityDate);
+  //   const filteredAvailableApps = availableApps.filter((app) => {
+  //     const appDate = app.date;
+  //     return (
+  //       appDate.getFullYear() === checkDate.getFullYear() &&
+  //       appDate.getMonth() === checkDate.getMonth() &&
+  //       appDate.getDate() === checkDate.getDate() &&
+  //       appDate.getHours() === checkDate.getHours() &&
+  //       appDate.getMinutes() === checkDate.getMinutes()
+  //     );
+  //   });
+  //   setAvailableApps(filteredAvailableApps);
+  // };
+
   const handleFilterChangeOne = () => {
     const checkDate = new Date(checkAvailabilityDate);
+  
+    // Assuming docs is an array of doctors with a 'speciality' property
     const filteredAvailableApps = availableApps.filter((app) => {
       const appDate = app.date;
-      return (
+  
+      // Check if the date matches
+      const isDateMatch =
         appDate.getFullYear() === checkDate.getFullYear() &&
         appDate.getMonth() === checkDate.getMonth() &&
         appDate.getDate() === checkDate.getDate() &&
         appDate.getHours() === checkDate.getHours() &&
-        appDate.getMinutes() === checkDate.getMinutes()
-      );
+        appDate.getMinutes() === checkDate.getMinutes();
+  
+      // Check if the doctor's specialty matches
+      const doctorSpecialty = docs.find(
+        (doc) => doc.fullName === app.DoctorName
+      )?.speciality;
+      const isSpecialtyMatch =
+        selectedSpecialty === '' || doctorSpecialty === selectedSpecialty;
+  
+      // Return true only if both date and specialty match
+      return isDateMatch && isSpecialtyMatch;
     });
+  
     setAvailableApps(filteredAvailableApps);
   };
+  
 
   const [discountedPrice, setDiscountedPrice] = useState(0);
   const handleBookAppointment = (appointmentId,discountedPrice) => {
@@ -586,6 +623,22 @@ export default function AppTableP() {
           padding: '10px',
         }}
       >
+<FormControl variant="outlined">
+  <InputLabel id="specialty-filter-label">Specialty</InputLabel>
+  <Select
+    labelId="specialty-filter-label"
+    id="specialty-filter"
+    value={selectedSpecialty}
+    onChange={(e) => setSelectedSpecialty(e.target.value)}
+  >
+    <MenuItem value="">All Specialties</MenuItem>
+    {docs.map((doc) => (
+      <MenuItem key={doc._id} value={doc.speciality}>
+        {doc.speciality}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
         <TextField
           type="datetime-local"
           variant="outlined"
