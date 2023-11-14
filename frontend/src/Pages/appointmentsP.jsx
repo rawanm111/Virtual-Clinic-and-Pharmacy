@@ -254,26 +254,24 @@ export default function AppTableP() {
   // };
 
   const handleFilterChangeOne = () => {
-    const checkDate = new Date(checkAvailabilityDate);
+    const checkDate = checkAvailabilityDate ? new Date(checkAvailabilityDate) : null;
   
-    // Assuming docs is an array of doctors with a 'speciality' property
+    // Filter availableApps based on both date and doctor's specialty
     const filteredAvailableApps = availableApps.filter((app) => {
-      const appDate = app.date;
+      const appDate = new Date(app.date);
   
-      // Check if the date matches
-      const isDateMatch =
+      // Check if the date matches (if checkDate is provided)
+      const isDateMatch = !checkDate || (
         appDate.getFullYear() === checkDate.getFullYear() &&
         appDate.getMonth() === checkDate.getMonth() &&
         appDate.getDate() === checkDate.getDate() &&
         appDate.getHours() === checkDate.getHours() &&
-        appDate.getMinutes() === checkDate.getMinutes();
+        appDate.getMinutes() === checkDate.getMinutes()
+      );
   
       // Check if the doctor's specialty matches
-      const doctorSpecialty = docs.find(
-        (doc) => doc.fullName === app.DoctorName
-      )?.speciality;
-      const isSpecialtyMatch =
-        selectedSpecialty === '' || doctorSpecialty === selectedSpecialty;
+      const doctorSpecialty = docs.find((doc) => doc.fullName === app.DoctorName)?.speciality;
+      const isSpecialtyMatch = selectedSpecialty === '' || doctorSpecialty === selectedSpecialty;
   
       // Return true only if both date and specialty match
       return isDateMatch && isSpecialtyMatch;
@@ -281,6 +279,8 @@ export default function AppTableP() {
   
     setAvailableApps(filteredAvailableApps);
   };
+  
+
   
 
   const [discountedPrice, setDiscountedPrice] = useState(0);
