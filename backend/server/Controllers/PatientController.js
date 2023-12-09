@@ -6,7 +6,7 @@ const walletModel = require('../Models/Wallet'); // Import the wallet model
 
 const patients = require('../Models/patients');
 const bcrypt = require('bcrypt');
-
+const prescriptions = require('../Models/Prescription');
 
 exports.createPatient = async (req, res) => {
   try {
@@ -240,5 +240,38 @@ exports.getFamilyMembersForUser = async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ message: 'Server error' });
+  }
+};
+
+//view patient prescriptions
+exports.getPatientPrescriptions = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    //find the prescriptions that the doctor wrote
+    const prescriptionsToBeSent = await prescriptions.find(
+      {
+        PatientID: id 
+      }
+      );
+    if (!prescriptions) {
+      return res.status(404).json({ message: 'no prescriptions found for this patient' });
+    }
+    res.status(200).json(prescriptionsToBeSent);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+//get a specific prescription
+exports.getPrescriptionById = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const prescription = await prescriptions.findById(id); 
+    if (!prescription) {
+      return res.status(404).json({ message: 'Prescription not found' });
+    }
+    res.status(200).json(prescription);
+  } catch (err) {
+    res.status(500).json(err);
   }
 };

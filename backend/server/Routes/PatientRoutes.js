@@ -11,6 +11,8 @@ router.delete('/:userid', PatientController.deletePatient);
 router.get('/:username', PatientController.getPatientByUsername);
 router.post('/api/addFamilyMember/:userid', PatientController.addFamilyMemberLinkedToPatient);
 router.get('/family_members/user/:id', PatientController.getFamilyMembersForUser);
+router.get('/patientPrescriptions/:id', PatientController.getPatientPrescriptions);
+router.get('/getPrescription/:id', PatientController.getPrescriptionById);
 
 module.exports = router;
 
