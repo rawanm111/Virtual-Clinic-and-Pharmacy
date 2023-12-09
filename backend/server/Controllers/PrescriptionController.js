@@ -3,13 +3,14 @@ const Prescription = require('../Models/Prescription');
 // Create a new Prescription
 exports.createPrescription = async (req, res) => {
   try {
-    const newPrescription = new Prescription(req.body);
-    const saved = await newPrescription.save();
-    res.status(201).json(saved);
+    const newPrescription = await Prescription.create(req.body);
+    res.status(200).json(newPrescription);
   } catch (err) {
     res.status(500).json(err);
   }
 };
+
+
 
 const doctors = require('../Models/doccs');
 

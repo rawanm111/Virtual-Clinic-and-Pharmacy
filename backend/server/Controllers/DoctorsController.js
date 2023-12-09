@@ -209,6 +209,7 @@ exports.addPrescription = async (req, res) => {
       PatientID: req.body.PatientID,
       DocID: id,
       filled: req.body.filled,
+      medicines: req.body.medicines,
     });
     const savedPrescription = await newPrescription.save();
     res.status(200).json(savedPrescription);
@@ -216,3 +217,49 @@ exports.addPrescription = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+// add medicine from a prescription by medicine id 
+exports.addMedicine = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const updatedPrescription = await prescriptions.findByIdAndUpdate(
+      id,
+      { $push: { medicines: req.body.medicines } },
+      { new: true }
+    );
+    res.status(200).json(updatedPrescription);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+// delete medicine from a prescription by medicine id
+exports.deleteMedicine = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const updatedPrescription = await prescriptions.findByIdAndUpdate(
+      id,
+      { $pull: { medicines: req.body.medicines } },
+      { new: true }
+    );
+    res.status(200).json(updatedPrescription);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+// update dosage of a medicine in a prescription by medicine id
+exports.updateDosage = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const updatedPrescription = await prescriptions.findOneAndUpdate(
+      { _id: id, 'medicines._id': req.body.medicineId },
+      { $set: { 'medicines.$.dosage': req.body.dosage } },
+      { new: true }
+    );
+    res.status(200).json(updatedPrescription);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+

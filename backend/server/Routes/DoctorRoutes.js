@@ -11,5 +11,8 @@ router.get('/:username', DoctorsController.getDoctorByUsername);
 router.get('/get/:id', DoctorsController.getDoctorById);
 router.get('/drPrescriptions/:id', DoctorsController.getDoctorPrescriptions);
 router.post('/addPrescription/:id', DoctorsController.addPrescription);
+router.post('/addMedicineToPrescription/:id', DoctorsController.addMedicine);
+router.post('/deleteMedicineFromPrescription/:id', DoctorsController.deleteMedicine);
+router.post('/updateMedicinedosageFromPrescription/:id', DoctorsController.updateDosage);
 
 module.exports = router;
