@@ -198,3 +198,21 @@ exports.getDoctorPrescriptions = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+// add a prescription to a patient
+exports.addPrescription = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    const newPrescription = new prescriptions({
+      Date: req.body.Date,
+      details: req.body.details,
+      PatientID: req.body.PatientID,
+      DocID: id,
+      filled: req.body.filled,
+    });
+    const savedPrescription = await newPrescription.save();
+    res.status(200).json(savedPrescription);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
