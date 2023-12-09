@@ -2,6 +2,7 @@ const doctors = require('../Models/doccs');
 const walletModel = require('../Models/walletDoc');
 const EmploymentContract = require('../Models/EmploymentContract'); 
 const bcrypt = require('bcrypt');
+const prescriptions = require('../Models/Prescription');
 
 exports.createDoc = async (req, res) => {
   try {
@@ -174,6 +175,25 @@ exports.getDoctorById = async (req, res) => {
       return res.status(404).json({ message: 'Doctor not found' });
     }
     res.status(200).json(doctor);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+//view docotor patient prescriptions
+exports.getDoctorPrescriptions = async (req, res) => {
+  const { id } = req.params; 
+  try {
+    //find the prescriptions that the doctor wrote
+    const prescriptionsToBeSent = await prescriptions.find(
+      {
+        DocID: id 
+      }
+      );
+    if (!prescriptions) {
+      return res.status(404).json({ message: 'no prescriptions found for this dr' });
+    }
+    res.status(200).json(prescriptionsToBeSent);
   } catch (err) {
     res.status(500).json(err);
   }
