@@ -1,14 +1,6 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import AdminMedsPage from './Pages/AdminMedsPage'
-import PatientMedsPage from './Pages/PatientMedsPage'
-import PharmacistMedsPage from './Pages/PharmacistMedsPage'
-import DoctorProfile from './Pages/DoctorProfile';
 import PatientProfile from './Pages/PatientProfile';
 import PharmacistProfile from './Pages/PharmacistProfile';
-import AddMed from './Pages/addMed';
-import UpdatePatient from "./Pages/UpdateProfilePatient";
-import UpdateDoctor from "./Pages/UpdateProfileDoc";
-import UpdatePharmacist from "./Pages/UpdateProfilePharm";
 import StartPage from "./Pages/StartPage";
 import LoginPageclinic from  "./Pages/LoginPageclinic";
 import LoginPagepharmacy from  "./Pages/LoginPagepharmacy";
@@ -26,33 +18,30 @@ import DoctorsTable from "./Pages/DoctorsTable";
 import UserManagement from "./Pages/UserManagement";
 import HealthPackagesMain from "./Pages/HealthPackagesPage";
 import NewPackage from "./Pages/NewPackagePage";
-import UpdatePackage from "./Pages/UpdatePackage";
 import AdminRequestsD from "./Pages/AdminReqPageDoc";
 import AdminRequestsP from "./Pages/AdminReqPagePharm";
-import FamilyMember from "./Pages/DisplayPage";
+import FamilyMember from "./Pages/FamMem";
 import Form from "./Pages/Form";
 import AppTable from "./Pages/appointmentsD";
 import AppTableP from "./Pages/appointmentsP";
-import AdminForm from "./Pages/adminform";
+import AppTablePP from "./Pages/appointmentsP2";
 import Prescription from "./Pages/prescription";
 import EmploymentContract from "./Pages/EmploymentContract";
-import NewMedicalHistory from "./Pages/NewMedicalHistory";
-import Wallet from "./Pages/wallet";
-import WalletDoc from "./Pages/walletDoc";
 import Cart from "./Pages/Cart";
 import MedHistory from "./Pages/medHistory";
-import Order from './Pages/OrderPage'
-import Walletclinic from './Pages/walletclinic'
+import Order from './Pages/OrderPage';
 import NewHealthRecordPage from "./Pages/NewHealthRecordPage"; 
-import PatientHealthRecordsPage from "./Pages/PatientHealthRecordsPage"; 
-import HealthRecords from "./Pages/HealthRecPage";
 import MedHistoryDoc from "./Pages/MedHistoryDoc";
 import HealthPackagesSub from "./Pages/HealthPackagesSub";
 import HealthPackagesView from "./Pages/HealthPackagesView";
 import Otp from "./Pages/otp";
-import ChangePassword from "./Pages/changepassword";
-import ChangePasswordTwo from "./Pages/changePasswordTwo";
-
+import PrescriptionDoc from "./Pages/prescriptionsDoc";
+import newPres from "./Pages/newPres";
+import Store from "./Pages/store";
+import StorePharm from "./Pages/storePharm";
+import StoreAdmin from "./Pages/storeAdmin";
+import StoreMed from "./Pages/storeMed";
+import ThankYou from "./Pages/thanks";
 export default function Paths() {
   return (
     <Router> 
@@ -68,17 +57,8 @@ export default function Paths() {
         <Route path="/clinic-patient-home/:id" element={<PatientHomeClinic />} />
         <Route path="/pharm-patient-home/:id" element={<PatientHomePharmacy />} />
         <Route path="/pharm-home/:id" element={<PharmacistHome />} />
-        <Route path="/admin-home" element={<AdminHome />} />
-        <Route path="/admin-meds" element={<AdminMedsPage />} />
-        <Route path="/patient-meds/:id" element={<PatientMedsPage />} />
-        <Route path="/pharm-meds/:id" element={<PharmacistMedsPage />} />
-        <Route path="/doc-profile/:id" element={<DoctorProfile />} />
         <Route path="/patient-profile" element={<PatientProfile />} />
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
-        <Route path="/new-med" element={<AddMed />} />
-        <Route path="/update-patient/:username" element={<UpdatePatient />} />
-        <Route path="/update-doctor/:username" element={<UpdateDoctor />} />
-        <Route path="/update-pharmacist/:username" element={<UpdatePharmacist />} />
         <Route path="/doctorsTable/:id" element={<DoctorsTable />} />
         <Route path="/patientsTable/:id" element={<PatientsTable />} />
         <Route path="/userManagement" element={<UserManagement />} />
@@ -86,33 +66,31 @@ export default function Paths() {
         <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
-        <Route path="/update-package/:id" element={<UpdatePackage />} /> 
         <Route path="/pharmacist-requests" element={<AdminRequestsP />} /> 
         <Route path="/doctor-requests" element={<AdminRequestsD />} /> 
-        <Route path="/health-recs/:id" element={<HealthRecords />} /> 
         <Route path="/appPageDoc/:id" element={<AppTable />} /> 
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
-        <Route path="/AdminForm" element={<AdminForm />} /> 
+        <Route path="/appPagePatientt/:id" element={<AppTablePP/>} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} />
-        <Route path="/wallet/:id" element={<Wallet/>} />
-        <Route path="/walletDoc/:id" element={<WalletDoc/>} />
+        <Route path="/Prescriptions/:id" element={<PrescriptionDoc/>} />
         <Route path="/Cart/:id" element={<Cart/>}/>
         <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
-        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/health-packages-sub/:id" element={<HealthPackagesSub />} />
         <Route path="/health-packages-VIEW/:id" element={<HealthPackagesView />} />
         <Route path="/Order/:id" element={<Order/>} /> 
-        <Route path="/walletclinic/:id" element={<Walletclinic/>} /> 
-        <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
+        <Route path="/newPres/:id" element={<newPres/>} /> 
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/Prescription/:id" element={<Prescription/>} /> 
         <Route path="/EmploymentContract/:userId" element={<EmploymentContract/>} /> 
         <Route path="/otp/:username" element={<Otp/>} />
-        <Route path="/changepass/:username"element={<ChangePassword/>} />
-        <Route path="/changepassTwo/:id"element={<ChangePasswordTwo/>} />
+        <Route path="/patient-meds/:id"element={<Store/>} />
+        <Route path="/pharm-meds/:id"element={<StorePharm/>} />
+        <Route path="/admin-meds"element={<StoreAdmin/>} />
+        <Route path="/med/:idmed/:id"element={<StoreMed/>}  />
+        <Route path="/ThankYou/:id"element={<ThankYou/>}  />
       </Routes>
     </Router>
   );

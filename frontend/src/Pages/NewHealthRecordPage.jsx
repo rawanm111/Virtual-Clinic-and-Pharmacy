@@ -83,5 +83,6 @@ export default function NewHealthRecord() {
         </Button>
       </Container>
     </Box>
+    
   );
 }

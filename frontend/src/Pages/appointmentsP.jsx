@@ -1,9 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect ,useState} from 'react';
+import { useNavigate,useParams } from 'react-router-dom';
 import axios from 'axios';
+import { DataGrid } from '@mui/x-data-grid';
+import S1 from '../css/open-iconic-bootstrap.min.css';
+import S2 from '../css/animate.css';
+import S3 from '../css/owl.carousel.min.css';
+import S4 from '../css/owl.theme.default.min.css';
+import S5 from '../css/magnific-popup.css';
+import S6 from '../css/aos.css';
+import S7 from '../css/ionicons.min.css';
+import S8 from '../css/bootstrap-datepicker.css';
+import S9 from '../css/jquery.timepicker.css';
+import S10 from '../css/flaticon.css';
+import S11 from '../css/icomoon.css';
+import S12 from '../css/style.css';
+import I1 from "../images/about.jpg";
+import I2 from "../images/bg_1.jpg";
+import I3 from "../images/bg_2.jpg";
+import { FaUser, FaWallet } from 'react-icons/fa';
 import {
-  Box,
-  Button,
-  TextField,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -16,11 +31,67 @@ import {
   InputLabel,
   FormControl,
 } from '@mui/material';
-import { DataGrid } from '@mui/x-data-grid';
-import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
-import { useParams } from 'react-router-dom';
+import WalletModal from './walletModal'
+import Modal from '@mui/material/Modal';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
+ export default function() {
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+  const [success, setSuccess] = useState(false); 
+  const handleChange = (prop) => (event) => {
+    setPasswords({ ...passwords, [prop]: event.target.value });
+    setSuccess(false); 
+  };  const handleOpenChangePassword = () => {
+    setChangePasswordOpen(true);
+  };
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    setSuccess(false);
 
-export default function AppTableP() {
+    
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      alert("New passwords don't match.");
+      return;
+    }
+
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
+
+    console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
+  };
+  const updatePassword = async (newPassword) => {
+    try {
+      // Replace '/api/reset-password' with your actual API endpoint
+      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
+      console.log(response.data);
+      alert('Password successfully updated');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password');
+    }
+  };
   const [apps, setApps] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [availableApps, setAvailableApps] = useState([]);
@@ -41,7 +112,18 @@ export default function AppTableP() {
   const [rate, setRate] = useState(0);
   const [packName, setPackName] = useState('');
   const [walletBalance, setWalletBalance] = useState(0);
-  const [selectedSpecialty, setSelectedSpecialty] = useState('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
+  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  const [healthPackages, setHealthPackages] = useState([]);
+  const [newAppointmentDateTime, setNewAppointmentDateTime] = useState('');
+  const [followUpDateTime, setFollowUpDateTime] = useState('');
+  const [followUpPatientName, setFollowUpPatientName] = useState('');
+  const [appointmentStatus, setAppointmentStatus] = useState('');
+  const navigate = useNavigate();
 
   
 
@@ -169,18 +251,14 @@ export default function AppTableP() {
     }
     return sessionPrice;
   };
-
-
-
-
   const columns = [
     { field: 'DoctorName', headerName: 'Doctor Name', width: 200 },
     { field: 'status', headerName: 'Status', width: 200 },
-    { field: 'date', headerName: 'Date', width: 200 },
+    { field: 'date', headerName: 'Date', width: 600 },
     {
       field: 'discountedPrice',
       headerName: 'Discounted Price',
-      width: 200,
+      width: 130,
       renderCell: (params) => {
         const discountedPrice = calculateDiscountedPrice(params.row);
         return <span>{discountedPrice.toFixed(2)}</span>;
@@ -188,18 +266,32 @@ export default function AppTableP() {
     },
   ];
 
+
   const availableColumns = [
-    { field: 'DoctorName', headerName: 'Doctor Name', width: 200 },
-    { field: 'date', headerName: 'Date', width: 200 },
+    { field: 'DoctorName', headerName: 'Doctor Name', width: 150 },
+    { field: 'date', headerName: 'Date', width: 280 },
     {
       field: 'discountedPrice',
       headerName: 'Discounted Price',
-      width: 200,
+      width: 100,
       renderCell: (params) => {
         const discountedPrice = calculateDiscountedPrice(params.row);
         return (
           <span>
             {discountedPrice.toFixed(2)}
+          </span>
+        );
+      },
+    },
+    {
+      field: 'action',
+      headerName: 'Actions',
+      width: 100,
+      renderCell: (params) => {
+        
+        return (
+          <span>
+           
             <Button
               variant="outlined"
               color="primary"
@@ -233,25 +325,7 @@ export default function AppTableP() {
     setFilteredRows(filteredApps);
   };
 
-  // const handleFilterChangeOne = () => {
-  //   console.log(docs.speciality, "docs");
-  //   //map on docs.speciality
-  //   //filter on docs.speciality
-  //   //setAvailableApps(filteredApps);
 
-  //   const checkDate = new Date(checkAvailabilityDate);
-  //   const filteredAvailableApps = availableApps.filter((app) => {
-  //     const appDate = app.date;
-  //     return (
-  //       appDate.getFullYear() === checkDate.getFullYear() &&
-  //       appDate.getMonth() === checkDate.getMonth() &&
-  //       appDate.getDate() === checkDate.getDate() &&
-  //       appDate.getHours() === checkDate.getHours() &&
-  //       appDate.getMinutes() === checkDate.getMinutes()
-  //     );
-  //   });
-  //   setAvailableApps(filteredAvailableApps);
-  // };
 
   const handleFilterChangeOne = () => {
     const checkDate = checkAvailabilityDate ? new Date(checkAvailabilityDate) : null;
@@ -398,71 +472,7 @@ export default function AppTableP() {
       console.error('Error fetching available appointments:', error);
     }
   };
-  
-  
-  // const handlePayment = async (cartData, selectedAppointmentId) => {
-  //   try {
-  //     const items = cartData;
 
-  
-  //     if (!Array.isArray(items) || items.length === 0) {
-  //       console.error('No valid items found in the cart data.');
-  //       return;
-  //     }
-  
-  //     const selectedItem = items.find(item => item._id === selectedAppointmentId);
-  
-  //     if (!selectedItem) {
-  //       console.error('Selected appointment not found in the cart data.');
-  //       return;
-  //     }
-  
-  //     const doctorId = selectedItem.doctor && selectedItem.doctor._id;
-  
-  //     if (!doctorId) {
-  //       console.error('Doctor ID is not available for the selected appointment.');
-  //       return;
-  //     }
-  
-  //     console.log('Selected Appointment ID:', selectedAppointmentId);
-  //     console.log('Doctor ID:', doctorId);
-  //     console.log('Patient ID:', apps);
-  //     console.log('app:', selectedItem);
-  //     const price=calculateDiscountedPrice(selectedItem);
-       
-  //     console.log(price, "price");
-  //       try {
-  //         const response = await axios.post('http://localhost:3000/payment', {
-  //           appId: selectedAppointmentId,
-  //           lineItem: {
-  //             price_data: {
-  //               currency: 'usd',
-  //               product_data: {
-  //                 name: selectedAppointmentId.toString(),
-  //               },
-  //               unit_amount: price * 100,
-  //             },
-  //             quantity: 1,
-  //           },
-  //         });
-  //         console.log('Will handle payment now');
-  //         console.log(response && response.data);
-  //         handleSubmitPayment();
-        
-  
-  //     if (response && response.status === 200) {
-  //       window.location = response.data && response.data.url;
-  //       console.log(response.data && response.data.url);
-  //     } else {
-  //       console.error('Error:', response && response.data);
-  //     }
-  //   } catch (error) {
-  //     console.error('Error handling payment:', error.response && error.response.data);
-  //   }
-  // } catch (error) {
-  //   console.error('Error fetching available appointments:', error);
-  // };
-  // };
 
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
@@ -554,11 +564,7 @@ export default function AppTableP() {
           {handleSubmitPayment()}
         if (response && response.status === 200) {
           console.log('Wallet payment successful!');
-          // Optionally, you can handle any additional logic after a successful wallet payment
-          
-          // Update the user's wallet balance (assuming you have a state for wallet balance)
-          // setWalletBalance(prev);
-          // console.log(walletBalance)
+         
           const price=calculateDiscountedPrice();
           console.log(price, "price");
           const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
@@ -608,197 +614,375 @@ export default function AppTableP() {
       console.error('Error processing wallet payment:', error);
     }
   };
-  
 
-  return (
-    <>
-      <AppBarComponent />
-      <h1>My Appointments</h1>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'right',
-          gap: '16px',
-          padding: '10px',
-        }}
+
+    return (
+<div style={{ backgroundColor: "white" }}>
+  <title>MetaCare </title>
+   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+        <div className="container"  >
+          <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
+            <div className="col-lg-2 pr-4 align-items-center">
+              <a className="navbar-brand" >
+                Meta<span>Care</span>
+              </a>
+              
+            </div>
+          </div>
+        </div>
+      </nav>
+      <nav
+        className="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light"
+        id="ftco-navbar"
+        
       >
-<FormControl variant="outlined">
-  <InputLabel id="specialty-filter-label">Specialty</InputLabel>
-  <Select
-    labelId="specialty-filter-label"
-    id="specialty-filter"
-    value={selectedSpecialty}
-    onChange={(e) => setSelectedSpecialty(e.target.value)}
+        <div className="container d-flex align-items-center">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#ftco-nav"
+            aria-controls="ftco-nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="oi oi-menu" /> Menu
+          </button>
+      <div className="collapse navbar-collapse">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)}>
+                  Home
+                </a>
+              </li>
+              <li
+                className="nav-item dropdown"
+                onMouseEnter={() => setShowPersonalDropdown(true)}
+                onMouseLeave={() => setShowPersonalDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={setShowPersonalDropdown}
+                >
+                  Personal
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showPersonalDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="personalDropdown"
+                >
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/my-fam/${id}`)}>
+                    My Family
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/MedHistory/${id}`)}>
+                    My Medical History
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescription/${id}`)}>
+                    My Prescriptions
+                  </a>
+                 
+                </div>
+              </li>
+              {/* New dropdown for Doctors */}
+              <li
+                className="nav-item dropdown active"
+                onMouseEnter={() => setShowDoctorsDropdown(true)}
+                onMouseLeave={() => setShowDoctorsDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={showDoctorsDropdown}
+                >
+                  Doctors
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showDoctorsDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="doctorsDropdown"
+                >
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/doctorsTable/${id}`)}>
+                    Doctors List
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/appPagePatient/${id}`)}>
+                    My Appointments
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/appPagePatientt/${id}`)}>
+                    Book Appointment
+                  </a>
+                </div>
+              </li>
+              {/* New dropdown for Health Packages */}
+              <li
+                className="nav-item dropdown"
+                onMouseEnter={() => setShowHealthPackagesDropdown(true)}
+                onMouseLeave={() => setShowHealthPackagesDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={setShowHealthPackagesDropdown}
+                  
+                >
+                  Pricings
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showHealthPackagesDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="doctorsDropdown"
+                >
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                 onClick={() => navigate(`/health-packages-VIEW/${id}`)}>
+                    Health Packages
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                 onClick={() => navigate(`/health-packages-sub/${id}`)}>
+                    Subscribed Packages
+                  </a>
+                 
+                </div>
+              </li>
+              {/* Profile dropdown */}
+              
+    
+<li
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowProfileDropdown(true)}
+  onMouseLeave={() => setShowProfileDropdown(false)}
+  style={{marginLeft:"640px"}}
+>
+  <a
+    className="nav-link dropdown-toggle"
+   
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showProfileDropdown}
+    
   >
-    <MenuItem value="">All Specialties</MenuItem>
-    {docs.map((doc) => (
-      <MenuItem key={doc._id} value={doc.speciality}>
-        {doc.speciality}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-        <TextField
-          type="datetime-local"
-          variant="outlined"
-          value={checkAvailabilityDate}
-          onChange={(e) => setCheckAvailabilityDate(e.target.value)}
-        />
-                <Button variant="contained" onClick={handleFilterChangeOne}>
-          Check Availability
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => {
-            setCheckAvailabilityDate('');
+    <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+    <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={handleOpenChangePassword}>
+      Change Password
+    </a>
+    <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+              onClick={() => navigate(`/clinic`)}>
+      Logout
+    </a>
+  </div>
+</li>
 
-            axios.get(`http://localhost:3000/apps/available-appointments`)
-              .then((response) => {
-                if (response.data) {
-                  const availableData = response.data.map((item) => ({
-                    id: item._id,
-                    DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
-                    date: new Date(item.date),
-                  })).filter((item) => item.date >= currentDate);
+{/* Wallet icon without dropdown */}
+<li className="nav-item ">
+<WalletModal/>
+</li>
 
-                  setAvailableApps(availableData);
-                } else {
-                  console.error('No data received from the API');
-                }
-              })
-              .catch((error) => {
-                console.error('Error fetching available appointments:', error);
-              });
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+
+      
+      <section
+      className="hero-wrap hero-wrap-2"
+      style={{ backgroundImage: `url(${I2})` }}
+      data-stellar-background-ratio="0.5"
+    >
+      <div className="overlay" />
+      <div className="container">
+        <div className="row no-gutters slider-text align-items-center justify-content-center">
+          <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+            <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+              My Appointments
+            </h1>
+            <p className="breadcrumbs">
+              <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
+                <a >
+                  Home <i className="ion-ios-arrow-forward" />
+                </a>
+              </span>{' '}
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                My Appointments <i className="ion-ios-arrow-forward" />
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <>
+  
+ {/* Right Section */}
+ <Box sx={{ flex: 1, backgroundColor: '#FFFFFF', padding: '12px', margin: '70px', marginTop: '70', border: '2px solid #007bff', borderRadius: '8px', textAlign: 'center', width: '90%' }}>
+          
+          
+        
+
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
+  <TextField
+    type="date"
+    variant="outlined"
+    value={dateFilterStart ? dateFilterStart.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateFilterStart(new Date(e.target.value))}
+    sx={{ flex: 1 }} // Adjust the flex property
+  />
+  <TextField
+    type="date"
+    variant="outlined"
+    value={dateFilterEnd ? dateFilterEnd.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateFilterEnd(new Date(e.target.value))}
+    sx={{ flex: 1 }} // Adjust the flex property
+  />
+  <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}>
+    <InputLabel id="status-filter-label">Status</InputLabel>
+    <Select
+      labelId="status-filter-label"
+      id="status-filter"
+      value={selectedStatusFilter}
+      onChange={handleStatusFilterChange}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Upcoming">Upcoming</MenuItem>
+      <MenuItem value="Completed">Completed</MenuItem>
+      <MenuItem value="Cancelled">Cancelled</MenuItem>
+      <MenuItem value="Rescheduled">Rescheduled</MenuItem>
+    </Select>
+  </FormControl>
+  <Button variant="contained" onClick={handleFilterChange} sx={{ flex: 1 }}> {/* Adjust the flex property */}
+    Apply Filters
+  </Button>
+</Box>
+
+        <Box sx={{ marginTop: '16px' }}>
+          {/* DataGrid Section */}          
+          <DataGrid
+              rows={filteredRows}
+              columns={columns}
+              pageSize={5}
+              rowHeight={40}
+              autoHeight
+              columnBuffer={5}
+              cellClassName={() => 'custom-cell-class'}
+            />
+
+        </Box>
+      </Box>
+
+  </>
+  {/* Change Password pop-up */}
+  <Modal
+        open={isChangePasswordOpen}
+        onClose={handleCloseChangePassword}
+        aria-labelledby="change-password-popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          Reset
-        </Button>
-
-      </Box>
-
-      <h2>Available Appointments</h2>
-      <DataGrid
-        rows={availableApps}
-        columns={availableColumns}
-        pageSize={5}
-        checkboxSelection
-      />
-
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'right',
-          gap: '16px',
-          padding: '10px',
-        }}
-      >
-        <TextField
-          type="date"
-          variant="outlined"
-          value={
-            dateFilterStart
-              ? dateFilterStart.toISOString().split('T')[0]
-              : ''
-          }
-          onChange={(e) =>
-            setDateFilterStart(new Date(e.target.value))
-          }
-        />
-        <TextField
-          type="date"
-          variant="outlined"
-          value={
-            dateFilterEnd
-              ? dateFilterEnd.toISOString().split('T')[0]
-              : ''
-          }
-          onChange={(e) =>
-            setDateFilterEnd(new Date(e.target.value))
-          }
-        />
-        <FormControl variant="outlined">
-          <InputLabel id="status-filter-label">Status</InputLabel>
-          <Select
-            labelId="status-filter-label"
-            id="status-filter"
-            value={selectedStatusFilter}
-            onChange={handleStatusFilterChange}
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
           >
-            <MenuItem value="All">All</MenuItem>
-            <MenuItem value="Upcoming">Upcoming</MenuItem>
-            <MenuItem value="Completed">Completed</MenuItem>
-            <MenuItem value="Cancelled">Cancelled</MenuItem>
-            <MenuItem value="Rescheduled">Rescheduled</MenuItem>
-          </Select>
-        </FormControl>
-        <Button variant="contained" onClick={handleFilterChange}>
-          Apply Filters
-        </Button>
-      </Box>
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Change Password
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="newPassword"
+                label="New Password"
+                type="password"
+                id="newPassword"
+                autoComplete="new-password"
+                value={passwords.newPassword}
+                onChange={handleChange('newPassword')}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="confirmNewPassword"
+                label="Confirm New Password"
+                type="password"
+                id="confirmNewPassword"
+                autoComplete="new-password"
+                value={passwords.confirmNewPassword}
+                onChange={handleChange('confirmNewPassword')}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Change Password
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
 
-      <h2>My Appointments</h2>
-      <DataGrid
-        rows={filteredRows}
-        columns={columns}
-        pageSize={5}
-        checkboxSelection
-      />
-      <Dialog
-        open={isPaymentDialogOpen}
-        onClose={closePaymentDialog}
-      >
-        <DialogTitle>Select Payment Method</DialogTitle>
-        <DialogContent>
-          <FormControl>
-            <InputLabel id="family-member-label">
-              Family Member
-            </InputLabel>
-            <Select
-              labelId="family-member-label"
-              id="family-member"
-              value={selectedFamilyMember}
-              onChange={handleFamilyMemberChange}
-            >
-              <MenuItem value="myself">Myself</MenuItem>
-              {familyMembers.map((member) => (
-                <MenuItem
-                  key={member._id}
-                  value={member._id}
-                >
-                  {member.patient.fullName}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <RadioGroup
-            name="paymentOption"
-            value={paymentOption}
-            onChange={handlePaymentOptionChange}
-          >
-            <FormControlLabel
-              value="wallet"
-              control={<Radio />}
-              label="Payment by Wallet"
-            />
-            <FormControlLabel
-              value="visa"
-              control={<Radio />}
-              label="Payment by Visa"
-            />
-          </RadioGroup>
-        </DialogContent>
-        <DialogActions>
-          
-          <Button onClick={closePaymentDialog} color="primary">
-            Cancel
-          </Button>
-          <Button onClick={() => paymentOption === 'visa' ? getAppointment() : handleWallet()} color="primary">
-            Submit
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  );
-}
+  </div>
+)}
