@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
-import './DoctorRegistrationHome.css';
 import { useNavigate } from 'react-router-dom';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload'; // Import the file upload icon
+import CloudUploadIcon from '@mui/icons-material/CloudUpload'; 
 
 const DoctorRegistrationHome = () => {
   const [formData, setFormData] = useState({

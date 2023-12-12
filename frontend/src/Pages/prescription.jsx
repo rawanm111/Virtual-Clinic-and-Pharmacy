@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Box, TextField, Button, MenuItem } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import AppbarPatientClinc from '../Components/Appbar/AppbarPatientClinc';
 import { useParams } from 'react-router-dom';
 
 console.log('Prescription component is rendering.');
@@ -89,7 +88,7 @@ function Prescription() {
 
   return (
     <div>
-      <AppbarPatientClinc />
+  
       <div style={{ backgroundColor: '#ADD8E6', height: '100vh' }}>
         <div style={{ textAlign: 'center', color: '#00008B' }}>
           <h1>My Prescriptions</h1>

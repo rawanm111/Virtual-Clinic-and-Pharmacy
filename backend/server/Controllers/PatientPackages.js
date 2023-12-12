@@ -33,6 +33,7 @@ exports.getAllPatientPackages = async (req, res) => {
 
     // Extracting the required fields from the populated 'package' field
     const simplifiedPackages = patientPackages.map((package) => ({
+      patient:patientId,
       package: package.package.name, 
       status: package.status,
       startdate: package.startdate,
