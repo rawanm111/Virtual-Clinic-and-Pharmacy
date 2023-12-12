@@ -20,12 +20,13 @@ function Prescription() {
     // Fetch prescription data for the specific user
     const fetchPrescriptionData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/Prescription/${id}`);
+        const response = await axios.get(`http://localhost:3000/Prescription/patientPrescription/${id}`);
         if (response.status === 200) {
           const responseData = response.data.map((row) => ({
             ...row,
             id: row._id,
-            DoctorName: row.DocID ? row.DocID.fullName : 'Not Assigned Yet',
+            DoctorName: row.Doctor.fullName ? row.Doctor.fullName : 'Not Assigned Yet',
+            Details: row.medicines.length > 0 ? row.medicines[0].dosage : 'No Details' 
           }));
           console.log('Fetched data:', responseData);
           setPrescriptionData(responseData);

@@ -87,7 +87,7 @@ exports.getPrescriptionsForDoctor = async (req, res) => {
 
 exports.getPrescriptionsForPatient = async (req, res) => {
   try {
-    const patientId = req.params.patientId;
+    const patientId = req.params.id;
 
     // Check if the patient exists
     const patientExists = await Patient.findById(patientId);
