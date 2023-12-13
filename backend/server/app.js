@@ -178,8 +178,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      success_url: `http://localhost:3001/Thankyou/${patientId}`,
+      cancel_url: `http://localhost:3001/Thankyou/${patientId}`,
     });
 
     res.json({ url: session.url });
