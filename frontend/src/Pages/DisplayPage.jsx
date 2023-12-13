@@ -55,6 +55,7 @@ function FamilyMember() {
     <div>
       <AppBarComponent />
       <input
+      
         type="text"
         placeholder="Search by name"
         value={searchQuery}

@@ -21,9 +21,6 @@ import PatientHomeClinic from  "./Pages/PatientHomeClinic";
 import PatientHomePharmacy from "./Pages/PatientHomePharmacy";
 import PharmacistHome from "./Pages/PharmacistHome";
 import AdminHome from  "./Pages/AdminHome";
-import PatientsTable from "./Pages/PatientsTable";
-import DoctorsTable from "./Pages/DoctorsTable";
-import UserManagement from "./Pages/UserManagement";
 import HealthPackagesMain from "./Pages/HealthPackagesPage";
 import NewPackage from "./Pages/NewPackagePage";
 import UpdatePackage from "./Pages/UpdatePackage";
@@ -40,7 +37,7 @@ import NewMedicalHistory from "./Pages/NewMedicalHistory";
 import Wallet from "./Pages/wallet";
 import WalletDoc from "./Pages/walletDoc";
 import Cart from "./Pages/Cart";
-import MedHistory from "./Pages/medHistory";
+// import MedHistory from "./Pages/medHistory";
 import Order from './Pages/OrderPage'
 import Walletclinic from './Pages/walletclinic'
 import NewHealthRecordPage from "./Pages/NewHealthRecordPage"; 
@@ -52,6 +49,19 @@ import HealthPackagesView from "./Pages/HealthPackagesView";
 import Otp from "./Pages/otp";
 import ChangePassword from "./Pages/changepassword";
 import ChangePasswordTwo from "./Pages/changePasswordTwo";
+import DoctorsPage from "./Pages/doctorsPage";
+import PatientsPage from "./Pages/patientsPage";
+import WalletModal from "./Pages/walletModal";
+import User from "./Pages/UserManagemen";
+import UserManagement from "./Pages/userManagement";
+import MyFamily from "./Pages/myFam";
+import MedHistoryPatient from "./Pages/MedHistoryPatient";
+import MyCart from "./Pages/myCart";
+import Thankyou from "./Pages/thankyou";
+
+
+
+
 
 export default function Paths() {
   return (
@@ -79,9 +89,6 @@ export default function Paths() {
         <Route path="/update-patient/:username" element={<UpdatePatient />} />
         <Route path="/update-doctor/:username" element={<UpdateDoctor />} />
         <Route path="/update-pharmacist/:username" element={<UpdatePharmacist />} />
-        <Route path="/doctorsTable/:id" element={<DoctorsTable />} />
-        <Route path="/patientsTable/:id" element={<PatientsTable />} />
-        <Route path="/userManagement" element={<UserManagement />} />
         <Route path="/health-packages" element={<HealthPackagesMain />} />
         <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
@@ -94,17 +101,15 @@ export default function Paths() {
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/AdminForm" element={<AdminForm />} /> 
         <Route path="/Prescription/:id" element={<Prescription/>} />
-        <Route path="/wallet/:id" element={<Wallet/>} />
-        <Route path="/walletDoc/:id" element={<WalletDoc/>} />
         <Route path="/Cart/:id" element={<Cart/>}/>
-        <Route path="/MedHistory/:id" element={<MedHistory/>} /> 
+        {/* <Route path="/MedHistory/:id" element={<MedHistory/>} />  */}
         <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
         <Route path="/health-packages-sub/:id" element={<HealthPackagesSub />} />
         <Route path="/health-packages-VIEW/:id" element={<HealthPackagesView />} />
         <Route path="/Order/:id" element={<Order/>} /> 
-        <Route path="/walletclinic/:id" element={<Walletclinic/>} /> 
+        {/* <Route path="/walletclinic/:id" element={<Walletclinic/>} />  */}
         <Route path="/HealthRecordPatient/:id" element={<PatientHealthRecordsPage/>} /> 
         <Route path="/healthRecs/:id" element={<MedHistoryDoc />} /> 
         <Route path="/new-HealthRecord" element={<NewHealthRecordPage />} />
@@ -113,6 +118,22 @@ export default function Paths() {
         <Route path="/otp/:username" element={<Otp/>} />
         <Route path="/changepass/:username"element={<ChangePassword/>} />
         <Route path="/changepassTwo/:id"element={<ChangePasswordTwo/>} />
+        <Route path="/user/:id" element={<User />} />
+
+        {/* new */}
+
+        <Route path="/doctors/:id" element={<DoctorsPage/>} />
+        <Route path="/patients/:id" element={<PatientsPage/>} />
+        <Route path="/wallet/:id" element={<WalletModal/>} />
+        <Route path="/userManagement/:id" element={<UserManagement />} />
+        <Route path="/myFam/:id" element={<MyFamily/>} />
+        <Route path="/MyMedHistory/:id" element={<MedHistoryPatient/>} />
+        <Route path="/myCart/:id" element={<MyCart />} />
+        <Route path="/Thankyou/:id" element={<Thankyou />} />
+
+
+
+        
       </Routes>
     </Router>
   );
