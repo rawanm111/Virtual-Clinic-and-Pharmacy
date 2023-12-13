@@ -35,6 +35,38 @@ import WalletModal from './walletModal'
 import Modal from '@mui/material/Modal';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
  export default function() {
+  const [apps, setApps] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [availableApps, setAvailableApps] = useState([]);
+  const [dateFilterStart, setDateFilterStart] = useState(null);
+  const [dateFilterEnd, setDateFilterEnd] = useState(null);
+  const currentDate = new Date();
+  const { id } = useParams();
+  const [checkAvailabilityDate, setCheckAvailabilityDate] = useState('');
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [paymentOption, setPaymentOption] = useState('wallet');
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
+  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
+  const [familyMembers, setFamilyMembers] = useState([]);
+  const [selectedStatusFilter, setSelectedStatusFilter] = useState('All');
+  const [patientHealthPackage, setPatientHealthPackage] = useState([]);
+  const [allHealthPackages, setAllHealthPackages] = useState([]);
+  const [docs, setDocs] = useState([]);
+  const [rate, setRate] = useState(0);
+  const [packName, setPackName] = useState('');
+  const [walletBalance, setWalletBalance] = useState(0);
+  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
+  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  const [healthPackages, setHealthPackages] = useState([]);
+  const [newAppointmentDateTime, setNewAppointmentDateTime] = useState('');
+  const [followUpDateTime, setFollowUpDateTime] = useState('');
+  const [followUpPatientName, setFollowUpPatientName] = useState('');
+  const [appointmentStatus, setAppointmentStatus] = useState('');
+  const navigate = useNavigate();
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
   const [passwords, setPasswords] = useState({
     currentPassword: '',
@@ -81,6 +113,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     updatePassword(passwords.newPassword)
     alert("Password changed successfully");
   };
+
   const updatePassword = async (newPassword) => {
     try {
       // Replace '/api/reset-password' with your actual API endpoint
@@ -92,40 +125,6 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       alert('Error updating password');
     }
   };
-  const [apps, setApps] = useState([]);
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [availableApps, setAvailableApps] = useState([]);
-  const [dateFilterStart, setDateFilterStart] = useState(null);
-  const [dateFilterEnd, setDateFilterEnd] = useState(null);
-  const currentDate = new Date();
-  const { id } = useParams();
-  const [checkAvailabilityDate, setCheckAvailabilityDate] = useState('');
-  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
-  const [paymentOption, setPaymentOption] = useState('wallet');
-  const [selectedAppointmentId, setSelectedAppointmentId] = useState(null);
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
-  const [familyMembers, setFamilyMembers] = useState([]);
-  const [selectedStatusFilter, setSelectedStatusFilter] = useState('All');
-  const [patientHealthPackage, setPatientHealthPackage] = useState([]);
-  const [allHealthPackages, setAllHealthPackages] = useState([]);
-  const [docs, setDocs] = useState([]);
-  const [rate, setRate] = useState(0);
-  const [packName, setPackName] = useState('');
-  const [walletBalance, setWalletBalance] = useState(0);
-  const [selectedSpecialty, setSelectedSpecialty] = useState('All');
-  const [currentImage, setCurrentImage] = useState(I2);
-  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
-  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
-  const [healthPackages, setHealthPackages] = useState([]);
-  const [newAppointmentDateTime, setNewAppointmentDateTime] = useState('');
-  const [followUpDateTime, setFollowUpDateTime] = useState('');
-  const [followUpPatientName, setFollowUpPatientName] = useState('');
-  const [appointmentStatus, setAppointmentStatus] = useState('');
-  const navigate = useNavigate();
-
-  
 
   const patientId = id;
 
@@ -246,38 +245,24 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       const discountPercentage = healthPackage.discountOnDoctorSessionPrice || 0;
       const discount = (discountPercentage / 100) * sessionPrice;
       // console.log(discount, "healthPackage");
-
+      setDiscountedPrice(sessionPrice-discount);
       return sessionPrice - discount;
     }
+    setDiscountedPrice(sessionPrice);
     return sessionPrice;
   };
-  const columns = [
-    { field: 'DoctorName', headerName: 'Doctor Name', width: 200 },
-    { field: 'status', headerName: 'Status', width: 200 },
+  const availableColumns = [
+    { field: 'DoctorName', headerName: 'Doctor Name', width: 250 },
     { field: 'date', headerName: 'Date', width: 600 },
     {
       field: 'discountedPrice',
       headerName: 'Discounted Price',
-      width: 130,
-      renderCell: (params) => {
-        const discountedPrice = calculateDiscountedPrice(params.row);
-        return <span>{discountedPrice.toFixed(2)}</span>;
-      },
-    },
-  ];
-
-
-  const availableColumns = [
-    { field: 'DoctorName', headerName: 'Doctor Name', width: 150 },
-    { field: 'date', headerName: 'Date', width: 280 },
-    {
-      field: 'discountedPrice',
-      headerName: 'Discounted Price',
-      width: 100,
+      width: 200,
       renderCell: (params) => {
         const discountedPrice = calculateDiscountedPrice(params.row);
         return (
           <span>
+            
             {discountedPrice.toFixed(2)}
           </span>
         );
@@ -286,7 +271,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     {
       field: 'action',
       headerName: 'Actions',
-      width: 100,
+      width: 200,
       renderCell: (params) => {
         
         return (
@@ -295,6 +280,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
             <Button
               variant="outlined"
               color="primary"
+              sx={{ width: '180px' }}
               onClick={() => handleBookAppointment(params.row.id, discountedPrice)}
             >
               Book 
@@ -304,6 +290,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       },
     },
   ];
+
 
   
 
@@ -345,7 +332,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   
       // Check if the doctor's specialty matches
       const doctorSpecialty = docs.find((doc) => doc.fullName === app.DoctorName)?.speciality;
-      const isSpecialtyMatch = selectedSpecialty === '' || doctorSpecialty === selectedSpecialty;
+      const isSpecialtyMatch = selectedSpecialty === 'All' || doctorSpecialty === selectedSpecialty;
   
       // Return true only if both date and specialty match
       return isDateMatch && isSpecialtyMatch;
@@ -477,12 +464,13 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
       const items = cartData;
-  
+     console.log(items);
+     console.log(selectedAppointmentId);
       if (!Array.isArray(items) || items.length === 0) {
         console.error('No valid items found in the cart data.');
         return;
       }
-  
+      
       const selectedItem = items.find(item => item._id === selectedAppointmentId);
   
       if (!selectedItem) {
@@ -507,7 +495,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   
   
       console.log('Discounted Price:', discountedPrice);
-  
+       
       try {
         const response = await axios.post('http://localhost:3000/payment', {
           appId: selectedAppointmentId,
@@ -519,7 +507,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               product_data: {
                 name: selectedAppointmentId.toString(),
               },
-              unit_amount: discountedPrice * 100, // Convert to cents
+              unit_amount: discountedPrice * 100, 
             },
             quantity: 1,
           },
@@ -586,6 +574,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   };
 
   const handleWallet = async () => {
+    closePaymentDialog();
     try {
 
       console.log("wallet",discountedPrice)
@@ -650,7 +639,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
           </button>
       <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item " style={{marginRight:"10px"} }>
+              <li className="nav-item active" style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
@@ -700,7 +689,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               </li>
               {/* New dropdown for Doctors */}
               <li
-                className="nav-item dropdown active"
+                className="nav-item dropdown"
                 onMouseEnter={() => setShowDoctorsDropdown(true)}
                 onMouseLeave={() => setShowDoctorsDropdown(false)}
               >
@@ -843,7 +832,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-              My Appointments
+             Available Appointments
             </h1>
             <p className="breadcrumbs">
               <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
@@ -852,7 +841,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
                 </a>
               </span>{' '}
               <span style={{ fontSize: '14px', color: '#fff' }}>
-                My Appointments <i className="ion-ios-arrow-forward" />
+                Book Appointment <i className="ion-ios-arrow-forward" />
               </span>
             </p>
           </div>
@@ -865,48 +854,78 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
  <Box sx={{ flex: 1, backgroundColor: '#FFFFFF', padding: '12px', margin: '70px', marginTop: '70', border: '2px solid #007bff', borderRadius: '8px', textAlign: 'center', width: '90%' }}>
           
           
-        
+          {/* Specialty Select and Datetime-local input */}
+            {/* Specialty Select and Datetime-local input */}
+            <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', alignItems: 'baseline' }}>
+          <FormControl variant="outlined" style={{ flex: 1 }}>
+  <InputLabel id="specialty-filter-label">Specialty</InputLabel>
+  <Select
+    labelId="specialty-filter-label"
+    id="specialty-filter"
+    value={selectedSpecialty}
+    onChange={(e) => setSelectedSpecialty(e.target.value)}
+  >
+    <MenuItem value="All">All Specialities</MenuItem>
+    {docs.map((doc) => (
+      <MenuItem key={doc._id} value={doc.speciality}>
+        {doc.speciality}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-          <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
-  <TextField
-    type="date"
-    variant="outlined"
-    value={dateFilterStart ? dateFilterStart.toISOString().split('T')[0] : ''}
-    onChange={(e) => setDateFilterStart(new Date(e.target.value))}
-    sx={{ flex: 1 }} // Adjust the flex property
-  />
-  <TextField
-    type="date"
-    variant="outlined"
-    value={dateFilterEnd ? dateFilterEnd.toISOString().split('T')[0] : ''}
-    onChange={(e) => setDateFilterEnd(new Date(e.target.value))}
-    sx={{ flex: 1 }} // Adjust the flex property
-  />
-  <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}>
-    <InputLabel id="status-filter-label">Status</InputLabel>
-    <Select
-      labelId="status-filter-label"
-      id="status-filter"
-      value={selectedStatusFilter}
-      onChange={handleStatusFilterChange}
-    >
-      <MenuItem value="All">All</MenuItem>
-      <MenuItem value="Upcoming">Upcoming</MenuItem>
-      <MenuItem value="Completed">Completed</MenuItem>
-      <MenuItem value="Cancelled">Cancelled</MenuItem>
-      <MenuItem value="Rescheduled">Rescheduled</MenuItem>
-    </Select>
-  </FormControl>
-  <Button variant="contained" onClick={handleFilterChange} sx={{ flex: 1 }}> {/* Adjust the flex property */}
-    Apply Filters
-  </Button>
-</Box>
+            {/* Datetime-local input */}
+            <TextField
+              type="datetime-local"
+              variant="outlined"
+              value={checkAvailabilityDate}
+              onChange={(e) => setCheckAvailabilityDate(e.target.value)}
+              style={{ flex: 1 }}
+            />
+          </Box>
+
+          {/* Buttons with fixed height */}
+          <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '8px', marginTop: '8px' }}>
+            <Button variant="contained" style={{ flex: 1, height: '56px' }} onClick={handleFilterChangeOne}>
+              Check Availability
+            </Button>
+            <Button
+              variant="contained"
+              style={{ flex: 1, height: '56px' }}
+              onClick={() => {
+                setCheckAvailabilityDate('');
+
+                axios.get(`http://localhost:3000/apps/available-appointments`)
+                  .then((response) => {
+                    if (response.data) {
+                      const availableData = response.data.map((item) => ({
+                        id: item._id,
+                        DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
+                        date: new Date(item.date),
+                      })).filter((item) => item.date >= currentDate);
+
+                      setAvailableApps(availableData);
+                    } else {
+                      console.error('No data received from the API');
+                    }
+                  })
+                  .catch((error) => {
+                    console.error('Error fetching available appointments:', error);
+                  });
+              }}
+            >
+              Reset
+            </Button>
+          </Box>
+
+
+          
 
         <Box sx={{ marginTop: '16px' }}>
           {/* DataGrid Section */}          
           <DataGrid
-              rows={filteredRows}
-              columns={columns}
+              rows={availableApps}
+              columns={availableColumns}
               pageSize={5}
               rowHeight={40}
               autoHeight
@@ -916,6 +935,61 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
         </Box>
       </Box>
+      <Dialog
+        open={isPaymentDialogOpen}
+        onClose={closePaymentDialog}
+      >
+        <DialogTitle style={{color:'#2f89fc', fontWeight:'900px'}}>Select Payment Method</DialogTitle>
+        <DialogContent>
+          
+          <RadioGroup
+            name="paymentOption"
+            value={paymentOption}
+            onChange={handlePaymentOptionChange}
+          >
+            <FormControlLabel
+              value="wallet"
+              control={<Radio />}
+              label="Payment by Wallet"
+            />
+            <FormControlLabel
+              value="visa"
+              control={<Radio />}
+              label="Payment by Visa"
+            />
+          </RadioGroup>
+          <FormControl style={{width:'100%'}}>
+           <InputLabel  id="family-member-label" >
+              Appointment For:
+            </InputLabel> 
+            <Select
+              labelId="family-member-label"
+              id="family-member"
+              value={selectedFamilyMember}
+              onChange={handleFamilyMemberChange}
+            >
+              <MenuItem value="myself">Myself</MenuItem>
+              {familyMembers.map((member) => (
+                <MenuItem
+                  key={member._id}
+                  value={member._id}
+                >
+                  {member.patient.fullName}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </DialogContent>
+        <DialogActions>
+          
+          <Button onClick={closePaymentDialog} color="primary">
+            Cancel
+          </Button>
+          <Button onClick={() => paymentOption === 'visa' ? getAppointment() : handleWallet()} color="primary">
+            Submit
+          </Button>
+        </DialogActions>
+      </Dialog>
 
   </>
   {/* Change Password pop-up */}

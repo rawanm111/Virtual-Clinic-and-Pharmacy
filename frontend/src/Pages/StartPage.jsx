@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 
 function StartPage() {
@@ -21,12 +20,12 @@ function StartPage() {
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        minHeight: '100vh', // Set the height to 100vh to fill the whole page
+        minHeight: '100vh', 
         backgroundColor: 'white',
       }}
     >
       <img
-        src={img}
+        
         alt=""
         style={{
           width: '50%',

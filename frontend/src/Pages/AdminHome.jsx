@@ -104,6 +104,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
                   <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  
                   onClick={() => navigate(`/userManagement`)}
                   style={{cursor:"pointer" } }>
                     User Management
@@ -111,7 +112,8 @@ import { FaUser, FaWallet } from 'react-icons/fa';
                   <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                   onClick={() => navigate(`/doctor-requests}`)} 
+                 
+                   onClick={() => navigate(`/doctor-requests`)} 
                    style={{cursor:"pointer" } }>
                     Doctor Requests
                   </a>
@@ -128,12 +130,12 @@ import { FaUser, FaWallet } from 'react-icons/fa';
               {/* New dropdown for Doctors */}
               <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/admin-meds`)} style={{cursor:"pointer" } }>
-                  Medications
+                  Pharmacy Store
                 </a>
               </li>
               {/* New dropdown for Health Packages */}
               <li className="nav-item " style={{marginRight:"10px"} }>
-                <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages"`)} style={{cursor:"pointer" } }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages`)} style={{cursor:"pointer" } }>
                   Health Packages
                 </a>
               </li>
@@ -163,14 +165,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
     className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
     aria-labelledby="profileDropdown"
   >
-    <a className="dropdown-item" 
-    style={{cursor:"pointer" } }
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                //   onClick={() => navigate(`/changepassTwo/${id}`)}
-                  >
-      Change Password
-    </a>
+   
     <a className="dropdown-item" 
     style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
@@ -405,6 +400,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
                 <div className="services-2 d-flex">
                   <div className="icon mt-2 mr-3 d-flex justify-content-center align-items-center">
                     <span className="flaticon-dropper" />
+
                   </div>
                   <div className="text">
                     <h3 style={{ color: 'black', }}>Lab Test</h3>

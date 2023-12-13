@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import { styled } from '@mui/system';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -20,129 +17,218 @@ import S12 from '../css/style.css';
 import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
-import { FaUser, FaWallet, FaShoppingBasket } from 'react-icons/fa';
-import WalletModal from './walletModal';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import Modal from '@mui/material/Modal';
+import { FaUser, FaShoppingBasket } from 'react-icons/fa';
+import InputBase from '@mui/material/InputBase';
+import { TextField, Button, Container, Typography, Box ,Modal} from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
+import WalletModal from './walletModal';
 
-function OrderPage() {
-  const [orderDetails, setOrderDetails] = useState(null);
-  const [medicationNames, setMedicationNames] = useState([]);
-  const { id } = useParams();
-  const [openModal, setOpenModal] = useState(false);
-  const [healthPackages, setHealthPackages] = useState([]);
-  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
-  const [passwords, setPasswords] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  });
-  const [selectedHealthPackage, setSelectedHealthPackage] = useState('');
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
-  const [familyMembers, setFamilyMembers] = useState([]);
+export default function StoreView() {
+  const [medicationData, setMedicationData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedMedicalUse, setSelectedMedicalUse] = useState('All');
+  const [uniqueMedicalUses, setUniqueMedicalUses] = useState([]);
   const navigate = useNavigate();
-
-  const [startDate, setStartDate] = useState('');
-  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
-  const [paymentOption, setPaymentOption] = useState('wallet');
-  const [selectedPackageId, setSelectedPackageId] = useState('');
-  const [selectedPackageName, setSelectedPackageName] = useState(''); // New state
-  const [isOpen, setIsOpen] = useState(false);
-  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
-  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const { id } = useParams();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
-  const [success, setSuccess] = useState(false); 
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+const [passwords, setPasswords] = useState({
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: '',
+});
 
+useEffect(() => {
+  const queryParameters = {
+    medicalUse: selectedMedicalUse, // Add the medical use filter here
+  };
+  
+  const fetchMedicationData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/meds/', {
+        params: queryParameters,
+      });
+      const responseData = response.data;
+      console.log('Fetched data:', responseData);
+      setMedicationData(responseData);
+
+      // Extract unique medical uses from fetched data
+      const uniqueUses = [...new Set(responseData.map((item) => item.medicalUse))];
+      setUniqueMedicalUses(uniqueUses);
+    } catch (error) {
+      console.error('Error fetching medication data:', error);
+    }
+  };
+
+  fetchMedicationData();
+}, [selectedMedicalUse]);
+
+const filteredRows = medicationData.filter((row) =>
+row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+(selectedMedicalUse === 'All' || row.medicalUse === selectedMedicalUse)
+);
+const handleSearchInputChange = (event) => {
+  setSearchQuery(event.target.value);
+};
+const [success, setSuccess] = useState(false); 
+const handleChange = (prop) => (event) => {
+  setPasswords({ ...passwords, [prop]: event.target.value });
+  setSuccess(false); 
+};
+const handleSubmit = (event) => {
+  event.preventDefault();
+  
+  setSuccess(false);
+
+  
+  if (passwords.newPassword !== passwords.confirmNewPassword) {
+    alert("New passwords don't match.");
+    return;
+  }
+
+  if (!isValidPassword(passwords.newPassword)) {
+    alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+    return;
+  }
+
+  console.log('Passwords submitted:', passwords);
+  
+  
+  
+  setSuccess(true);
+
+ 
+  updatePassword(passwords.newPassword)
+  alert("Password changed successfully");
+};
+
+const isValidPassword = (password) => {
+  const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+  return regex.test(password);
+};
+const handleCloseChangePassword = () => {
+  setChangePasswordOpen(false);
+};
+
+const updatePassword = async (newPassword) => {
+  try {
+    // Replace '/api/reset-password' with your actual API endpoint
+    const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
+    console.log(response.data);
+    alert('Password successfully updated');
+  } catch (error) {
+    console.error('Error updating password:', error);
+    alert('Error updating password');
+  }
+};
+
+  const handleOpenChangePassword = () => {
+    setChangePasswordOpen(true);
+  };
+  const toggleImage = () => {
+    setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
+  };
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const intervalId = setInterval(toggleImage, 2000);
+    return () => clearInterval(intervalId);
+  }, []);
+ 
+
+
+  const [packageType, setPackageType] = useState('');
+
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+
+  const Medications = ({ medications }) => {
+    return (
+      <div className="site-section bg-light">
+        <div className="container">
+          <div className="row d-flex align-items-stretch">
+            {medications.map((medication, index) => (
+              <div key={index} className="col-md-4 mb-4"> {/* Added mb-4 class for margin-bottom */}
+                <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', height: '100%' }}>
+                  {medication.discountedPrice && <span className="onsale">Sale</span>}
+                  <a style={{ display: 'block', height: '200px', overflow: 'hidden' }}>
+                    <img
+                      src={medication.picture}
+                      alt="Image"
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  </a>
+                  <h3 className="text-dark" style={{ height: '50px' }}>
+                    <a>{medication.name}</a>
+                  </h3>
+                  <p style={{ height: '30px' }}>
+                    <span className="price">
+                      {medication.discountedPrice ? (
+                        <>
+                          <span>$<del>{medication.price}</del> — {medication.discountedPrice}</span>
+                        </>
+                      ) : (
+                        <span>${medication.price}</span>
+                      )}
+                    </span>
+                  </p>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    className="btn btn-primary px-4 py-3"
+                    style={{borderRadius:'40px'}}
+                    onClick={() => navigate(`/med/${medication._id}/${id}`)}
+                  >
+                    Select
+                  </Button>
+                  <p className="button text-center">{/* Add any additional buttons or actions here */}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  };
+  
+  
+  useEffect(() => {
+    const queryParameters = {
+      medicalUse: selectedMedicalUse, // Add the medical use filter here
+    };
+    
+    const fetchMedicationData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/Order/orders/${id}`);
-        setOrderDetails(response.data);
+        const response = await axios.get('http://localhost:3000/meds/', {
+          params: queryParameters,
+        });
+        const responseData = response.data;
+        console.log('Fetched data:', responseData);
+        setMedicationData(responseData);
+
+        // Extract unique medical uses from fetched data
+        const uniqueUses = [...new Set(responseData.map((item) => item.medicalUse))];
+        setUniqueMedicalUses(uniqueUses);
       } catch (error) {
-        console.error('Error fetching order details:', error);
+        console.error('Error fetching medication data:', error);
       }
     };
 
-    fetchOrderDetails();
-  }, [id]);
+    fetchMedicationData();
+  }, [selectedMedicalUse]);
 
-  const cancelOrder = async (orderId) => {
-    try {
-      await axios.put(`http://localhost:3000/Order/cancel-order/${orderId}`);
-      setOrderDetails(prevOrder => ({ ...prevOrder, status: 'canceled' }));
-      window.location.reload();
-    } catch (error) {
-      console.error('Error canceling order:', error);
-    }
-  };
-  
-  const handleChange = (prop) => (event) => {
-    setPasswords({ ...passwords, [prop]: event.target.value });
-    setSuccess(false); 
-  };  const handleOpenChangePassword = () => {
-    setChangePasswordOpen(true);
-  };
-  const handleCloseChangePassword = () => {
-    setChangePasswordOpen(false);
-  };
-  const isValidPassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
-    return regex.test(password);
-  };
-  const handleSubmitt = (event) => {
-    event.preventDefault();
-    
-    setSuccess(false);
-
-    
-    if (passwords.newPassword !== passwords.confirmNewPassword) {
-      alert("New passwords don't match.");
-      return;
-    }
-
-    if (!isValidPassword(passwords.newPassword)) {
-      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
-      return;
-    }
-
-    console.log('Passwords submitted:', passwords);
-    
-    
-    
-    setSuccess(true);
-
-   
-    updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
-  };
-
-  const updatePassword = async (newPassword) => {
-    try {
-      // Replace '/api/reset-password' with your actual API endpoint
-      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
-      console.log(response.data);
-      alert('Password successfully updated');
-    } catch (error) {
-      console.error('Error updating password:', error);
-      alert('Error updating password');
-    }
-  };
-  
-  const handleSelectPackage = (event) => {
-    const selectedPackage = event.target.value;
-    setSelectedHealthPackage(selectedPackage);
-    setSelectedPackageId(selectedPackage.id);
-    setSelectedPackageName(selectedPackage.name); 
-  };
-  
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
@@ -290,7 +376,7 @@ function OrderPage() {
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-              My Orders
+              Store Medications
             </h1>
             <p className="breadcrumbs">
               <span style={{ fontSize: '14px', color: '#fff' }}>
@@ -306,58 +392,48 @@ function OrderPage() {
         </div>
       </div>
     </section>
-    {orderDetails !== null && orderDetails.length > 0 && (
-        <section className="ftco-section ftco-departments bg-light">
-          <div className="container" style={{ marginTop: '-100px' }}>
-            <div className="row">
-              {orderDetails.map((order, index) => (
-                <div className="col-md-4" key={order._id} style={{ marginBottom: '40px' }}>
-                  <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', height: '100%'}}>
-                    <p>
-                      <span className="price">Order:</span>
-                    </p>
-                    <h4 className="mb-4">{order._id} </h4>
-                    <p>
-                      <span className="price">Address:</span>
-                    </p>
-                    <h4 className="mb-4">{order.address} </h4>
-                    <p>
-                      <span className="price">Status:</span>
-                    </p>
-                    <h4 className="mb-4">{order.status} </h4>
-                    <p>
-                      <span className="price">Cart:</span>
-                    </p>
-                    <div>
-                      {order.items.map((item) => (
-                        <div key={item._id}>
-                          <h4 className="mb-4">{item.quantity} x {item.name}</h4>
-                        </div>
-                      ))}
-                    </div>
-                    <p>
-                      <span className="price">Total Price: ${order.items.reduce((total, item) => total + item.price, 0)}</span>
-                    </p>
-                    <p className="button text-center">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className="btn btn-primary px-4 py-3"
-                        onClick={() => cancelOrder(order._id)}
-                      >
-                        Cancel
-                      </Button>
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-   
-      {/* Change Password pop-up */}
-    <Modal
+    <div style={{ display: 'flex', alignItems: 'center', margin: '20px', marginLeft: '120px', width: '25%' }}>
+      <InputBase
+        style={{
+          flex: 1,
+          padding: '8px',
+          marginRight: '10px',
+          border: '1px solid #ced4da',
+          borderRadius: '4px',
+          height: '40px', // Set a specific height for the input
+        }}
+        type="text"
+        placeholder="Search Medications"
+        value={searchQuery}
+        onChange={handleSearchInputChange}
+      />
+    
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <FormControl style={{ marginRight: '10px', height: '40px' }}> 
+          <InputLabel id="medical-use-label">Medical Use</InputLabel>
+          <Select
+            labelId="medical-use-label"
+            id="medical-use-select"
+            value={selectedMedicalUse}
+            onChange={(e) => setSelectedMedicalUse(e.target.value)}
+            style={{ width: '150px', height: '100%' }}
+            variant="outlined"
+           
+          >
+            <MenuItem value="All">All</MenuItem>
+            {uniqueMedicalUses.map((use, index) => (
+              <MenuItem key={index} value={use}>
+                {use}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+
+      </div>
+    </div>
+    <Medications medications={filteredRows} />
+    {/* Change Password pop-up */}
+   <Modal
         open={isChangePasswordOpen}
         onClose={handleCloseChangePassword}
         aria-labelledby="change-password-popup"
@@ -382,7 +458,7 @@ function OrderPage() {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -421,8 +497,5 @@ function OrderPage() {
           </Box>
         </Box>
       </Modal>
-
   </div>
 )};
-
-export default OrderPage;

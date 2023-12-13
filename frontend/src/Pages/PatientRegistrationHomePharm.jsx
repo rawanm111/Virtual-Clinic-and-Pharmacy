@@ -1,6 +1,6 @@
 //import React from 'react';
 //import './LoginPagepharmacy.css';
-import img from '../Components/Logo/img.png';
+
 import Button from '@mui/material/Button';
 //import TextField from '@mui/material/TextField'; // Import TextField
 import React from 'react';

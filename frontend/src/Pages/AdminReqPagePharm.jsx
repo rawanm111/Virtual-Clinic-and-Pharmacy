@@ -1,60 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
 import { useNavigate } from 'react-router-dom';
-import Button from '@mui/material/Button';
+import { Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
-const PageContainer = styled('div')({
-  backgroundColor: 'lightblue',
-  minHeight: '100vh',
-  padding: '16px',
-});
+import S1 from '../css/open-iconic-bootstrap.min.css';
+import S2 from '../css/animate.css';
+import S3 from '../css/owl.carousel.min.css';
+import S4 from '../css/owl.theme.default.min.css';
+import S5 from '../css/magnific-popup.css';
+import S6 from '../css/aos.css';
+import S7 from '../css/ionicons.min.css';
+import S8 from '../css/bootstrap-datepicker.css';
+import S9 from '../css/jquery.timepicker.css';
+import S10 from '../css/flaticon.css';
+import S11 from '../css/icomoon.css';
+import S12 from '../css/style.css';
+import I1 from "../images/about.jpg";
+import I2 from "../images/bg_1.jpg";
+import I3 from "../images/bg_2.jpg";
+import { FaUser, FaWallet } from 'react-icons/fa';
 
-const HeaderContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '16px',
-});
-
-const CardsContainer = styled('div')({
-  display: 'flex',
-  flexWrap: 'wrap',
-  gap: '16px',
-});
-
-const CardWrapper = styled(Card)({
-  marginBottom: '16px',
-  border: '1px solid #0070F3',
-  backgroundColor: '#f0f8ff',
-  flex: '0 0 calc(33.33% - 16px)',
-  marginRight: '16px',
-  boxShadow: '0px 6px 6px rgba(0, 0, 0, 0.8)',
-  borderRadius: '5px',
-});
-
-const NameTypography = styled(Typography)({
-  color: '#000080',
-  marginBottom: '1rem',
-  fontWeight: 'bold',
-});
-
-const SubtitleTypography = styled(Typography)({
-  color: '#0050C0',
-  fontWeight: 'bold',
-  marginBottom: '10px',
-});
-
-const DataTypography = styled(Typography)({
-  color: '#000080',
-  marginBottom: '0.5rem',
-  display: 'inline-block',
-  marginLeft: '0.5rem',
-});
 
 // Move base64toBlob function here
 const base64toBlob = (base64Data, contentType) => {
@@ -84,6 +52,13 @@ const base64toBlob = (base64Data, contentType) => {
 function AdminRequests() {
   const [adminRequests, setAdminRequests] = useState([]);
   const navigate = useNavigate();
+  const [currentRequestIndex, setCurrentRequestIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
+  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  
 
   useEffect(() => {
     axios
@@ -141,22 +116,23 @@ function AdminRequests() {
   const handleDownloadFile = (fileInfo, fileName) => {
     if (fileInfo && fileInfo.buffer && fileInfo.buffer.length > 0) {
       const fileExtension = fileName.split('.').pop().toLowerCase();
-
+    
       // Map file extensions to content types
       const contentTypeMap = {
+        pdf: 'application/pdf',
         png: 'image/png',
         // Add more mappings as needed
       };
-
+    
       const contentType = contentTypeMap[fileExtension] || 'application/octet-stream';
-
+    
       console.log('File Extension:', fileExtension);
       console.log('Content Type:', contentType);
-
+    
       const blobData = base64toBlob(fileInfo.buffer, contentType);
       if (blobData) {
         const blobUrl = URL.createObjectURL(blobData);
-
+    
         const a = document.createElement('a');
         a.href = blobUrl;
         a.download = fileName;
@@ -170,136 +146,328 @@ function AdminRequests() {
       // Handle the error, e.g., show a message to the user
     }
   };
+  
 
+  const handleForward = () => {
+    if (currentRequestIndex < adminRequests.length - 1) {
+      setCurrentRequestIndex(currentRequestIndex + 1);
+    }
+  };
+
+  const handleBackward = () => {
+    if (currentRequestIndex > 0) {
+      setCurrentRequestIndex(currentRequestIndex - 1);
+    }
+  };
   return (
-    <div>
-      <AppbarAdmin />
-      <PageContainer>
-        <HeaderContainer>
-          <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            Pharmacist Requests
-          </Typography>
-        </HeaderContainer>
-        <CardsContainer>
-          {adminRequests.map((adminRequest) => (
-            <CardWrapper key={adminRequest._id} variant="outlined">
-              <CardContent>
-                <NameTypography variant="h5" component="div">
-                  {adminRequest.fullName}
-                </NameTypography>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Username:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.username}
-                  </DataTypography>
+    <div style={{ backgroundColor: "white" }}>
+      <title>MetaCare </title>
+       <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+            <div className="container"
+              >
+              <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
+                <div className="col-lg-2 pr-4 align-items-center">
+                  <a className="navbar-brand">
+                    Meta<span>Care</span>
+                  </a>
+                  
                 </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    E-mail:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.email}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Birthdate:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.dateOfBirth}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Hourly Rate:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.hourlyRate}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Hospital Name:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.affiliation}
-                  </DataTypography>
-                </div>
-                <div>
-                  <SubtitleTypography variant="subtitle1">
-                    Educational Background:
-                  </SubtitleTypography>
-                  <DataTypography variant="body2">
-                    {adminRequest.educationalBackground}
-                  </DataTypography>
-                </div>
-              </CardContent>
-              <div>
-                <SubtitleTypography variant="subtitle1">
-                  Pharmacist Files:
-                </SubtitleTypography>
-                <DataTypography variant="body2">
-                  {/* Display any relevant message or status related to the file */}
-                </DataTypography>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() =>
-                    handleDownloadFile(
-                      adminRequest.nationalIdFile[0],
-                      `${adminRequest.fullName}_NationalID.png`
-                    )
-                  }
-                >
-                  Download National ID
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() =>
-                    handleDownloadFile(
-                      adminRequest.pharmacyDegreeFile[0],
-                      `${adminRequest.fullName}_PharmacyDegree.pdf`
-                    )
-                  }
-                >
-                  Download Pharmacy Degree
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  onClick={() =>
-                    handleDownloadFile(
-                      adminRequest.workingLicenseFile[0],
-                      `${adminRequest.fullName}_WorkingLicense.pdf`
-                    )
-                  }
-                >
-                  Download Working License
-                </Button>
               </div>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={() => handleAcceptRequest(adminRequest._id, adminRequest)}
+            </div>
+          </nav>
+          <nav
+            className="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light"
+            id="ftco-navbar"
+            
+          >
+            <div className="container d-flex align-items-center">
+              <button
+                className="navbar-toggler"
+                type="button"
+                data-toggle="collapse"
+                data-target="#ftco-nav"
+                aria-controls="ftco-nav"
+                aria-expanded="false"
+                aria-label="Toggle navigation"
               >
-                Accept Request
-              </Button>
-              <Button
-                variant="contained"
-                color="secondary"
-                onClick={() => handleRejectRequest(adminRequest._id)}
-              >
-                Reject Request
-              </Button>
-            </CardWrapper>
-          ))}
-        </CardsContainer>
-      </PageContainer>
+                <span className="oi oi-menu" /> Menu
+              </button>
+            
+              <div className="collapse navbar-collapse">
+                <ul className="navbar-nav mr-auto">
+                  <li className="nav-item " style={{marginRight:"10px"} }>
+                    <a  className="nav-link pl-0"  onClick={() => navigate(`/admin-home`)} style={{cursor:"pointer" } }>
+                      Home
+                    </a>
+                  </li>
+                  <li
+                    className="nav-item dropdown active"
+                    onMouseEnter={() => setShowPersonalDropdown(true)}
+                    onMouseLeave={() => setShowPersonalDropdown(false)}
+                  >
+                    <a
+                      className="nav-link dropdown-toggle active"
+                      
+                      id="doctorsDropdown"
+                      role="button"
+                      data-toggle="dropdown"
+                      aria-haspopup="true"
+                      aria-expanded={setShowPersonalDropdown}
+                      style={{cursor:"pointer" } }
+                    >
+                      Users
+                    </a>
+                    <div
+                      className={`dropdown-menu ${
+                        showPersonalDropdown ? 'show' : ''
+                      }`}
+                      aria-labelledby="personalDropdown"
+                    >
+                      <a className="dropdown-item" 
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                      onClick={() => navigate(`/userManagement`)}
+                      style={{cursor:"pointer" } }>
+                        User Management
+                      </a>
+                      <a className="dropdown-item" 
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                       onClick={() => navigate(`/doctor-requests`)} 
+                       style={{cursor:"pointer" } }>
+                        Doctor Requests
+                      </a>
+                      <a className="dropdown-item" 
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                       onClick={() => navigate(`/pharmacist-requests`)}
+                       style={{cursor:"pointer" } }>
+                        Pharmacist Requests
+                      </a>
+                     
+                    </div>
+                  </li>
+                  {/* New dropdown for Doctors */}
+                  <li className="nav-item " style={{marginRight:"10px"} }>
+                    <a  className="nav-link pl-0"  onClick={() => navigate(`/admin-meds`)} style={{cursor:"pointer" } }>
+                    Pharmacy Store
+                    </a>
+                  </li>
+                  {/* New dropdown for Health Packages */}
+                  <li className="nav-item " style={{marginRight:"10px"} }>
+                    <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages`)} style={{cursor:"pointer" } }>
+                      Health Packages
+                    </a>
+                  </li>
+               
+                  
+        
+    <li
+      className="nav-item dropdown "
+      onMouseEnter={() => setShowProfileDropdown(true)}
+      onMouseLeave={() => setShowProfileDropdown(false)}
+      style={{marginLeft:"590px"}}
+    >
+      <a
+        className="nav-link dropdown-toggle"
+        style={{cursor:"pointer" } }
+        id="profileDropdown"
+        role="button"
+        data-toggle="dropdown"
+        aria-haspopup="true"
+        aria-expanded={showProfileDropdown}
+        
+      >
+        <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
+        
+      </a>
+      <div
+        className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
+        aria-labelledby="profileDropdown"
+      >
+      
+        <a className="dropdown-item" 
+        style={{cursor:"pointer" } }
+                      onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                      onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/clinic`)}>
+          Logout
+        </a>
+      </div>
+    </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+    
+          
+
+      <section
+      className="hero-wrap hero-wrap-2"
+      style={{ backgroundImage: `url(${I2})` }}
+      data-stellar-background-ratio="0.5"
+    >
+      <div className="overlay" />
+      <div className="container">
+        <div className="row no-gutters slider-text align-items-center justify-content-center">
+          <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+            <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+              Pharmacist Registration Requests
+            </h1>
+            <p className="breadcrumbs">
+              <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
+                <a >
+                  Home <i className="ion-ios-arrow-forward" />
+                </a>
+              </span>{' '}
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                Users <i className="ion-ios-arrow-forward" />
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <div className="col-12 text-center mt-3">
+
+
+</div>
+
+    <div className="container" style={{marginTop:'40px'}}>
+    
+
+    <div className="col-12 text-center mt-3">
+        <Button
+          variant="contained"
+          color="primary"
+          className="btn btn-primary px-4 py-3"
+          style={{ marginRight: '10px', borderRadius: '8px' , width:'40%'}}
+          onClick={() => handleAcceptRequest(adminRequests[currentRequestIndex]._id, adminRequests[currentRequestIndex])}
+        >
+          Accept
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className="btn btn-primary px-4 py-3"
+          style={{ borderRadius: '8px' , width:'40%'}}
+          onClick={() => handleRejectRequest(adminRequests[currentRequestIndex]._id)}
+        >
+          Reject
+        </Button>
+      </div>
+
+      <div className="container" style={{ marginTop: '40px' }}>
+        <div className="row">
+          {/* Left Arrow Button */}
+          <div className="col-md-1 text-center mt-3">
+            <Button
+              variant="contained"
+              color="primary"
+              className="btn btn-primary px-4 py-3"
+              style={{ borderRadius: '20px'  , marginTop:'200px'}}
+              onClick={handleBackward}
+              disabled={currentRequestIndex === 0}
+            >
+              <ArrowBackIcon />
+            </Button>
+          </div>
+
+          {adminRequests.length > 0 && (
+          <div className="col-md-10 text-center">
+            <div
+              className="pricing-entry pb-5 text-center"
+              style={{
+                borderRadius: '8px',
+                ":hover": {
+                  backgroundColor: 'transparent',
+                },
+              }}
+            >
+              <div>
+                <img
+                  src={I3}
+                  alt="Request Image"
+                  className="img-fluid mb-4"
+                  style={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                />
+                <h3 className="mb-4">Dr. {adminRequests[currentRequestIndex].fullName}</h3>
+                <p>Email: {adminRequests[currentRequestIndex].email}</p>
+                <p>Date of Birth: {adminRequests[currentRequestIndex].dateOfBirth}</p>
+                <p>Hourly Rate: {adminRequests[currentRequestIndex].hourlyRate}</p>
+                <p>Hospital: {adminRequests[currentRequestIndex].affiliation}</p>
+                <p>Educational Background: {adminRequests[currentRequestIndex].educationalBackground}</p>
+                <p>Speciality: {adminRequests[currentRequestIndex].speciality}</p>
+        
+              </div>
+            </div>
+          </div>
+        )}
+
+          {/* Right Arrow Button */}
+          <div className="col-md-1 text-center mt-3">
+            <Button
+              variant="contained"
+              color="primary"
+              className="btn btn-primary px-4 py-3"
+              style={{ borderRadius: '20px' , marginTop:'200px' }}
+              onClick={handleForward}
+              disabled={currentRequestIndex === adminRequests.length - 1}
+            >
+              <ArrowForwardIcon />
+            </Button>
+           </div>
+          
+            <div className="col-12 text-center mt-3">
+            <Button
+  variant="contained"
+  color="primary"
+  className="btn btn-primary px-4 py-3"
+  style={{ marginRight: '10px', borderRadius: '8px', width: '26%' }}
+  onClick={() =>
+    handleDownloadFile(
+      adminRequests[currentRequestIndex].nationalIdFile[0],
+      `${adminRequests[currentRequestIndex].fullName}_NationalID.png`
+    )
+  }
+>
+  Download National ID
+</Button>
+<Button
+  variant="contained"
+  color="primary"
+  className="btn btn-primary px-4 py-3"
+  style={{ marginRight: '10px', borderRadius: '8px', width: '26%' }}
+  onClick={() =>
+    handleDownloadFile(
+      adminRequests[currentRequestIndex].pharmacyDegreeFile[0],
+      `${adminRequests[currentRequestIndex].fullName}_MedicalLicense.pdf`
+    )
+  }
+>
+  Download Pharmacy Degree
+</Button>
+<Button
+  variant="contained"
+  color="primary"
+  className="btn btn-primary px-4 py-3"
+  style={{ borderRadius: '8px', width: '26%' }}
+  onClick={() =>
+    handleDownloadFile(
+      adminRequests[currentRequestIndex].workingLicenseFile[0],
+      `${adminRequests[currentRequestIndex].fullName}_MedicalDegree.pdf`
+    )
+  }
+>
+  Download Working License
+</Button>
+
     </div>
-  );
-}
+        
+      </div>
+    </div>
+    </div>
+    </div>
+    )}
 
 export default AdminRequests;

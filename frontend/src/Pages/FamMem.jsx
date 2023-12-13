@@ -1,8 +1,9 @@
-import React, { useEffect ,useState} from 'react';
-import { useNavigate,useParams } from 'react-router-dom';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { styled } from '@mui/system';
+import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import S1 from '../css/open-iconic-bootstrap.min.css';
 import S2 from '../css/animate.css';
 import S3 from '../css/owl.carousel.min.css';
@@ -15,21 +16,42 @@ import S9 from '../css/jquery.timepicker.css';
 import S10 from '../css/flaticon.css';
 import S11 from '../css/icomoon.css';
 import S12 from '../css/style.css';
-import I1 from "../images/about.jpg";
+import L1 from "../images/doc-2.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
-import axios from 'axios';
-import WalletModal from './walletModal';
+import WalletModal from './walletModal'
+import AddIcon from '@mui/icons-material/Add';
+import { TextField, Button, Container, Typography} from '@mui/material';
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
+ 
 
- export default function() {
-  const [currentImage, setCurrentImage] = useState(I2);
+
+export default function FamilyMember() {
+  const [patients, setPatients] = useState([]);
+  const [filteredRows, setFilteredRows] = useState([]);
+  const [filterValue, setFilterValue] = useState('');
+  const [selectedPatientData, setSelectedPatientData] = useState(null);
+  const [popoverAnchor, setPopoverAnchor] = useState(null);
+  const { id } = useParams();
+  const [appointments, setAppointments] = useState([]);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const navigate = useNavigate();
-  const { id } = useParams();
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
 const [passwords, setPasswords] = useState({
   currentPassword: '',
@@ -41,32 +63,8 @@ const handleChange = (prop) => (event) => {
   setPasswords({ ...passwords, [prop]: event.target.value });
   setSuccess(false); 
 };
-
-const handleSubmit = (event) => {
-  event.preventDefault();
-  
-  setSuccess(false);
-
-  
-  if (passwords.newPassword !== passwords.confirmNewPassword) {
-    alert("New passwords don't match.");
-    return;
-  }
-
-  if (!isValidPassword(passwords.newPassword)) {
-    alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
-    return;
-  }
-
-  console.log('Passwords submitted:', passwords);
-  
-  
-  
-  setSuccess(true);
-
- 
-  updatePassword(passwords.newPassword)
-  alert("Password changed successfully");
+const handleOpenChangePassword = () => {
+  setChangePasswordOpen(true);
 };
 const isValidPassword = (password) => {
   const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
@@ -86,22 +84,184 @@ const updatePassword = async (newPassword) => {
     alert('Error updating password');
   }
 };
-  const handleOpenChangePassword = () => {
-    setChangePasswordOpen(true);
+
+
+  const handleSubmitt = (event) => {
+    event.preventDefault();
+    
+    setSuccess(false);
+
+    
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      alert("New passwords don't match.");
+      return;
+    }
+
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
+
+    console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
   };
-  const toggleImage = () => {
-    setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const [familyMembers, setFamilyMembers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    const getFamilyMembersForUser = async () => {
+      try {
+        const response = await axios.get(`http://localhost:3000/patients/family_members/user/${id}`);
+        const responseData = response.data;
+        setFamilyMembers(responseData);
+      } catch (error) {
+        console.error('Error fetching family member data:', error);
+      }
+    };
+
+    getFamilyMembersForUser();
+  }, [id]);
+
+  // Log the state whenever it changes
+  useEffect(() => {
+    console.log('Family Members State:', familyMembers);
+  }, [familyMembers]);
+
+  const handleSearchInputChange = (event) => {
+    setSearchQuery(event.target.value);
   };
 
   useEffect(() => {
-    const intervalId = setInterval(toggleImage, 2000);
-    return () => clearInterval(intervalId);
-  }, []);
+    const temp = familyMembers
+      .map((row) => ({
+        id: row._id,
+        fullName: row.patient.fullName,
+        relation: row.relation,
+      }))
+      .filter(
+        (row) =>
+          row &&
+          row.fullName &&
+          row.fullName.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+  
+    // Move setFilteredRows inside useEffect
+    setFilteredRows(temp);
+  }, [familyMembers, searchQuery]);
+  
+  const columns = [
+    { field: 'fullName', headerName: 'Name', flex: 1 },
+    { field: 'relation', headerName: 'Relation to Patient', flex: 1 },
+  ];
 
-    return (
-<div style={{ backgroundColor: "white" }}>
-  <title>MetaCare </title>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+
+  const [formData, setFormData] = useState({
+    emailOrPhone: '', // Change "name" to "emailOrPhone" to collect email or phone
+    relation: 'Wife', // Set a default value
+  });
+
+  const handleSubmit = () => {
+    axios
+    .post(`http://localhost:3000/patients/api/addFamilyMember/${id}`, formData)
+    .then((response) => {
+        console.log('Response:', response.data);
+      })
+      .catch((error) => {
+        console.log(formData)
+        console.error('Error:', error);
+      });
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+
+
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/patients/p/${id}`)
+      .then((response) => {
+        if (response.data) {
+          const transformedData = response.data.map((item) => ({
+            id: item._id,
+            name: item.username,
+  
+            fullName: item.fullName,
+            email: item.email,
+            dateOfBirth: item.dateOfBirth,
+            gender: item.gender,
+            mobileNumber: item.mobileNumber,
+          }));
+          setPatients(transformedData);
+          setFilteredRows(transformedData);
+        } else {
+          console.error('No data received from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching patients:', error);
+      });
+  }, [id]);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/apps/upcoming-appointments/${id}`)
+      .then((response) => {
+        if (response.data) {
+          setAppointments(response.data);
+        } else {
+          console.error('No data received for appointments from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching appointments:', error);
+      });
+  }, [id]);
+
+  const handleFilterChange = (e) => {
+    const value = e.target.value.toLowerCase();
+    setFilterValue(value);
+
+    if (Array.isArray(patients)) {
+      const filteredPatients = patients.filter((patient) => {
+        return patient && patient.fullName && patient.fullName.toLowerCase().includes(value);
+      });
+
+      setFilteredRows(filteredPatients);
+      console.log(filteredPatients);
+    }
+  };
+
+
+
+
+
+
+
+return (
+
+  <div style={{ backgroundColor: "white" }}>
+<title>MetaCare </title>
+<nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -133,13 +293,13 @@ const updatePassword = async (newPassword) => {
         
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item  active dropdown"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -315,270 +475,173 @@ const updatePassword = async (newPassword) => {
       </nav>
 
       
-  <section >
-    <div
-      className="slider-item"
-      style={{ backgroundImage: `url(${currentImage})`, height: '560px' }}
-      >
+      <section
+      className="hero-wrap hero-wrap-2"
+      style={{ backgroundImage: `url(${I2})` }}
+      data-stellar-background-ratio="0.5"
+    >
       <div className="overlay" />
       <div className="container">
-        <div
-          className="row no-gutters slider-text align-items-center justify-content-start"
-          data-scrollax-parent="true"
-          style={{height: "200px"}}
-        >
-          <div style={{ fontWeight: "900"}}>
-            <h1 className="mb-4" style={{ fontWeight: "900" , color: "black", marginTop: "100px"}}>
-              We Care
+        <div className="row no-gutters slider-text align-items-center justify-content-center">
+          <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+            <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+              My Family
             </h1>
-            <h1 className="mb-4" style={{ fontWeight: "900", fontSize: "60px" , color: "#2f89fc", marginTop: "-55px"}}>
-             About your health
-            </h1>
-            <h3 className="subheading" style={{  fontSize: "20px" }} >
-              Everyday We Bring Hope to the Patient We Serve
-            </h3>
+            <p className="breadcrumbs">
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                <a >
+                  Home <i className="ion-ios-arrow-forward" />
+                </a>
+              </span>{' '}
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                Personal <i className="ion-ios-arrow-forward" />
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+<div>
+  <Box
+    sx={{
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'right', 
+      gap: '16px',
+      padding: '20px',
+    }}
+  >
+    <input
+      type="text"
+      placeholder="Search..."
+      value={searchQuery}
+      onChange={handleSearchInputChange}
+      style={{
+      width: '300px',
+      borderRadius: '8px', 
+      padding: '8px', 
+      border: '1px solid #ccc', 
+      }}
+    />
+  </Box>
+  <Modal
+    open={open}
+    onClose={handleClose}
+    aria-labelledby="parent-modal-title"
+    aria-describedby="parent-modal-description"
+  >
+    <Box sx={{ ...style, width: 400 }}>
+      <h3
+        id="parent-modal-title"
+        style={{
+          justifyContent: "center",
+          alignItems: "center",
+          display: "flex",
+          fontSize: "20px",
+          marginBottom: "20px",
+        }}
+      >
+        Family Member Form
+      </h3>
+      <p id="parent-modal-description">
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Email or Mobile Number "
+            variant="outlined"
+            name="emailOrPhone" 
+            value={formData.emailOrPhone}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Relation to Patient"
+            variant="outlined"
+            select
+            SelectProps={{ native: true }}
+            name="relation" // Update the name to "relation"
+            value={formData.relation}
+            onChange={handleInputChange}
+          >
+            <option value="Wife">Wife</option>
+            <option value="Husband">Husband</option>
+            <option value="Children">Children</option>
+          </TextField>
+        </div>
+      </p>
+      <Button
+        variant="contained"
+        color="primary"
+        startIcon={<PersonAddIcon />}
+        onClick={handleSubmit}
+      >
+        Submit
+      </Button>
+    </Box>
+  </Modal>
+</div>;
+
+<section className="ftco-section" style={{ padding: "1em 0", position: "relative" }}>
+<div className="container" style={{ maxWidth: "1230px", margin: "0 auto" }}>
+<div className="row">
+  {filteredRows.map((patient, index) => (
+    <div key={index} className="col-md-6 col-lg-4" style={{ marginBottom: "40px" }}>
+      <div className="staff" style={{ overflow: "hidden", height: "450px" }}>
+        <div className="img-wrap d-flex align-items-stretch" style={{ height: "300px" }}>
+          <div className="img align-self-stretch" style={{ backgroundImage: `url(${L1})`, width: "100%", display: "block", backgroundPosition: "top center" }} />
+        </div>
+        <div className="text pt-3 text-center">
+          <h3 style={{ fontSize: "32px", fontWeight: "500", marginBottom: "10px" }}>{ patient.fullName}</h3>
+          <span className="position mb-2" style={{ textTransform: "uppercase", color: "#b3b3b3", display: "block", letterSpacing: "1px" }}>{ patient.relation}</span>
+          <div className="faded">
+            <p style={{ fontSize: "20px", textTransform: "uppercase" }}>{ patient.name}</p>
+
+            <ul className="ftco-social text-center">
+              <li>
+                <a>
+                  
+
+
+
+
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
     </div>
-  </section>
-  <div
-  style={{
-    marginTop:"-30px",
-    paddingLeft: '120px', 
-    paddingRight: '120px', 
-  }}
->
-<section style={{
-    display: 'block',
-    width: '100%',
-    position: 'relative',
-    MozTransition: 'all 0.3s ease',
-    OTransition: 'all 0.3s ease',
-    WebkitTransition: 'all 0.3s ease',
-    MSTransition: 'all 0.3s ease',
-    transition: 'all 0.3s ease',
-  }}>
-  <div className="container">
-    <div className="row no-gutters" style={{ background: '#2f89fc' }}>
-      {/* First column */}
-      <div className="col-md-3 p-4 " style={{
-        padding: '0 0 5em 0',
-        }}>
-        <div className="media block-6 d-block text-center">
-          <div
-            className="icon d-flex justify-content-center align-items-center"
-            style={{
-              lineHeight: '1.3',
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              background: '#61a6fd',
-              margin: '0 auto',
-              WebkitBorderRadius: '50%',
-              MozBorderRadius: '50%',
-              MsBorderRadius: '50%',
-              borderRadius: '50%',
-            }}
-          >
-            <span className="flaticon-doctor" style={{ fontSize: '50px', color: '#fff' }} />
-          </div>
-          <div className="media-body p-2 mt-3">
-            <h3 style={{ fontWeight: '500', fontSize: '22px', color: '#fff' }}>Qualitfied Doctors</h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-              Our doctor's at MetaCare graduated from top-tier Med-Schools around the Globe.
-            </p>
-          </div>
-        </div>
-      </div>
+  ))}
+   <div key={'add'} style={{display:'flex', 
+       flexDirection:'column',
+       backgroundColor:'rgba(42, 114, 207, 0.8)', 
+       justifyContent:'center', 
+        borderRadius:'20px',
+        transition: 'background-color 0.3s', // Add transition for smooth effect
+        cursor: 'pointer', // Set cursor to pointer on hover
+        border:'2px solid #2a72cf'
 
-      {/* Second column */}
-      <div className="col-md-3 p-4 " style={{
-        padding: '0 0 5em 0',
-        background: '#0c75fb',
-        }}>
-        <div className="media block-6 d-block text-center" >
-          <div
-            className="icon d-flex justify-content-center align-items-center"
-            style={{
-              lineHeight: '1.3',
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              background: '#61a6fd',
-              margin: '0 auto',
-              WebkitBorderRadius: '50%',
-              MozBorderRadius: '50%',
-              MsBorderRadius: '50%',
-              borderRadius: '50%',
-             
-            }}
-          >
-            <span className="flaticon-ambulance" style={{ fontSize: '50px', color: '#fff' }} />
-          </div>
-          <div className="media-body p-2 mt-3">
-            <h3 style={{ fontWeight: '500', fontSize: '22px', color: '#fff' }}>Emergency Care</h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-              You can contact emercency care through our website at any time of the day.
-            </p>
-          </div>
+        }}
+        className="col-md-6 col-lg-4"
+        onMouseOver={(e) => {
+          e.currentTarget.style.backgroundColor = '#2a72cf';
+          
+        }}
+        onMouseOut={(e) => {
+          e.currentTarget.style.backgroundColor = 'rgba(42, 114, 207, 0.8)';
+        }}
+        onClick={handleOpen}        >
+        <AddIcon style={{ fontSize: '20rem' , color:'white',width:"100%" }}/>
+        <h1 style={{textAlign:'center', color:'white' ,padding:"20px"}}>Add Family Member</h1>
         </div>
-      </div>
-
-      {/* Third column */}
-      <div className="col-md-3 d-flex p-4 " style={{ background: '#2f89fc' }}>
-        <div className="media block-6 d-block text-center">
-          <div className="icon d-flex justify-content-center align-items-center" style={{
-              lineHeight: '1.3',
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              background: '#61a6fd',
-              margin: '0 auto',
-              WebkitBorderRadius: '50%',
-              MozBorderRadius: '50%',
-              MsBorderRadius: '50%',
-              borderRadius: '50%',
-             
-            }}>
-            <span className="flaticon-stethoscope" style={{ fontSize: '50px', color: '#fff' }} />
-          </div>
-          <div className="media-body p-2 mt-3">
-            <h3 className="heading" style={{ fontWeight: '500', fontSize: '22px', color: '#fff' }}>Instant Booking</h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-            You can book an appointment right away in case of any need through our Web-App.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* Fourth column */}
-      <div className="col-md-3 d-flex  p-4 " style={{
-        padding: '0 0 5em 0',
-        background: '#0c75fb',
-        }}>
-        <div className="media block-6 d-block text-center">
-          <div className="icon d-flex justify-content-center align-items-center" style={{
-              lineHeight: '1.3',
-              position: 'relative',
-              width: '80px',
-              height: '80px',
-              background: '#61a6fd',
-              margin: '0 auto',
-              WebkitBorderRadius: '50%',
-              MozBorderRadius: '50%',
-              MsBorderRadius: '50%',
-              borderRadius: '50%',
-             
-            }}>
-            <span className="flaticon-24-hours"  style={{ fontSize: '50px', color: '#fff' }}/>
-          </div>
-          <div className="media-body p-2 mt-3">
-            <h3 className="heading" style={{ fontWeight: '500', fontSize: '20px', color: '#fff' }}>24 Hours Service</h3>
-            <p style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-              We are always at your service no matter when or how.
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+</div>
+</div>
 </section>
 
-
-  </div>
-  <section >
-    <div className="container">
-      <div className="row no-gutters" style={{marginLeft:"15px"}}>
-        <div
-          className="col-md-5 p-md-5 img img-2 mt-5 mt-md-0"
-          style={{ backgroundImage: `url(${I1})`, backgroundSize: 'cover'  }}
-        ></div>
-        <div className="col-md-7 wrap-about py-4 py-md-5 ">
-          <div className=" mb-5">
-            <div className="pl-md-5 ml-md-5">
-              <span 
-              style={{
-                fontWeight: '400',
-                fontSize: '13px',
-                display: 'block',
-                marginBottom: '0',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                color: 'black',
-                position: 'relative'
-              }} >About MetaCare</span>
-              <h2 className="mb-4" style={{ fontSize: 24 , fontWeight:"900",color: 'black', }}>
-                Medical specialty concerned with the care of acutely ill
-                hospitalized patients
-              </h2>
-            </div>
-          </div>
-          <div className="pl-md-5 ml-md-5 mb-5" style={{ fontSize: 13 }}>
-            <p>
-            MetaCare is a leading healthcare provider dedicated to the specialized and compassionate care of acutely ill hospitalized patients. Our team of highly qualified medical professionals is committed to delivering exceptional medical services with a focus on patient well-being and recovery.
-            </p>
-            <div className="row mt-5 pt-2">
-              <div className="col-lg-6">
-                <div className="services-2 d-flex">
-                  <div className="icon mt-2 mr-3 d-flex justify-content-center align-items-center">
-                    <span className="flaticon-first-aid-kit" />
-                  </div>
-                  <div className="text">
-                    <h3 style={{ color: 'black', }}>Primary Care</h3>
-                    <p>
-                    Your partner in comprehensive and personalized healthcare, ensuring your well-being at every stage of life.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="services-2 d-flex">
-                  <div className="icon mt-2 mr-3 d-flex justify-content-center align-items-center">
-                    <span className="flaticon-dropper" />
-                  </div>
-                  <div className="text">
-                    <h3 style={{ color: 'black', }}>Lab Test</h3>
-                    <p>
-                    Accurate diagnostics and swift results, ensuring precise insights for your health.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="services-2 d-flex">
-                  <div className="icon mt-2 mr-3 d-flex justify-content-center align-items-center">
-                    <span className="flaticon-experiment-results" />
-                  </div>
-                  <div className="text">
-                    <h3 style={{ color: 'black', }}>Symptom Check</h3>
-                    <p>
-                    Your first step to understanding and addressing your health concerns, ensuring prompt and accurate guidance.
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-6">
-                <div className="services-2 d-flex">
-                  <div className="icon mt-2 mr-3 d-flex justify-content-center align-items-center">
-                    <span className="flaticon-heart-rate" />
-                  </div>
-                  <div className="text">
-                    <h3 style={{ color: 'black', }}>Heart Rate</h3>
-                    <p>
-                    Keeping a close watch on your cardiovascular health for a proactive approach to well-being.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-   {/* Change Password pop-up */}
-   <Modal
+{/* Change Password pop-up */}
+<Modal
         open={isChangePasswordOpen}
         onClose={handleCloseChangePassword}
         aria-labelledby="change-password-popup"
@@ -603,7 +666,7 @@ const updatePassword = async (newPassword) => {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -642,6 +705,9 @@ const updatePassword = async (newPassword) => {
           </Box>
         </Box>
       </Modal>
+
+
+
 
 </div>
 )}

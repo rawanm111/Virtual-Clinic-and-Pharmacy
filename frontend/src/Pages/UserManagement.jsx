@@ -47,7 +47,6 @@ import WalletModal from './walletModal';
   const inputRef = useRef();
 
 
-
   
   useEffect(() => {
     axios.get('http://localhost:3000/doctors')
@@ -548,7 +547,7 @@ const handleChange = (event, newValue) => {
               </li>
               {/* New dropdown for Health Packages */}
               <li className="nav-item " style={{marginRight:"10px"} }>
-                <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages"`)} style={{cursor:"pointer" } }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages`)} style={{cursor:"pointer" } }>
                   Health Packages
                 </a>
               </li>
@@ -581,14 +580,7 @@ const handleChange = (event, newValue) => {
     className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
     aria-labelledby="profileDropdown"
   >
-    <a className="dropdown-item" 
-    style={{cursor:"pointer" } }
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                //   onClick={() => navigate(`/changepassTwo/${id}`)}
-                  >
-      Change Password
-    </a>
+  
     <a className="dropdown-item" 
     style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
@@ -929,7 +921,7 @@ const handleChange = (event, newValue) => {
         onMouseOut={(e) => {
           e.currentTarget.style.backgroundColor ='rgba(42, 114, 207, 0.8)';
         }}
-        onClick={navigateToAdminForm}
+        onClick={handleOpen}
         >
         <AddIcon style={{ fontSize: '20rem' , color:'white' ,width:"100%" }}/>
         <h1 style={{textAlign:'center', color:'white',padding:"20px" }}>Create Admin</h1>
@@ -941,12 +933,50 @@ const handleChange = (event, newValue) => {
       </CustomTabPanel>
     </Box>
 
-
-    
-
-
-
-    
-
+    <Modal
+    open={open}
+    onClose={handleClose}
+    aria-labelledby="parent-modal-title"
+    aria-describedby="parent-modal-description"
+  >
+    <Box sx={{ ...style, width: 400 }}>
+    <Container
+        maxWidth="sm"
+        style={{
+          padding: '2rem',
+          backgroundColor: 'rgba(255, 255, 255, 0.8)',
+          borderRadius: '15px',
+        }}
+      >
+        <Typography variant="h4" gutterBottom align="center">
+          Admin Form
+        </Typography>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Username"
+            variant="outlined"
+            name="username"
+            value={formData.username}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Password"
+            variant="outlined"
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
+        </div>
+        <Button variant="contained" color="primary" startIcon={<LockOutlinedIcon />} onClick={handleSubmit}>
+          Add Admin
+        </Button>
+      </Container>
+    </Box>
+  </Modal>
 </div>
 )}

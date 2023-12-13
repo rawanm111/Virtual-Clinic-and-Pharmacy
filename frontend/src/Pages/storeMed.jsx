@@ -1,7 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import { styled } from '@mui/system';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
@@ -20,129 +17,180 @@ import S12 from '../css/style.css';
 import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
-import { FaUser, FaWallet, FaShoppingBasket } from 'react-icons/fa';
-import WalletModal from './walletModal';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import Modal from '@mui/material/Modal';
+import { FaUser, FaWallet } from 'react-icons/fa';
+import InputBase from '@mui/material/InputBase';
+import { TextField, Button, Container, Typography, Box ,Modal} from '@mui/material';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
-
-function OrderPage() {
-  const [orderDetails, setOrderDetails] = useState(null);
-  const [medicationNames, setMedicationNames] = useState([]);
-  const { id } = useParams();
-  const [openModal, setOpenModal] = useState(false);
-  const [healthPackages, setHealthPackages] = useState([]);
-  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
-  const [passwords, setPasswords] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmNewPassword: '',
-  });
-  const [selectedHealthPackage, setSelectedHealthPackage] = useState('');
-  const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
-  const [familyMembers, setFamilyMembers] = useState([]);
+import WalletModal from './walletModal'
+export default function StoreView() {
+  const [medicationData, setMedicationData] = useState([]);
+  const [selectedMedication, setSelectedMedication] = useState(null);
+  const [selectedMedicalUse, setSelectedMedicalUse] = useState('All');
+  const [uniqueMedicalUses, setUniqueMedicalUses] = useState([]);
   const navigate = useNavigate();
-
-  const [startDate, setStartDate] = useState('');
-  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
-  const [paymentOption, setPaymentOption] = useState('wallet');
-  const [selectedPackageId, setSelectedPackageId] = useState('');
-  const [selectedPackageName, setSelectedPackageName] = useState(''); // New state
-  const [isOpen, setIsOpen] = useState(false);
-  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
-  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const {id,idmed} = useParams();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
-  const [success, setSuccess] = useState(false); 
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+const [passwords, setPasswords] = useState({
+  currentPassword: '',
+  newPassword: '',
+  confirmNewPassword: '',
+});
+const [quantity, setQuantity] = useState(1);
 
+  const handleDecrease = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+    }
+  };
+
+  const handleIncrease = () => {
+    setQuantity(quantity + 1);
+  };
+  const addToCart = () => {
+    const patientId = id.toString();
+    const medicationId= idmed;
+
+    // Send a request to your backend to add the medication to the patient's cart
+    axios.post('http://localhost:3000/Cart/add', {
+      patientId,
+      medicationId: idmed ,
+      quantity: quantity,
+       // You can specify the quantity to add
+    })
+    .then((response) => {
+      console.log('Medication added to cart:', response.data);
+      navigate(`/patient-meds/${id}`)
+    })
+    .catch((error) => {
+      console.error('Error adding medication to cart:', error);
+    });
+  };
+useEffect(() => {
+  const fetchMedicationData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/meds/');
+      const responseData = response.data;
+      console.log('Fetched data:', responseData);
+      setMedicationData(responseData);
+
+      // Find the medication with the matching _id
+      const foundMedication = responseData.find((med) => med._id === idmed);
+      
+      if (foundMedication) {
+        console.log('Selected Medication:', foundMedication);
+        setSelectedMedication(foundMedication);
+      } else {
+        console.log('Medication not found with id:', idmed);
+      }
+    } catch (error) {
+      console.error('Error fetching medication data:', error);
+    }
+  };
+
+  fetchMedicationData();
+}, [idmed]);
+
+
+const [success, setSuccess] = useState(false); 
+const handleChange = (prop) => (event) => {
+  setPasswords({ ...passwords, [prop]: event.target.value });
+  setSuccess(false); 
+};
+const handleSubmit = (event) => {
+  event.preventDefault();
+  
+  setSuccess(false);
+
+  
+  if (passwords.newPassword !== passwords.confirmNewPassword) {
+    alert("New passwords don't match.");
+    return;
+  }
+
+  if (!isValidPassword(passwords.newPassword)) {
+    alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+    return;
+  }
+
+  console.log('Passwords submitted:', passwords);
+  
+  
+  
+  setSuccess(true);
+
+ 
+  updatePassword(passwords.newPassword)
+  alert("Password changed successfully");
+};
+
+const isValidPassword = (password) => {
+  const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+  return regex.test(password);
+};
+const handleCloseChangePassword = () => {
+  setChangePasswordOpen(false);
+};
+
+const updatePassword = async (newPassword) => {
+  try {
+    // Replace '/api/reset-password' with your actual API endpoint
+    const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
+    console.log(response.data);
+    alert('Password successfully updated');
+  } catch (error) {
+    console.error('Error updating password:', error);
+    alert('Error updating password');
+  }
+};
+
+  const handleOpenChangePassword = () => {
+    setChangePasswordOpen(true);
+  };
+  const toggleImage = () => {
+    setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
+  };
 
   useEffect(() => {
-    const fetchOrderDetails = async () => {
+    const intervalId = setInterval(toggleImage, 2000);
+    return () => clearInterval(intervalId);
+  }, []);
+ 
+
+
+
+  const [openModal, setOpenModal] = useState(false);
+
+  useEffect(() => {
+    const queryParameters = {
+      medicalUse: selectedMedicalUse, 
+    };
+    
+    const fetchMedicationData = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/Order/orders/${id}`);
-        setOrderDetails(response.data);
+        const response = await axios.get('http://localhost:3000/meds/', {
+          params: queryParameters,
+        });
+        const responseData = response.data;
+        console.log('Fetched data:', responseData);
+        setMedicationData(responseData);
+
+        // Extract unique medical uses from fetched data
+        const uniqueUses = [...new Set(responseData.map((item) => item.medicalUse))];
+        setUniqueMedicalUses(uniqueUses);
       } catch (error) {
-        console.error('Error fetching order details:', error);
+        console.error('Error fetching medication data:', error);
       }
     };
 
-    fetchOrderDetails();
-  }, [id]);
+    fetchMedicationData();
+  }, [selectedMedicalUse]);
 
-  const cancelOrder = async (orderId) => {
-    try {
-      await axios.put(`http://localhost:3000/Order/cancel-order/${orderId}`);
-      setOrderDetails(prevOrder => ({ ...prevOrder, status: 'canceled' }));
-      window.location.reload();
-    } catch (error) {
-      console.error('Error canceling order:', error);
-    }
-  };
-  
-  const handleChange = (prop) => (event) => {
-    setPasswords({ ...passwords, [prop]: event.target.value });
-    setSuccess(false); 
-  };  const handleOpenChangePassword = () => {
-    setChangePasswordOpen(true);
-  };
-  const handleCloseChangePassword = () => {
-    setChangePasswordOpen(false);
-  };
-  const isValidPassword = (password) => {
-    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
-    return regex.test(password);
-  };
-  const handleSubmitt = (event) => {
-    event.preventDefault();
-    
-    setSuccess(false);
-
-    
-    if (passwords.newPassword !== passwords.confirmNewPassword) {
-      alert("New passwords don't match.");
-      return;
-    }
-
-    if (!isValidPassword(passwords.newPassword)) {
-      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
-      return;
-    }
-
-    console.log('Passwords submitted:', passwords);
-    
-    
-    
-    setSuccess(true);
-
-   
-    updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
-  };
-
-  const updatePassword = async (newPassword) => {
-    try {
-      // Replace '/api/reset-password' with your actual API endpoint
-      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
-      console.log(response.data);
-      alert('Password successfully updated');
-    } catch (error) {
-      console.error('Error updating password:', error);
-      alert('Error updating password');
-    }
-  };
-  
-  const handleSelectPackage = (event) => {
-    const selectedPackage = event.target.value;
-    setSelectedHealthPackage(selectedPackage);
-    setSelectedPackageId(selectedPackage.id);
-    setSelectedPackageName(selectedPackage.name); 
-  };
-  
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
@@ -184,12 +232,12 @@ function OrderPage() {
                 </a>
               </li>
               <li
-                className="nav-item  active dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
                 <a
-                  className="nav-link dropdown-toggle"
+                  className="nav-link dropdown-toggle active"
                   style={{cursor:"pointer" } }
                   id="doctorsDropdown"
                   role="button"
@@ -230,7 +278,7 @@ function OrderPage() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"850px"}}
+  style={{marginLeft:"880px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -263,22 +311,17 @@ function OrderPage() {
     </a>
   </div>
 </li>
-<li className="nav-item " >
-                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/Cart/${id}`)}>
-                <FaShoppingBasket style={{ fontSize: '20px'}} />
-                </a>
-              </li>
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
 <WalletModal/>
 </li>
 
-
             </ul>
           </div>
         </div>
       </nav>
+
       
       <section
       className="hero-wrap hero-wrap-2"
@@ -290,7 +333,7 @@ function OrderPage() {
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-              My Orders
+              Medication Product
             </h1>
             <p className="breadcrumbs">
               <span style={{ fontSize: '14px', color: '#fff' }}>
@@ -306,58 +349,127 @@ function OrderPage() {
         </div>
       </div>
     </section>
-    {orderDetails !== null && orderDetails.length > 0 && (
-        <section className="ftco-section ftco-departments bg-light">
-          <div className="container" style={{ marginTop: '-100px' }}>
-            <div className="row">
-              {orderDetails.map((order, index) => (
-                <div className="col-md-4" key={order._id} style={{ marginBottom: '40px' }}>
-                  <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', height: '100%'}}>
-                    <p>
-                      <span className="price">Order:</span>
-                    </p>
-                    <h4 className="mb-4">{order._id} </h4>
-                    <p>
-                      <span className="price">Address:</span>
-                    </p>
-                    <h4 className="mb-4">{order.address} </h4>
-                    <p>
-                      <span className="price">Status:</span>
-                    </p>
-                    <h4 className="mb-4">{order.status} </h4>
-                    <p>
-                      <span className="price">Cart:</span>
-                    </p>
-                    <div>
-                      {order.items.map((item) => (
-                        <div key={item._id}>
-                          <h4 className="mb-4">{item.quantity} x {item.name}</h4>
-                        </div>
-                      ))}
-                    </div>
-                    <p>
-                      <span className="price">Total Price: ${order.items.reduce((total, item) => total + item.price, 0)}</span>
-                    </p>
-                    <p className="button text-center">
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        className="btn btn-primary px-4 py-3"
-                        onClick={() => cancelOrder(order._id)}
-                      >
-                        Cancel
-                      </Button>
-                    </p>
-                  </div>
+   
+    <div className="site-section">
+      <div className="container">
+      {selectedMedication && (
+        <div className="row">
+          <div className="col-md-5 mr-auto">
+          <div className="border text-center" style={{ height: '70vh' }}>
+  <img
+    src={selectedMedication.picture}
+    alt="Image"
+    className="img-fluid p-5"
+    style={{ height: '100%' }}
+  />
+</div>
+
+          </div>
+          <div className="col-md-6">
+          <p style={{
+  color: '#007bff',
+  fontWeight: '900',
+  fontSize: '50px',
+}}>
+  <span className="price">
+    {selectedMedication.name}
+  </span>
+</p>
+            <p>
+            {selectedMedication.description}
+            </p>
+            <p>
+
+              <strong className="text-primary h4">${selectedMedication.price}</strong>
+            </p>
+            <div className="mb-3">
+  <div className="input-group" style={{ maxWidth: '150px' }}>
+  <div className="mb-3">
+        <div className="input-group" style={{ maxWidth: '150px' }}>
+          <div className="input-group-prepend">
+            <button
+              className="btn btn-outline-primary js-btn-minus"
+              type="button"
+              style={{ fontSize: '12px' }}
+              onClick={handleDecrease}
+            >
+              −
+            </button>
+          </div>
+          <input
+            type="text"
+            className="form-control text-center"
+            value={quantity}
+            readOnly
+            style={{ fontSize: '14px' }}
+          />
+          <div className="input-group-append">
+            <button
+              className="btn btn-outline-primary js-btn-plus"
+              type="button"
+              style={{ fontSize: '12px' }}
+              onClick={handleIncrease}
+            >
+              +
+            </button>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+            <p>
+              <a
+                className="buy-now btn btn-sm height-auto px-4 py-3 btn-primary"  onClick={() => addToCart()}
+              >
+                Add To Cart
+              </a>
+            </p>
+            <div className="mt-5">
+              
+              <div className="tab-content" id="pills-tabContent">
+                <div
+                  className="tab-pane fade show active"
+                  id="pills-home"
+                  role="tabpanel"
+                  aria-labelledby="pills-home-tab"
+                >
+               <table className="table custom-table">
+  <thead>
+    <tr>
+      <th colSpan="2" style={{ borderBottom: '2px solid #ddd', borderTop: '2px solid #ddd', paddingRight: '10px' }}>Medication Specifications</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th style={{ borderBottom: '1px solid #ddd', paddingRight: '10px', width: '40%' }} scope="row">Active ingredients</th>
+      <td style={{ borderBottom: '1px solid #ddd', paddingLeft: '10px', width: '40%' }}>{selectedMedication.activeIngredient}</td>
+    </tr>
+    <tr>
+      <th className="narrow-cell" style={{ borderBottom: '1px solid #ddd', paddingRight: '10px', width: '40%' }} scope="row">Medical Use</th>
+      <td style={{ borderBottom: '1px solid #ddd', paddingLeft: '10px', width: '40%' }}>{selectedMedication.medicalUse}</td>
+    </tr>
+  </tbody>
+</table>
+
+
                 </div>
-              ))}
+                <div
+                  className="tab-pane fade"
+                  id="pills-profile"
+                  role="tabpanel"
+                  aria-labelledby="pills-profile-tab"
+                >
+                
+                </div>
+              </div>
             </div>
           </div>
-        </section>
-      )}
-   
-      {/* Change Password pop-up */}
-    <Modal
+        </div> )}
+      </div> 
+    </div>
+    {/* Change Password pop-up */}
+   <Modal
         open={isChangePasswordOpen}
         onClose={handleCloseChangePassword}
         aria-labelledby="change-password-popup"
@@ -382,7 +494,7 @@ function OrderPage() {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -421,8 +533,6 @@ function OrderPage() {
           </Box>
         </Box>
       </Modal>
-
   </div>
 )};
 
-export default OrderPage;

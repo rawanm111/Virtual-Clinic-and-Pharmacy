@@ -5,57 +5,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppbarAdmin from '../Components/Appbar/AppbarAdmin';
 import { useParams, useNavigate } from 'react-router-dom';
-
-const PageContainer = styled('div')({
-  backgroundColor: 'lightblue',
-  minHeight: '100vh',
-  padding: '16px',
-});
-
-const HeaderContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '16px',
-});
-
-const CardsContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  flexWrap: 'wrap',
-});
-
-const CardWrapper = styled(Card)({
-  marginBottom: '16px',
-  border: '1px solid #0070F3',
-  backgroundColor: '#f0f8ff',
-  flex: '0 0 calc(33.33% - 16px)',
-  marginRight: '16px',
-  boxShadow: '0px 6px 6px rgba(0, 0, 0, 0.8)',
-  borderRadius: '5px',
-});
-
-const NameTypography = styled(Typography)({
-  color: '#000080',
-  marginBottom: '1rem',
-  fontWeight: 'bold',
-});
-
-const SubtitleTypography = styled(Typography)({
-  color: '#0050C0',
-  fontWeight: 'bold',
-  marginBottom: '10px',
-});
-
-const DataTypography = styled(Typography)({
-  color: '#000080',
-  marginBottom: '0.5rem',
-  display: 'inline-block',
-  marginLeft: '0.5rem',
-});
-
+import {  Box } from '@mui/material';
 function EmploymentContracts() {
   const [employmentContract, setEmploymentContract] = useState({});
   const { userId } = useParams();
@@ -89,63 +40,65 @@ function EmploymentContracts() {
   }, [doctorId]);
 
   return (
-    <div>
-      <PageContainer>
-        <HeaderContainer>
-          <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            Employment Contract
-          </Typography>
-        </HeaderContainer>
-        <CardsContainer>
-          <CardWrapper>
-            <CardContent>
-              <NameTypography variant="h6" sx={{ color: '#000080' }}>
-                {employmentContract.employeeName || 'Unknown Doctor'}
-              </NameTypography>
-              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
-                Job Title:
-              </SubtitleTypography>
-              <DataTypography variant="body1" sx={{ color: '#000080' }}>
-                {employmentContract.jobTitle || 'N/A'}
-              </DataTypography>
-              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
-                Start Date:
-              </SubtitleTypography>
-              <DataTypography variant="body1" sx={{ color: '#000080' }}>
-                {employmentContract.startDate || 'N/A'}
-              </DataTypography>
-              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
-                End Date:
-              </SubtitleTypography>
-              <DataTypography variant="body1" sx={{ color: '#000080' }}>
-                {employmentContract.endDate || 'N/A'}
-              </DataTypography>
-              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
-                Salary:
-              </SubtitleTypography>
-              <DataTypography variant="body1" sx={{ color: '#000080' }}>
-                {employmentContract.salary || 'N/A'}
-              </DataTypography>
-              <SubtitleTypography variant="subtitle1" sx={{ color: '#0050C0' }}>
-                Employment Contract Status:
-              </SubtitleTypography>
-              <DataTypography variant="body1" sx={{ color: '#000080' }}>
-                {employmentContract.status || 'N/A'}
-              </DataTypography>
-              <div>
-              <Button variant="contained" color="primary" onClick={handleAcceptContract}>
-                Accept Employment Contract
-              </Button>
-              <Button variant="contained" color="secondary" onClick={handleRejectContract}>
-                Reject Employment Contract
-              </Button>
-              </div>
-            </CardContent>
-          </CardWrapper>
-        </CardsContainer>
-      </PageContainer>
-    </div>
-  );
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '50vh', // Adjust the height as needed
+        width: '100%',
+        marginTop: '15%', // Adjust the margin from the top
+    }}
+  >
+     <div className="col-md-10" key={employmentContract._id} style={{ marginBottom: '40px' }}>
+     <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', height: '100%'}}>
+     <p>
+         <span className="price">EMPLOYMENT CONTRACT</span>
+       </p>
+       <p>
+         <span className="price">Doctor:</span>
+       </p>
+       <h5 className="mb-2"> {employmentContract.employeeName || 'Unknown Doctor'}</h5>
+       <p>
+         <span className="price">Job Title:</span>
+       </p>
+       <h5 className="mb-2"> {employmentContract.jobTitle || 'N/A'} </h5>
+       <p>
+         <span className="price">Start Date:</span>
+       </p>
+       <h5 className="mb-2"> {employmentContract.startDate || 'N/A'} </h5>
+       <p>
+         <span className="price">Salary:</span>
+       </p>
+       <h5 className="mb-2">  {employmentContract.salary || 'N/A'} </h5>
+       <p>
+         <span className="price">Status:</span>
+       </p>
+       <h5 className="mb-2">  {employmentContract.status || 'N/A'} </h5>
+       <p className="button text-center">
+         <Button
+           variant="contained"
+           color="primary"
+           className="btn btn-primary px-4 py-3"
+           onClick={handleAcceptContract}
+         >
+           Accept Contract
+         </Button>
+
+         <Button
+    variant="contained"
+    color="primary"
+    className="btn btn-primary px-4 py-3"
+    onClick={handleRejectContract}
+    style={{ marginLeft: '5%' }} // Adjust the margin as needed
+  >
+    Reject Contract
+  </Button>
+       </p>
+     </div>
+   </div> </Box>
+  )
 }
 
 export default EmploymentContracts;

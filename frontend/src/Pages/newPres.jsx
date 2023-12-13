@@ -1,42 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import { useParams } from 'react-router-dom';
 
-export default function UpdateDoctor() {
-  const { username } = useParams();
-
+export default function NewPackage() {
   const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    fullName: '',
-    password: '',
-    hourlyRate: 0,
-    affiliation: '',
-    educationalBackground: '',
-    speciality: '',
-    dateOfBirth: '',
+    name: '',
+    description: '',
+    annualPrice: 0,
+    discountOnDoctorSessionPrice: 0,
+    discountOnMedicineOrders: 0,
+    discountOnFamilyMemberSubscription: 0,
   });
-
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3000/doctors/${username}`)
-      .then((response) => {
-        setFormData(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching doctor profile:', error);
-      });
-  }, [username]);
 
   const handleSubmit = () => {
     axios
-      .put(`http://localhost:3000/doctors/${username}`, formData)
+      .post('http://localhost:3000/health-packages', formData)
       .then((response) => {
-        console.log('Updated doctor:', response.data);
+        console.log('Response:', response.data);
       })
       .catch((error) => {
-        console.error('Error updating doctor:', error);
+        console.error('Error:', error);
       });
   };
 
@@ -48,7 +31,7 @@ export default function UpdateDoctor() {
   return (
     <Box
       style={{
-        backgroundColor: 'lightblue',
+        backgroundColor: 'lightblue', 
         minHeight: '100vh',
         display: 'flex',
         justifyContent: 'center',
@@ -64,90 +47,74 @@ export default function UpdateDoctor() {
         }}
       >
         <Typography variant="h4" gutterBottom align="center">
-          Update Doctor
+          Health Package Form
         </Typography>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Username"
+            label="Name"
             variant="outlined"
-            name="username"
-            value={formData.username}
+            name="name"
+            value={formData.name}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Full Name"
+            label="Description"
             variant="outlined"
-            name="fullName"
-            value={formData.fullName}
+            name="description"
+            value={formData.description}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Email"
+            label="Annual Price"
             variant="outlined"
-            name="email"
-            value={formData.email}
+            type="number"
+            name="annualPrice"
+            value={formData.annualPrice}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Hourly Rate"
+            label="Discount on Doctor Session Price"
             variant="outlined"
-            name="hourlyRate"
-            value={formData.hourlyRate}
+            type="number"
+            name="discountOnDoctorSessionPrice"
+            value={formData.discountOnDoctorSessionPrice}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Affiliation"
+            label="Discount on Medicine Orders"
             variant="outlined"
-            name="affiliation"
-            value={formData.affiliation}
+            type="number"
+            name="discountOnMedicineOrders"
+            value={formData.discountOnMedicineOrders}
             onChange={handleInputChange}
           />
         </div>
         <div style={{ marginBottom: '1rem' }}>
           <TextField
             fullWidth
-            label="Educational Background"
+            label="Discount on Family Member Subscription"
             variant="outlined"
-            name="educationalBackground"
-            value={formData.educationalBackground}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
-            label="Speciality"
-            variant="outlined"
-            name="speciality"
-            value={formData.speciality}
-            onChange={handleInputChange}
-          />
-        </div>
-        <div style={{ marginBottom: '1rem' }}>
-          <TextField
-            fullWidth
-            label="Date of birth"
-            variant="outlined"
-            name="dateOfBirth"
-            value={formData.dateOfBirth}
+            type="number"
+            name="discountOnFamilyMemberSubscription"
+            value={formData.discountOnFamilyMemberSubscription}
             onChange={handleInputChange}
           />
         </div>
         <Button variant="contained" color="primary" onClick={handleSubmit}>
-          Update
+          Create Health Package
         </Button>
       </Container>
     </Box>

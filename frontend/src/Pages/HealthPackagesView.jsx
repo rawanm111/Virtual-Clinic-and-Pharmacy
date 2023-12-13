@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import AppBarComponent from '../Components/Appbar/AppbarPatientClinc';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -24,17 +21,90 @@ import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
+import WalletModal from './walletModal'
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
-
+import Modal from '@mui/material/Modal';
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
 
 export default function HealthPackagesView() {
   const [healthPackages, setHealthPackages] = useState([]);
-  
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+  const [success, setSuccess] = useState(false); 
+  const handleChange = (prop) => (event) => {
+    setPasswords({ ...passwords, [prop]: event.target.value });
+    setSuccess(false); 
+  };  const handleOpenChangePassword = () => {
+    setChangePasswordOpen(true);
+  };
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+  const handleSubmitt = (event) => {
+    event.preventDefault();
+    
+    setSuccess(false);
+
+    
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      alert("New passwords don't match.");
+      return;
+    }
+
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
+
+    console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
+  };
+
+
+  const PopupContainer = styled('div')({
+   
+    position: 'absolute',
+    width: 400,
+    backgroundColor: 'white',
+    boxShadow: 24,
+    p: 4,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+   
+    borderRadius: 8,  
+  });
+  const updatePassword = async (newPassword) => {
+    try {
+      // Replace '/api/reset-password' with your actual API endpoint
+      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
+      console.log(response.data);
+      alert('Password successfully updated');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password');
+    }
+  };
   const [selectedHealthPackage, setSelectedHealthPackage] = useState('');
   const [selectedFamilyMember, setSelectedFamilyMember] = useState('myself');
   const [familyMembers, setFamilyMembers] = useState([]);
@@ -129,6 +199,17 @@ export default function HealthPackagesView() {
   };
 
 
+  const [openModal, setOpenModal] = useState(false);
+
+  const handleOpenModal = () => {
+    setOpenModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+  };
+
+
   const handleSubmit = async (event) => {
     // event.preventDefault();
 
@@ -157,43 +238,20 @@ export default function HealthPackagesView() {
     };
 
     try {
-
       const response = await axios.post('http://localhost:3000/PatientPackages', packageData);
       console.log('Package created:', response.data);
-      // Handle successful package creation here, e.g., show a success message
-      // or redirect to a different page using navigate('/path')
-
     } catch (error) {
       console.error('Error creating package:', error.response ? error.response.data : error.message);
-      // Handle errors here, e.g., show an error message to the user
     }
   };
 
   
   const handleCardPayment = async () => {
-    try {
-      
-      // Check if a health package is selected
-      if (!selectedHealthPackage) {
-        console.error('No health package selected.');
-        return;
-      }
-  
-      // Find the selected health package by its ID
-      const selectedPackage = healthPackages.find((Package) => Package.name === selectedHealthPackage.name);
-      console.log(healthPackages)
-      if (!selectedPackage) {
-        console.error('Invalid health package selected.');
-        return;
-      }
-  
-      // Extract necessary data for payment
-      const packageId = selectedPackage.id;
-      const items = [selectedPackage]; // Put the selected package in an array
-  
-      console.log(packageId,"id");
-      console.log(items,"items")
-      // Check if items is an array
+    try {  
+     
+      const packageId = selectedPackageId;
+      const items = [selectedPackageId]; 
+      console.log(packageId);
       if (!items || !Array.isArray(items)) {
         console.error('No health package data found.');
         return;
@@ -228,6 +286,8 @@ export default function HealthPackagesView() {
   const [walletBalance, setWalletBalance] = useState(0); // Add wallet balance state
 
   const handleWalletPayment = async () => {
+    closePaymentDialog();
+
     try {
 
       console.log(selectedHealthPackage)
@@ -264,256 +324,73 @@ export default function HealthPackagesView() {
   };
   
 
-  return (
-    <div style={{ backgroundColor: "white" }}>
-  <title>MetaCare </title>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
-        <div className="container"  >
-          <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
-            <div className="col-lg-2 pr-4 align-items-center">
-              <a className="navbar-brand" href="index.html">
-                Meta<span>Care</span>
-              </a>
-              
-            </div>
-          </div>
-        </div>
-      </nav>
-      <nav
-        className="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light"
-        id="ftco-navbar"
-        
-      >
-        <div className="container d-flex align-items-center">
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-toggle="collapse"
-            data-target="#ftco-nav"
-            aria-controls="ftco-nav"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <span className="oi oi-menu" /> Menu
-          </button>
-        
-          <div className="collapse navbar-collapse" id="ftco-nav">
-            <ul className="navbar-nav mr-auto">
-              <li className="nav-item" style={{marginRight:"10px"} }>
-                <a href="index.html" className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)}>
-                  Home
-                </a>
-              </li>
-              <li
-                className="nav-item dropdown"
-                onMouseEnter={() => setShowPersonalDropdown(true)}
-                onMouseLeave={() => setShowPersonalDropdown(false)}
-              >
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="doctorsDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded={setShowPersonalDropdown}
-                >
-                  Personal
-                </a>
-                <div
-                  className={`dropdown-menu ${
-                    showPersonalDropdown ? 'show' : ''
-                  }`}
-                  aria-labelledby="personalDropdown"
-                >
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/my-fam/${id}`)}>
-                    My Family
-                  </a>
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/MedHistory/${id}`)}>
-                    My Medical History
-                  </a>
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/Prescription/${id}`)}>
-                    My Prescriptions
-                  </a>
-                 
-                </div>
-              </li>
-              {/* New dropdown for Doctors */}
-              <li
-                className="nav-item dropdown"
-                onMouseEnter={() => setShowDoctorsDropdown(true)}
-                onMouseLeave={() => setShowDoctorsDropdown(false)}
-              >
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="doctorsDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded={showDoctorsDropdown}
-                >
-                  Doctors
-                </a>
-                <div
-                  className={`dropdown-menu ${
-                    showDoctorsDropdown ? 'show' : ''
-                  }`}
-                  aria-labelledby="doctorsDropdown"
-                >
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/doctorsTable/${id}`)}>
-                    Doctors List
-                  </a>
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/appPagePatient/${id}`)}>
-                    My Appointments
-                  </a>
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/appPagePatient/${id}`)}>
-                    Book Appointment
-                  </a>
-                </div>
-              </li>
-              
-              <li
-                className="nav-item dropdown active"
-                onMouseEnter={() => setShowHealthPackagesDropdown(true)}
-                onMouseLeave={() => setShowHealthPackagesDropdown(false)}
-              >
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  id="doctorsDropdown"
-                  role="button"
-                  data-toggle="dropdown"
-                  aria-haspopup="true"
-                  aria-expanded={setShowHealthPackagesDropdown}
-                >
-                  Pricings
-                </a>
-                <div
-                  className={`dropdown-menu ${
-                    showHealthPackagesDropdown ? 'show' : ''
-                  }`}
-                  aria-labelledby="doctorsDropdown"
-                >
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/health-packages-VIEW/${id}`)}>
-                    Health Packages
-                  </a>
-                  <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/health-packages-sub/${id}`)}>
-                    Subscribed Packages
-                  </a>
-                 
-                </div>
-              </li>
-              {/* Profile dropdown */}
-<li
-  className="nav-item dropdown "
-  onMouseEnter={() => setShowProfileDropdown(true)}
-  onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
->
-  <a
-    className="nav-link dropdown-toggle"
-    href="#"
-    id="profileDropdown"
-    role="button"
-    data-toggle="dropdown"
-    aria-haspopup="true"
-    aria-expanded={showProfileDropdown}
-    
-  >
-    <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
-    
-  </a>
-  <div
-    className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
-    aria-labelledby="profileDropdown"
-  >
-    <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/changepassTwo/${id}`)}>
-      Change Password
-    </a>
-    <a className="dropdown-item" 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/clinic`)}>
-      Logout
-    </a>
-  </div>
-</li>
 
-{/* Wallet icon without dropdown */}
-<li className="nav-item ">
-  <a className="nav-link" href="#" onClick={() => navigate(`/wallet`)}>
-    <FaWallet style={{ fontSize: '20px', marginRight: '5px' }} />
-  
-  </a>
-</li>
-
-            </ul>
-          </div>
-        </div>
-      </nav>
-
+  // const handleWallet = async () => {
+  //   try {
       
-      <section
-      className="hero-wrap hero-wrap-2"
-      style={{ backgroundImage: `url(${I2})` }}
-      data-stellar-background-ratio="0.5"
-    >
-      <div className="overlay" />
-      <div className="container">
-        <div className="row no-gutters slider-text align-items-center justify-content-center">
-          <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-            <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-              Health Packages
-            </h1>
-            <p className="breadcrumbs">
-              <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
-                <a href="index.html">
-                  Home <i className="ion-ios-arrow-forward" />
-                </a>
-              </span>{' '}
-              <span style={{ fontSize: '14px', color: '#fff' }}>
-                Pricings <i className="ion-ios-arrow-forward" />
-              </span>
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
+  //       // Make a request to your backend to process wallet payment
+        
+  //       const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
+          
+  //       });
+  //       // const prev= response.data.balance - 200;
+  //       console.log(response.data)
 
-    <section className="ftco-section ftco-departments bg-light">
-      <div className="container" style={{ marginTop: '-100px' }}>
-        <div className="row">
-          {healthPackages.map((pack) => (
-            <div className="col-md-4" key={pack.id}>
-              <div className="pricing-entry pb-5 text-center">
+  //       if (response.data.balance < 200) {
+  //         console.error("Insufficient balance");
+          
+  //       }
+  //       else{
+  //         {handleSubmitPayment()}
+  //       if (response && response.status === 200) {
+  //         console.log('Wallet payment successful!');
+  //         // Optionally, you can handle any additional logic after a successful wallet payment
+          
+  //         // Update the user's wallet balance (assuming you have a state for wallet balance)
+  //         // setWalletBalance(prev);
+  //         // console.log(walletBalance)
+          
+  //         const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
+            
+  //           patientId: id,
+  //           balance: response.data.balance - 200,
+  //         });
+
+          
+  //       } else {
+  //         console.error('Wallet payment failed:', response && response.data);
+  //         // Handle wallet payment failure (e.g., show error message to the user)
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error('Error processing wallet payment:', error);
+  //     // Handle error (e.g., show error message to the user)
+  //   }
+  // };
+  
+
+
+
+  return (
+    <div>
+      <AppBarComponent />
+      <PageContainer>
+        <HeaderContainer>
+          <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
+            Health Packages
+          </Typography>
+        </HeaderContainer>
+
+
+        
+        <CardsContainer>
+
+          {healthPackages.map((healthPackage) => (
+            <CardWrapper key={healthPackage._id} variant="outlined">
+              <CardContent>
+                <NameTypography variant="h5" component="div">
+                  {healthPackage.name}
+                </NameTypography>
                 <div>
                   <h3 className="mb-4">{pack.name}</h3>
                   <p>
@@ -538,55 +415,34 @@ export default function HealthPackagesView() {
                   </p>
                 </div>
                 <div>
-                  
-                  <p>
-                    <span className="price">{pack.discountOnFamilyMemberSubscription}%</span>{' '}
-                    </p> <p>
-                    <span className="per" style={{fontSize:"16px"}}>  Discount on Family Subscriptions</span>
-                  </p>
+                 
                 </div>
-                <p className="button text-center">
-                <Button
-                variant="contained"
-                color="primary"
-                className="btn btn-primary px-4 py-3"
-                onClick={() => handleSubscribeButtonClick(pack.id)}  
-              >
-                Subscribe
-              </Button>
-                  
-                </p>
-              </div>
-            </div>
+              </CardContent>
+            </CardWrapper>
           ))}
-        </div>
-      </div>
-    </section>
-     {/* Family and Payment Modal */}
-     <Dialog
-        open={isOpen}
-        onClose={closePaymentDialog}
-      >
-        <DialogTitle>Select Payment Method</DialogTitle>
-        <DialogContent>
-          
-          <RadioGroup
-            name="paymentOption"
-            value={paymentOption}
-            onChange={handlePaymentOptionChange}
+        </CardsContainer>
+      </PageContainer>
+
+    <br/>    <br/>    <br/>
+    <form onSubmit={handleSubmit}>
+        <FormControl fullWidth>
+          <InputLabel id="package-type-label">Package Type</InputLabel>
+          <Select
+            labelId="package-type-label"
+            id="package-type-select"
+            value={selectedHealthPackage} // Updated state
+            label="Package Type"
+            onChange={handleSelectPackage}
+            sx={{ mb: 2 }}
           >
-            <FormControlLabel
-              value="wallet"
-              control={<Radio />}
-              label=" Wallet"
-            />
-            <FormControlLabel
-              value="visa"
-              control={<Radio />}
-              label=" Visa"
-            />
-          </RadioGroup>
-          <FormControl fullWidth>
+            {healthPackages.map((pkg) => (
+              <MenuItem key={pkg.id} value={pkg}>
+                {pkg.name}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+        <FormControl fullWidth>
           <InputLabel id="family-member-label">
             Subscription for:
           </InputLabel>
@@ -600,7 +456,7 @@ export default function HealthPackagesView() {
             {familyMembers.map((member) => (
               <MenuItem
                 key={member._id}
-                value={member._id}
+                value={member.patient._id}
               >
                 {member.patient.fullName}
               </MenuItem>
@@ -618,6 +474,71 @@ export default function HealthPackagesView() {
           </Button>
         </DialogActions>
       </Dialog>
-      
+      {/* Change Password pop-up */}
+    <Modal
+        open={isChangePasswordOpen}
+        onClose={handleCloseChangePassword}
+        aria-labelledby="change-password-popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Change Password
+            </Typography>
+            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="newPassword"
+                label="New Password"
+                type="password"
+                id="newPassword"
+                autoComplete="new-password"
+                value={passwords.newPassword}
+                onChange={handleChange('newPassword')}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="confirmNewPassword"
+                label="Confirm New Password"
+                type="password"
+                id="confirmNewPassword"
+                autoComplete="new-password"
+                value={passwords.confirmNewPassword}
+                onChange={handleChange('confirmNewPassword')}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Change Password
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
   </div>
 )};

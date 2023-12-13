@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid } from '@mui/x-data-grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -7,8 +8,8 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import { TextField,  Container, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
-import AppBarComponent from '../Components/Appbar/AppbarDoctor';
 import { useNavigate } from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
 import S2 from '../css/animate.css';
@@ -26,6 +27,7 @@ import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
+import WalletModal from './walletModal';
 
 const PageContainer = styled('div')({
   backgroundColor: 'white',
@@ -69,6 +71,8 @@ const modalStyle = {
   backgroundColor: 'white',
   border: '2px solid #0070F3',
   borderRadius: '10px',
+  border: '2px solid #0070F3',
+  borderRadius: '10px',
   boxShadow: 24,
   padding: '16px',
   overflow: 'auto',
@@ -83,13 +87,189 @@ function MedHistory() {
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const [healthPackages, setHealthPackages] = useState([]);
   const navigate = useNavigate();
+  const [apps, setApps] = useState([]);  const [currentImage, setCurrentImage] = useState(I2);
+  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
+  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  const [healthPackages, setHealthPackages] = useState([]);
+  const navigate = useNavigate();
   const [apps, setApps] = useState([]);
   const [histories, setHistories] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [fileData, setFileData] = useState('');
   const [currentHistoryId, setCurrentHistoryId] = useState(null);
+  const [DoctorProfile, setDoctorProfile] = useState([]);
+  const [username, setUsername] = useState();
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+  const [success, setSuccess] = useState(false); 
+  const handleChange = (prop) => (event) => {
+    setPasswords({ ...passwords, [prop]: event.target.value });
+    setSuccess(false); 
+  };
 
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+
+  const updatePassword = async (newPassword) => {
+    try {
+      // Replace '/api/reset-password' with your actual API endpoint
+      const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
+      console.log(response.data);
+      alert('Password successfully updated');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password');
+    }
+  };
+  const handleSubmitt = () => {
+    axios
+      .put(`http://localhost:3000/doctors/${username}`, formData)
+      .then((response) => {
+        console.log('Updated doctor:', response.data);
+        handleCloseUpdateModal(); // Close the update modal after updating
+      })
+      .catch((error) => {
+        console.error('Error updating doctor:', error);
+      });
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  
+  const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/doctors/${username}`)
+      .then((response) => {
+        setFormData(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching doctor profile:', error);
+      });
+  }, [username]);
+
+  const handleOpenUpdateModal = () => {
+    setUsername(DoctorProfile.username);
+    setUpdateModalOpen(true);
+    setProfilePopupOpen(false);
+  };
+
+  const handleCloseUpdateModal = () => {
+    setUpdateModalOpen(false);
+  };
+  const handleCloseUpdateModall = () => {
+    setProfilePopupOpen(false);
+  };
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    fullName: '',
+    password: '',
+    hourlyRate: 0,
+    affiliation: '',
+    educationalBackground: '',
+    speciality: '',
+    dateOfBirth: '',
+  });
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    setSuccess(false);
+
+    
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      alert("New passwords don't match.");
+      return;
+    }
+
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
+
+    console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
+  };
+  const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
+  const toggleImage = () => {
+    setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
+  };
+
+  const PopupContainer = styled('div')({
+   
+    position: 'absolute',
+    width: 400,
+    backgroundColor: 'white',
+    boxShadow: 24,
+    p: 4,
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+   
+    borderRadius: 8,  
+  });
+  const handleProfileClick = () => {
+    setProfilePopupOpen(true);
+  };
+
+  const handleProfilePopupClose = () => {
+    setProfilePopupOpen(false);
+  };
+  
+
+
+  useEffect(() => {
+    const intervalId = setInterval(toggleImage, 2000);
+    return () => clearInterval(intervalId);
+  }, []);
+  useEffect(() => { 
+    axios
+      .get(`http://localhost:3000/doctors/get/${id}`)
+      .then((response) => {
+        setDoctorProfile(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching DoctorProfile:', error);
+      });
+  }, [id]);
+
+
+  const DataTypography = styled(Typography)({
+    color: '#000000',
+    marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px'
+  });
+  
+  const handleOpenChangePassword = () => {
+    setChangePasswordOpen(true);
+  };
+
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
   const handleFileSelect = (e) => {
     setSelectedFile(e.target.files[0]);
   };
@@ -273,6 +453,94 @@ function MedHistory() {
 
   const [patientDocuments, setPatientDocuments] = useState([]);
 
+  const TwoColumnLayout = styled('div')({
+    margintop:"auto",
+    display: 'flex',
+    gridTemplateColumns: '1fr 1fr',
+    gap: '16px',
+  });
+  
+  const LeftSide = styled('div')({
+     
+    marginLeft: 'auto',
+    // Add styles for the left side if needed
+  });
+  
+  const RightSide = styled('div')({
+   marginRight:"auto",
+    marginLeft: 'auto', // This will move the content to the right
+  padding: '16px',
+   
+    // Add styles for the right side if needed
+  });
+  const buttonStyles = {
+    background: 'white',
+    color: '#0070F3', // Blue color
+    border: '1px solid #0070F3', // Blue border
+  };
+  const BlueDataGrid = styled(DataGrid)(({ theme }) => ({
+   fontSize:"18px",
+    border: '2px solid #0070F3', // Blue border
+    // Shadow
+    
+  }));
+
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 100 },
+    { field: 'patientName', headerName: 'Patient Name', width: 200 },
+    { field: 'doctorNotes', headerName: 'Doctor Notes', width: 200 },
+    {
+      field: 'addNotes',
+      headerName: 'Add Notes',
+      width: 200,
+      renderCell: (params) => (
+        <Button
+        style={buttonStyles}
+          variant="contained"
+          color="primary"
+          onClick={() => {
+            setCurrentHistoryId(params.row.id);
+            setOpenModal(true);
+          }}
+        >
+          Add Notes
+        </Button>
+      ),
+    },
+    {
+      field: 'viewDocuments',
+      headerName: 'View Documents',
+      width: 200,
+      renderCell: (params) => (
+        <Button
+        style={buttonStyles}
+          variant="contained"
+          color="primary"
+          onClick={() => handleViewDocuments(params.row.id)}
+        >
+          View Documents
+        </Button>
+      ),
+    },
+    // ... Add more columns as needed
+  ];
+
+  const rows = histories.map((history) => ({
+    id: history._id,
+    patientName: history.patientName || 'Unknown Patient',
+    doctorNotes: history.doctorNotes || '',
+    // ... Add more fields as needed
+  }));
+
+  const handleViewDocuments = (historyId) => {
+    // Handle the logic to fetch and set patient documents based on historyId
+    const selectedHistory = histories.find((history) => history._id === historyId);
+    // Set the documents for the right side
+    setPatientDocuments(selectedHistory.documents || []);
+  };
+
+  const [patientDocuments, setPatientDocuments] = useState([]);
+
   return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
@@ -308,13 +576,13 @@ function MedHistory() {
         
           <div className="collapse navbar-collapse" id="ftco-nav">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
-                <a  className="nav-link pl-0"  onClick={() => navigate(`/doc-home/${id}`)}>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a className="nav-link pl-0"  onClick={() => navigate(`/doc-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -356,6 +624,7 @@ function MedHistory() {
                   My Appointments
                 </a>
               </li>
+
               
               {/* Profile dropdown */}
               
@@ -386,15 +655,282 @@ function MedHistory() {
     <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                   onClick={() => navigate(`/changepassTwo/${id}`)}>
+                  onClick={handleOpenChangePassword}>
       Change Password
     </a>
+    
+     {/* Change Password pop-up */}
+     <Modal
+        open={isChangePasswordOpen}
+        onClose={handleCloseChangePassword}
+        aria-labelledby="change-password-popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Change Password
+            </Typography>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="newPassword"
+                label="New Password"
+                type="password"
+                id="newPassword"
+                autoComplete="new-password"
+                value={passwords.newPassword}
+                onChange={handleChange('newPassword')}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="confirmNewPassword"
+                label="Confirm New Password"
+                type="password"
+                id="confirmNewPassword"
+                autoComplete="new-password"
+                value={passwords.confirmNewPassword}
+                onChange={handleChange('confirmNewPassword')}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Change Password
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+
     <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                   onClick={() => navigate(`/doc-profile/${id}`)}>
+                   onClick={handleProfileClick}>
       My Profile
     </a>
+    <Modal open={isUpdateModalOpen} onClose={handleCloseUpdateModal}>
+    <Box
+          sx={{
+            marginTop: '5%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center', margin:'5px'}}>
+              Update Profile Info
+            </Typography>
+          <div style={{ marginBottom: '1rem' }}>
+            <TextField
+              fullWidth
+              label="Username"
+              variant="outlined"
+              name="username"
+              value={formData.username}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <TextField
+              fullWidth
+              label="Full Name"
+              variant="outlined"
+              name="fullName"
+              value={formData.fullName}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+            <TextField
+              fullWidth
+              label="Email"
+              variant="outlined"
+              name="email"
+              value={formData.email}
+              onChange={handleInputChange}
+            />
+          </div>
+          <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Hourly Rate"
+            variant="outlined"
+            name="hourlyRate"
+            value={formData.hourlyRate}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Affiliation"
+            variant="outlined"
+            name="affiliation"
+            value={formData.affiliation}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Educational Background"
+            variant="outlined"
+            name="educationalBackground"
+            value={formData.educationalBackground}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Speciality"
+            variant="outlined"
+            name="speciality"
+            value={formData.speciality}
+            onChange={handleInputChange}
+          />
+        </div>
+        <div style={{ marginBottom: '1rem' }}>
+          <TextField
+            fullWidth
+            label="Date of birth"
+            variant="outlined"
+            name="dateOfBirth"
+            value={formData.dateOfBirth}
+            onChange={handleInputChange}
+          />
+        </div>
+          <div style={{ marginBottom: '1rem',  display: 'flex', justifyContent: 'center'}}>
+            <Button  onClick={handleSubmitt}>
+              Update
+            </Button>
+          </div>
+        </Box> </Box>
+      </Modal>
+
+    <Modal
+        open={isProfilePopupOpen}
+        onClose={handleProfilePopupClose}
+        aria-labelledby="profile-popup"
+        
+      >
+        <PopupContainer>
+          <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center' }}>
+            My Profile
+          </Typography>
+          <CardContent>
+           
+            <div>
+            <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Full Name:
+          </Typography>
+              <DataTypography variant="body2"> {DoctorProfile.fullName}</DataTypography>
+            </div>
+            <div>
+            <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+           Username:
+          </Typography>
+              <DataTypography variant="body2"> {DoctorProfile.username}</DataTypography>
+            </div>
+            <div>
+            <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Email:
+          </Typography>
+               <DataTypography variant="body2"> {DoctorProfile.email}</DataTypography>  </div>
+  <div>
+  <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Date of Birth:
+          </Typography>
+    <DataTypography variant="body2">
+       {DoctorProfile.dateOfBirth}
+    </DataTypography>
+  </div>
+  <div> 
+  <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+           Hourly Rate:
+          </Typography>
+     <DataTypography variant="body2"> {DoctorProfile.hourlyRate}</DataTypography>  </div>
+  <div>  
+  <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Speciality:
+          </Typography>
+    <DataTypography variant="body2"> {DoctorProfile.speciality}</DataTypography>  </div>
+  <div>  
+  <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Educational Background:
+          </Typography>
+    <DataTypography variant="body2"> {DoctorProfile.educationalBackground}</DataTypography>  </div>
+    <div>  
+  <Typography variant="h4" component="div" sx={{ color: '#000000' , fontWeight: 'bold',marginBottom: '0.5rem',
+    display: 'inline-block',
+    marginLeft: '0.5rem',
+    fontSize: '20px' }}>
+            Affiliation:
+          </Typography>
+    <DataTypography variant="body2"> {DoctorProfile.affiliation}</DataTypography>  </div>
+  
+             <div style={{ display: 'flex', justifyContent: 'center', marginTop: '20px' }}>
+            
+             <Button onClick={handleOpenUpdateModal}>Update my info</Button>
+             <Button onClick={handleCloseUpdateModall}>Cancel</Button>
+            </div>
+          </CardContent>
+        </PopupContainer>
+      </Modal>
     <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
@@ -406,17 +942,14 @@ function MedHistory() {
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<a className="nav-link"  onClick={() => navigate(`/wallet`)}>
-    <FaWallet style={{ fontSize: '20px', marginRight: '5px' }} />
-  
-  </a>
+<WalletModal/>
 </li>
+
 
             </ul>
           </div>
         </div>
       </nav>
-
       
       <section
       className="hero-wrap hero-wrap-2"
@@ -428,7 +961,7 @@ function MedHistory() {
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-            My Patient Health Record
+            My Patients' Health Records
             </h1>
             <p className="breadcrumbs">
               <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
@@ -437,7 +970,7 @@ function MedHistory() {
                 </a>
               </span>{' '}
               <span style={{ fontSize: '14px', color: '#fff' }}>
-              My Patient <i className="ion-ios-arrow-forward" />
+              My Patients <i className="ion-ios-arrow-forward" />
               </span>
             </p>
           </div>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Link,useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import img from '../Components/Logo/img.png';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 
@@ -142,7 +141,7 @@ function LoginPage() {
     <div style={containerStyle}>
       <div className="image">
         <img
-          src={img}
+        
           alt=""
         />
       </div>
