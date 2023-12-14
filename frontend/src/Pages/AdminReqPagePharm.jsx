@@ -391,7 +391,7 @@ function AdminRequests() {
                   className="img-fluid mb-4"
                   style={{ borderRadius: '50%', width: '100px', height: '100px' }}
                 />
-                <h3 className="mb-4">Dr. {adminRequests[currentRequestIndex].fullName}</h3>
+                <h3 className="mb-4"> {adminRequests[currentRequestIndex].fullName}</h3>
                 <p>Email: {adminRequests[currentRequestIndex].email}</p>
                 <p>Date of Birth: {adminRequests[currentRequestIndex].dateOfBirth}</p>
                 <p>Hourly Rate: {adminRequests[currentRequestIndex].hourlyRate}</p>
