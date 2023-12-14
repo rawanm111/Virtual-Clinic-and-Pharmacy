@@ -1,4 +1,7 @@
 const Wallet = require('../Models/walletDoc');
+const patients = require('../Models/patients');
+const PatientPackages = require('../Models/PatientPackages');
+const healthPackage = require('../Models/HealthPackage');
 
 exports.createWallet = async (req, res) => {
   try {
@@ -63,6 +66,23 @@ exports.updateWalletBalance = async (req, res) => {
 exports.handleWalletPayment = async (req, res) => {
   try {
     const { appointmentId, userId } = req.body;
+    const discount = 1;
+      try {
+        
+        //get the discount for the patient
+        const patient = await patients.findById(userId);
+        if (patient) {
+          const package1 = await PatientPackages.findOne({ patient: userId });
+          if (package1) {
+            const healthPackageItem = await healthPackage.findById(package1.package);
+            if (healthPackageItem) {
+              discount = healthPackageItem.discountOnDoctorSessionPrice/100;
+            }
+          }
+        } 
+      } catch (err) {
+        console.log(err);
+      }
 
     // Fetch user's wallet balance from the database
     const user = await userModel.findById(userId);
@@ -74,7 +94,7 @@ exports.handleWalletPayment = async (req, res) => {
     // Check if the user has sufficient balance
     if (walletBalance >= appointmentPrice) {
       // Deduct the price from the user's wallet balance
-      const updatedWalletBalance = walletBalance - appointmentPrice;
+      const updatedWalletBalance = walletBalance - appointmentPrice*discount;
 
       // Update the user's wallet balance in the database
       await userModel.findByIdAndUpdate(userId, { walletBalance: updatedWalletBalance });

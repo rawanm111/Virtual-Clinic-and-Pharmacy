@@ -1,11 +1,31 @@
 const Order = require('../Models/Order');
 const Cart = require('../Models/Cart');
 const meds = require('../Models/meds');
+const patients = require('../Models/patients');
+const healthPackage = require('../Models/HealthPackage');
+const PatientPackages = require('../Models/PatientPackages');
 // Create an order for a patient
 exports.placeOrder = async (req, res) => {
+  
     try {
       const { patientId } = req.body;
-  
+      let discount = 1;
+      try {
+        
+        //get the discount for the patient
+        const patient = await patients.findById(patientId);
+        if (patient) {
+          const package1 = await PatientPackages.findOne({ patient: patientId });
+          if (package1) {
+            const healthPackageItem = await healthPackage.findById(package1.package);
+            if (healthPackageItem) {
+              discount = healthPackageItem.discountOnMedicineOrders/100;
+            }
+          }
+        } 
+      } catch (err) {
+        console.log(err);
+      }
       // Find the patient's cart
       const cart = await Cart.findOne({ patientId });
   
@@ -31,7 +51,7 @@ exports.placeOrder = async (req, res) => {
         return {
           medicationId: item.medicationId,
           quantity: item.quantity,
-          price: medication.price,
+          price: medication.price*discount,
           name: medication.name, // Use the fetched price
         };
       }));
