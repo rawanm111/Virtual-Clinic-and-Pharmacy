@@ -105,4 +105,52 @@ exports.createUpcomingAppointment = async (req, res) => {
   }
 };
 
+exports.cancelAppointment = async (req, res) => {
+  try {
+    // Extract appointment ID from request parameters
+    const appointmentId = req.params.id;
 
+    // Check if the appointment exists
+    const appointment = await appointement.findById(appointmentId);
+
+    // if (!appointment) {
+    //   return res.status(404).json({ message: 'Appointment not found' });
+    // }
+
+    // Update the appointment's status to "cancelled"
+    appointment.status = 'Cancelled';
+
+    // Save the updated appointment
+    const updatedAppointment = await appointment.save();
+
+    res.status(200).json(updatedAppointment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+exports.rescheduleAppointment = async (req, res) => {
+  try {
+    // Extract appointment ID and new date from request parameters and body
+    const appointmentId = req.params.id;
+    const newDate = new Date(req.body.newDate); // Assuming the new date is provided in the request body
+
+    // Check if the appointment exists
+    const appointment = await appointement.findById(appointmentId);
+
+    if (!appointment) {
+      return res.status(404).json({ message: 'Appointment not found' });
+    }
+
+    // Update the appointment's status to "Rescheduled" and set the new date
+    appointment.status = 'Rescheduled';
+    appointment.date = newDate;
+
+    // Save the updated appointment
+    const updatedAppointment = await appointment.save();
+
+    res.status(200).json(updatedAppointment);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
