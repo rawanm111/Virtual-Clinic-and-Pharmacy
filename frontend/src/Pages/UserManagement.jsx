@@ -31,6 +31,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
+import { set } from 'lodash';
 const style = {
   position: 'absolute',
   top: '50%',
@@ -57,6 +58,7 @@ const style = {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const inputRef = useRef();
+  
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -73,42 +75,51 @@ const style = {
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
   };
+  const isValidPassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    
+    setSuccess(false);
 
-  const handleSubmit = () => {
-    handleClose();
-    if (!validatePassword(formData.password)) {
-      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+    
+    if (passwords.newPassword !== passwords.confirmNewPassword) {
+      alert("New passwords don't match.");
       return;
     }
-    axios.post('http://localhost:3000/admin/', formData) // Use '/admin' for the POST request
-      .then(response => {
-        console.log('Response:', response.data);
 
-        axios.get('http://localhost:3000/admin')
-    .then((response) => {
-      if (response.data) {
-        const transformedData = response.data.map((item) => ({
-          id: item._id, 
-          username: item.username,   
-        }));
-        setAdmins(transformedData);
-        setFilteredRowsA(transformedData);
+    if (!isValidPassword(passwords.newPassword)) {
+      alert("Password must contain at least one capital letter, one number, and be at least 4 characters long.");
+      return;
+    }
 
-      } else {
-        console.error('No data received from the API');
-      }
-    })
-    .catch((error) => {
-      console.error('Error fetching admins:', error);
-    });
-        // Reset the form or display a success message as needed
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        // Handle errors or display an error message
-      });
+    console.log('Passwords submitted:', passwords);
+    
+    
+    
+    setSuccess(true);
+
+   
+    updatePassword(passwords.newPassword)
+    alert("Password changed successfully");
   };
-
+  const [username, setUsername] = useState('');
+  const updatePassword = async (newPassword) => {
+    try {
+      // Replace '/api/reset-password' with your actual API endpoint
+      console.log(adminUsername);
+      console.log(newPassword);
+      setUsername(adminUsername);
+      const response = await axios.put('http://localhost:3000/resetpassword', { username, newPassword });
+      console.log(response.data);
+      alert('Password successfully updated');
+    } catch (error) {
+      console.error('Error updating password:', error);
+      alert('Error updating password');
+    }
+  };
   const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
@@ -370,42 +381,55 @@ const style = {
       });
   };
 
-  
-  const columnsP = [
-    { field: 'name', headerName: 'Name', width: 200 },
-    { field: 'username', headerName: 'Username', width: 200 },
-    { field: 'email', headerName: 'E-mail', width: 200 },
-    { field: 'mobileNumber', headerName: 'Mobile Number', width: 200 },
-
-    
-      {field:'action',headerName:"",width:100,
-      renderCell: (params) => (
-        <div>
-          
-          <Button variant="outlined" onClick={() => handleDelete(params.row.id)}>
-            DELETE
-          </Button>
-        </div>
-      ),
-      
-    }
-
-  ];
-
-  const handleButtonClickP = (row) => {
-    // Implement the action you want to perform when the button is clicked
-    console.log('Button clicked for row:', row);
-    // history.push(`/ProfilePage/${row.id}`); // Replace with your route structure
-
-  };
-
 
 
 
 const [admins, setAdmins] = useState([]);
 const [filteredRowsA, setFilteredRowsA] = useState([]);
 const [filterValueA, setFilterValueA] = useState('');
+const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+const [adminUsername, setAdminUsername] = useState('');
+  const [isPasswordResetModalOpen, setPasswordResetModalOpen] = useState(false);
+  const [passwords, setPasswords] = useState({
+    currentPassword: '',
+    newPassword: '',
+    confirmNewPassword: '',
+  });
+  const Navigate = useNavigate();
 
+
+  const handleOpenChangePassword = (admin) => {
+    setChangePasswordOpen(true);
+    console.log(admin.username);
+    setAdminUsername(admin.username);
+  };
+
+  const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+  };
+
+  const handleOpenPasswordResetModal = () => {
+    setPasswordResetModalOpen(true);
+  };
+
+  const handleClosePasswordResetModal = () => {
+    setPasswordResetModalOpen(false);
+  };
+  const [success, setSuccess] = useState(false); 
+
+  const handlePasswordChange = (prop) => (event) => {
+    setPasswords({ ...passwords, [prop]: event.target.value });
+    setSuccess(false); 
+  }; 
+  const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    backgroundColor: 'white',
+    padding: '2rem',
+    borderRadius: '15px',
+  };
 useEffect(() => {
   axios.get('http://localhost:3000/admin')
     .then((response) => {
@@ -462,12 +486,12 @@ const handleDeleteA = (id) => {
     });
 };
 
-const handleResetPassword = (adminusername) => {
-  // Implement the logic to reset password
-  navigate(`/changepass/${adminusername}`);
-  console.log(`Reset password for adminId: ${adminusername}`);
-  // Example: axios.post(`http://localhost:3000/admin/reset-password/${adminId}`);
-};
+// const handleResetPassword = () => {
+//   // Implement the logic to reset password
+//   navigate(`/changepass/${adminUsername}`);
+//   console.log(`Reset password for adminId: ${adminUsername}`);
+//   // Example: axios.post(`http://localhost:3000/admin/reset-password/${adminId}`);
+// };
 
 
 
@@ -610,7 +634,7 @@ const handleChange = (event, newValue) => {
               {/* New dropdown for Doctors */}
               <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/admin-meds`)} style={{cursor:"pointer" } }>
-                  Medications
+                  Pharmacy Store
                 </a>
               </li>
               {/* New dropdown for Health Packages */}
@@ -936,41 +960,33 @@ const handleChange = (event, newValue) => {
       <section className="ftco-section" style={{ padding: "3em 0", position: "relative" }}>
   <div className="container" style={{ maxWidth: "1230px", margin: "0 auto" }}>
     <div className="row">
-      {filteredRowsA.map((admin, index) => (
-        
-        <div key={index} className="col-md-6 col-lg-4" style={{ marginBottom: "40px" }}>
-<Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-  <Button style={{color:"red"}}  onClick={() => handleDeleteA(admin.id)}>delete</Button>
-</Box>
-
-          <div className="staff" style={{ overflow: "hidden", height: "450px" }}>
-            <div className="img-wrap d-flex align-items-stretch" style={{ height: "300px" }}>
-              <div className="img align-self-stretch" style={{ backgroundImage: `url(${A1})`, width: "100%", display: "block", backgroundPosition: "top center" }} />
-            </div>
-            <div className="text pt-3 text-center">
-              <h3 style={{ fontSize: "32px", fontWeight: "500", marginBottom: "10px" }}>{ admin.username}</h3>
-              <span className="position mb-2" style={{ textTransform: "uppercase", color: "#b3b3b3", display: "block", letterSpacing: "1px" }}></span>
-              <div className="faded" >
-
-                <ul className="ftco-social text-center" style={{color:"black"}}>
-                  <li>
-                    <a>
-                    
-
-
-
-
-                    </a>
-                  </li>
-                </ul>
-                <Button onClick={() => handleResetPassword(admin.username)} 
-                // style={{textDecorationLine:"underline"}}
-                >Reset Password</Button>
-              </div>
-            </div>
-          </div>
+    {filteredRowsA.map((admin, index) => (
+  <div key={index} className="col-md-6 col-lg-4" style={{ marginBottom: "40px" }}>
+    <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+      <Button style={{ color: "red" }} onClick={() => handleDeleteA(admin.id)}>delete</Button>
+    </Box>
+    <div className="staff" style={{ overflow: "hidden", height: "450px" }}>
+      <div className="img-wrap d-flex align-items-stretch" style={{ height: "300px" }}>
+        <div className="img align-self-stretch" style={{ backgroundImage: `url(${A1})`, width: "100%", display: "block", backgroundPosition: "top center" }} />
+      </div>
+      <div className="text pt-3 text-center">
+        <h3 style={{ fontSize: "32px", fontWeight: "500", marginBottom: "10px" }}>{admin.username}</h3>
+        <span className="position mb-2" style={{ textTransform: "uppercase", color: "#b3b3b3", display: "block", letterSpacing: "1px" }}></span>
+        <div className="faded">
+          <ul className="ftco-social text-center" style={{ color: "black" }}>
+            <li>
+              <a>
+                {/* Your social media link or button */}
+              </a>
+            </li>
+          </ul>
+          <Button onClick={() => handleOpenChangePassword(admin)}>Reset Password</Button>
         </div>
-      ))}
+      </div>
+    </div>
+  </div>
+))}
+
        <div key={'add'} style={{display:'flex', 
        flexDirection:'column',
         backgroundColor:'rgba(42, 114, 207, 0.8)', 
@@ -1046,5 +1062,70 @@ const handleChange = (event, newValue) => {
       </Container>
     </Box>
   </Modal>
+
+  <Modal
+        open={isChangePasswordOpen}
+        onClose={handleCloseChangePassword}
+        aria-labelledby="change-password-popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+        <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Change Password
+            </Typography>
+          <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="newPassword"
+                label="New Password"
+                type="password"
+                id="newPassword"
+                autoComplete="new-password"
+                value={passwords.newPassword}
+                onChange={handlePasswordChange('newPassword')}
+              />
+              <TextField
+                variant="outlined"
+                margin="normal"
+                required
+                fullWidth
+                name="confirmNewPassword"
+                label="Confirm New Password"
+                type="password"
+                id="confirmNewPassword"
+                autoComplete="new-password"
+                value={passwords.confirmNewPassword}
+                onChange={handlePasswordChange('confirmNewPassword')}
+              />
+            <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={handleSubmit}
+              >
+                Reset Password
+              </Button>
+        </Box>
+        </Box>
+        
+      </Modal>
 </div>
 )}

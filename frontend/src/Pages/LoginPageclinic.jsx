@@ -362,8 +362,11 @@ import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
- import Grid from '@mui/material/Grid';
-  import img from "../images/doc-8.jpg";
+import Grid from '@mui/material/Grid';
+
+// logo
+
+import img from "../images/doc-8.jpg";
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Link as MuiLink } from '@mui/material';

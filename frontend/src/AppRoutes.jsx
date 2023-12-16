@@ -107,6 +107,7 @@ export default function Paths() {
         <Route path="/messagesPharmtoPat/:id"element={<MessagesPharmToPat/>}  />
         <Route path="/messagesPattoPharm/:id"element={<MessagesPatToPharm/>}  />
         <Route path="/messagesDoctoPharm/:id"element={<MessagesDocToPharm/>}  />
+        <Route path="/admin-home" element={<AdminHome />} />
       </Routes>
     </Router>
   );

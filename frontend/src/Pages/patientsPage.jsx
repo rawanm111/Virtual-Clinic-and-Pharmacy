@@ -16,7 +16,7 @@ import S9 from '../css/jquery.timepicker.css';
 import S10 from '../css/flaticon.css';
 import S11 from '../css/icomoon.css';
 import S12 from '../css/style.css';
-import L1 from "../images/doc-2.jpg";
+import L1 from "../images/user.webp";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';

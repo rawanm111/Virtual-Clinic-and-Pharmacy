@@ -119,7 +119,7 @@ const models = [Admin,patients, doccs, pharmacists]; // Add all your user models
 const resetPass = async (req, res) => {
   const { username } = req.body;
   const { newPassword } = req.body;
-
+  console.log(newPassword);
   if (!newPassword) {
     return res.status(400).json({ message: 'New password is required' });
   }
@@ -127,7 +127,7 @@ const resetPass = async (req, res) => {
   try {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(newPassword, salt);
-
+    console.log(username,"username")
     let updatedUser = null;
     for (const model of models) {
       updatedUser = await model.findOneAndUpdate(
@@ -136,6 +136,7 @@ const resetPass = async (req, res) => {
         { new: true }
       );
       if (updatedUser) break;
+      console.log(updatedUser,"updatedUser");
     }
 
     if (!updatedUser) {
