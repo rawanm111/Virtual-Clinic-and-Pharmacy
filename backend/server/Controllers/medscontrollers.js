@@ -132,4 +132,26 @@ exports.getMedicationById = async (req, res) => {
   }
 };
 
+exports.getMedicationAlternatives =  async (req, res) => {
+  try {
+    const medicationID = req.params.id;
+    const medication = await meds.findById(medicationID);
+    if (!meds) {
+      return res.status(404).json({ message: 'Medication not found' });
+    }
+    const alternatives = await meds.find({
+      activeIngredient: medication.activeIngredient,
+      availableQuantity: { $gt: 0 },
+      _id: { $ne: medicationID }
+    });
+    
+
+    res.status(200).json(alternatives);
+  } catch (err) {
+    console.error(`${err}`);
+    res.status(500).json(err);
+  }
+
+}
+
 // ...
