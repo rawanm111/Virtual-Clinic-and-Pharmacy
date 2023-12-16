@@ -1,3 +1,4 @@
+// Wallet model
 const mongoose = require('mongoose');
 
 const walletSchema = new mongoose.Schema({
@@ -6,12 +7,16 @@ const walletSchema = new mongoose.Schema({
     ref: 'Patient', // Reference to the Patient model
     required: true,
   },
-  
   balance: {
     type: Number,
     default: 500,
-    
   },
+  items: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Meds', // Reference to the Meds model
+    },
+  ],
 });
 
 const Wallet = mongoose.model('Wallet', walletSchema);

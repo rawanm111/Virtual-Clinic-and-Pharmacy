@@ -561,17 +561,9 @@ function Messages() {
       </div>
     )}
 
-
-  
-
   </Grid>
 </Grid>
-
-
-    
       </div>
-
-      
     );
   }
   

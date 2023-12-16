@@ -54,7 +54,7 @@ export default function WalletModal() {
   
     return (
       <>
-        <Button onClick={handleOpen} style={{marginTop:"20%",marginRight: '10px'}}>
+        <Button onClick={handleOpen} style={{marginTop:"20%"}}>
         <FaWallet style={{ fontSize: '20px', marginRight: '5px' ,color:"black"}} />
         </Button>
         

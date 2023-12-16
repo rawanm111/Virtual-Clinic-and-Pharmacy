@@ -22,6 +22,8 @@ import { styled } from '@mui/system';
 import Modal from '@mui/material/Modal';
 import WalletModal from './walletModal'
 import NotifModel from './NotifModel'
+import PharmacistWallet from "./walletModalPharmacist";
+
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -216,6 +218,7 @@ import NotifModel from './NotifModel'
 <li className="nav-item ">
 <NotifModel/>
 
+<PharmacistWallet/>
 </li>
 
             </ul>

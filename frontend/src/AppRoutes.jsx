@@ -56,6 +56,7 @@ import SalesRepoPharm from "./Pages/SalesReportPharm"
 import Video from "./Pages/videoCallPatient";
 
 
+import PharmacistWallet from "./Pages/walletModalPharmacist";
 export default function Paths() {
   return (
     <Router> 
@@ -121,6 +122,7 @@ export default function Paths() {
         <Route path="/Vid/:roomId"element={<Video/>}  />
         <Route path="/messages/:id"element={<Messages/>}  />
         <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
+        
       </Routes>
     </Router>
   );

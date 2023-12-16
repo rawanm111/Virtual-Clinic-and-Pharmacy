@@ -31,6 +31,8 @@ const messagesPharmDocRoutes = require('./Routes/MessagePharmDocRoutes');
 const notificationsRoutes=require("./Routes/notifications.js");
 
 
+const walletPharmacistRoutes = require('./Routes/walletPharmacistRoutes');
+const CancelOrderRoutes = require('./Routes/CancelOrderRoutes');
 const cors = require('cors');
 const http = require("http");
 const { Server } = require("socket.io");
@@ -108,7 +110,8 @@ app.use('/api/messagesPharmPat', messagePharmPatRoutes);
 app.use('/api/messagesPharmDoc', messagesPharmDocRoutes);
 
 app.use('/followup',FollowupRoutes);
-
+app.use('/walletspharm', walletPharmacistRoutes);
+app.use('/CancelOrder', CancelOrderRoutes);
 
 app.use('/api/messages', messageRoutes);
 app.use('/api/messagesDoc', messageDocRoutes);
@@ -260,7 +263,7 @@ app.post('/paymentPack', async (req, res) => {
           product_data: {
             name: healthPackageItem.name,
           },
-          unit_amount: healthPackageItem.annualPrice * 1000, // Amount should be in cents
+          unit_amount: healthPackageItem.annualPrice * 100, // Amount should be in cents
         },
         quantity: 1,
       }
