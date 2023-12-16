@@ -43,10 +43,6 @@ exports.updateWalletBalance = async (req, res) => {
   try {
     const { patientId } = req.params;
     const { balance } = req.body;
-
-    // //get the patient discount on dr session
-    // const pa
-
     // Find and update the wallet balance for the specified patient
     const updatedWallet = await Wallet.findOneAndUpdate(
       { patient: patientId },
@@ -105,15 +101,27 @@ exports.refundPatient = async (req, res) => {
     }
     const patientId = appointment.patient._id;
     const patient = await patientsModel.findById(patientId);
-
+    const wallet = await Wallet.findOne({ patient: patientId });
+      const walletBalance = wallet.balance;
     // You may need to fetch the appointment cancellation fee from the database or the appointment itself
     const cancellationFee = appointment.cancellationFee || 200; // Assuming a default value
-
+    console.log("hi");
+     console.log(cancellationFee);
     // Refund the cancellation fee to the patient's wallet
-    const updatedWalletBalance = patient.walletBalance + cancellationFee;
+    const updatedWalletBalance = walletBalance + cancellationFee;
+   
+    // Find and update the wallet balance for the specified patient
+    const updatedWallet = await Wallet.findOneAndUpdate(
+      { patient: patientId },
+      { balance: updatedWalletBalance },
+      { new: true }
+    );
 
+    if (!updatedWallet) {
+      return res.status(404).json({ message: 'Wallet not found for this patient' });
+    }
     // Update the patient's wallet balance in the database
-    await patientsModel.findByIdAndUpdate(patientId, { walletBalance: updatedWalletBalance });
+    //await patientsModel.findByIdAndUpdate(patientId, { walletBalance: updatedWalletBalance });
 
     console.log(`Refund successful for cancelled appointment ${appointmentId} to patient ${patientId}`);
     res.status(200).json({ message: 'Refund successful' });
