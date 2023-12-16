@@ -24,7 +24,18 @@ const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
 const authroutes = require('./Routes/authenticationRoutes');
 const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
 const OrderRoutes=require("./Routes/OrderRouter.js")
+const FollowupRoutes= require('./Routes/followupsRouter');
+const messageRoutes = require('./Routes/MessageRoutes');
+const messageDocRoutes = require('./Routes/MessageDocRoutes');
+const messagePharmPatRoutes = require('./Routes/MessagePharmPatRoutes');
+const messagesPharmDocRoutes = require('./Routes/MessagePharmDocRoutes');
+
+
+
 const cors = require('cors');
+const http = require("http");
+const { Server } = require("socket.io");
+
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -42,6 +53,33 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+const server = http.createServer(app);
+
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
+});
+
+io.on("connection", (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on("join_room", (data) => {
+    socket.join(data);
+    console.log(`User with ID: ${socket.id} joined room: ${data}`);
+  });
+
+  socket.on("send_message", (data) => {
+    socket.to(data.room).emit("receive_message", data);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("User Disconnected", socket.id);
+  });
+});
+
 
 app.use(express.json());
 app.use('/meds', medsRoutes);
@@ -66,6 +104,13 @@ app.use('/admin',Adminroutes);
 app.use('/', authroutes)
 app.use('/employmentContract',EmploymentContract);
 app.use("/Order",OrderRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/messagesDoc', messageDocRoutes);
+app.use('/api/messagesPharmPat', messagePharmPatRoutes);
+app.use('/api/messagesPharmDoc', messagesPharmDocRoutes);
+
+app.use('/followup',FollowupRoutes);
+
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const Packages = require('./Models/PatientPackages'); 
@@ -178,8 +223,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      success_url: `http://localhost:3001/Thankyou/${patientId}`,
+      cancel_url: `http://localhost:3001/Thankyou/${patientId}`,
     });
 
     res.json({ url: session.url });
@@ -241,8 +286,43 @@ app.use('/PatientPackages', PatientPackagesRoutes);
 
 
 
+// Start the server on port
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log('Server is running on port 3000');
+});
+
+
+const socketApp = express();
+socketApp.use(cors());
+const socketServer = http.createServer(socketApp);
+
+const socketIo = new Server(socketServer, {
+  cors: {
+    origin: 'http://localhost:3001',
+    methods: ['GET', 'POST'],
+  },
+});
+
+socketIo.on('connection', (socket) => {
+  console.log(`User Connected: ${socket.id}`);
+
+  socket.on('join_room', (data) => {
+    socket.join(data);
+  });
+
+  socket.on('send_message', (data) => {
+    socket.to(data.room).emit('receive_message', data);
+  });
+});
+
+const SOCKET_PORT = 3002;
+socketServer.listen(SOCKET_PORT, () => {
+  console.log('Socket.io server is running on port 3001');
+});
+
 // MongoDB Configuration
-const connectionString = "mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority";
+const connectionString = 'mongodb+srv://TheTeam:AclProj@aclpharmdb.ukxxvcp.mongodb.net/?retryWrites=true&w=majority';
 mongoose.connect(connectionString, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -251,10 +331,4 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 db.once('open', () => {
   console.log('Connected to MongoDB');
-});
-
-// Start the server on port
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log('Server is running on port 3000');
 });

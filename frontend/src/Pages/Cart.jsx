@@ -753,32 +753,33 @@ const calculateTotalAmount = (medications) => {
 
   const handleWallet = async () => {
     try {
+      //get the discount of the patient on the medication
+      const dresponse = await axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`);
+      const discount = dresponse.data;
       if (paymentOption === 'wallet') {
         // Make a request to your backend to process wallet payment
         
-        const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
-          
-        });
+        const response = await axios.get(`http://localhost:3000/wallet/${id}`, {});
         // const prev= response.data.balance - 200;
         console.log(response.data)
-
-        if (response.data.balance < totalAmount) {
+        if (response.data.balance < totalAmount*discount) {
           console.error("Insufficient balance");
           
         }
         else{
         if (response && response.status === 200) {
-          console.log('Wallet payment successful!');
+          console.log('Wallet payment successful! ');
           // Optionally, you c baan handle any additional logic after a successful wallet payment
           
           // Update the user's wallet balance (assuming you have a state for wallet balance)
           // setWalletBalance(prev);
           // console.log(walletBalance)
           
+          
           const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
             
             patientId: id,
-            balance: response.data.balance - totalAmount,
+            balance: response.data.balance - totalAmount * discount,
           });
 
           

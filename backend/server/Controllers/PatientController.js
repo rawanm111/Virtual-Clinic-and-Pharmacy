@@ -1,12 +1,12 @@
 const patientModel = require('../Models/patients');
 const Appointment = require('../Models/appointements');
 const Doctor = require('../Models/doccs');
-
 const walletModel = require('../Models/Wallet'); // Import the wallet model
-
 const patients = require('../Models/patients');
 const bcrypt = require('bcrypt');
 const prescriptions = require('../Models/Prescription');
+const PatientPackages = require('../Models/PatientPackages');
+const healthPackage = require('../Models/HealthPackage');
 
 exports.createPatient = async (req, res) => {
   try {
@@ -33,7 +33,6 @@ exports.createPatient = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
 
 exports.createPatient = async (req, res) => {
   const {
@@ -80,7 +79,6 @@ exports.createPatient = async (req, res) => {
       res.status(400).json({ error: error.message })
   } };
 
-
 exports.getPatient = async (req, res) => {
   try {
     const patient = await patientModel.find();
@@ -89,9 +87,6 @@ exports.getPatient = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
-
-
 
 exports.addFamilyMemberLinkedToPatient = async (req, res) => {
 
@@ -144,9 +139,6 @@ exports.updatePatient = async (req, res) => {
   }
 };
 
-
-
-
 exports.deletePatient= async (req, res) => {
   try {
     await patientModel.findByIdAndDelete(req.params.userid);
@@ -155,8 +147,6 @@ exports.deletePatient= async (req, res) => {
     res.status(500).json(err);
   }
 };
-
-
 
 exports.getPatientByUsername = async (req, res) => {
   const { username } = req.params;
@@ -188,41 +178,6 @@ exports.getPatientsByDoctorId = async (req, res) => {
   }
 };
 
-
-
-// exports.resetPass = async (req, res) => {
-//   const { username } = req.params; // Assuming the username is passed as a URL parameter
-//   const { newPassword } = req.body; // Assuming the new password is passed in the request body
-
-//   if (!newPassword) {
-//     return res.status(400).json({ message: 'New password is required' });
-//   }
-
-//   try {
-//     const salt = await bcrypt.genSalt();
-//     const hashedPassword = await bcrypt.hash(newPassword, salt);
-
-//     const updated = await patientModel.findOneAndUpdate(
-//       { username: username },
-//       { password: hashedPassword },
-//       { new: true }
-//     );
-
-//     if (!updated) {
-//       return res.status(404).json({ message: 'Patient not found' });
-//     }
-
-//     // Optionally, remove the password from the response for security
-//     updated.password = undefined;
-
-//     res.status(200).json(updated);
-//   } catch (err) {
-//     console.error('Error updating password:', err);
-//     res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
-
-
 exports.getFamilyMembersForUser = async (req, res) => {
   try {
     const familyMembers = await patients.findById(req.params.id)
@@ -240,38 +195,5 @@ exports.getFamilyMembersForUser = async (req, res) => {
   } catch (error) {
     console.error('Error:', error);
     return res.status(500).json({ message: 'Server error' });
-  }
-};
-
-//view patient prescriptions
-exports.getPatientPrescriptions = async (req, res) => {
-  const { id } = req.params; 
-  try {
-    //find the prescriptions that the doctor wrote
-    const prescriptionsToBeSent = await prescriptions.find(
-      {
-        PatientID: id 
-      }
-      );
-    if (!prescriptions) {
-      return res.status(404).json({ message: 'no prescriptions found for this patient' });
-    }
-    res.status(200).json(prescriptionsToBeSent);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-};
-
-//get a specific prescription
-exports.getPrescriptionById = async (req, res) => {
-  const { id } = req.params; 
-  try {
-    const prescription = await prescriptions.findById(id); 
-    if (!prescription) {
-      return res.status(404).json({ message: 'Prescription not found' });
-    }
-    res.status(200).json(prescription);
-  } catch (err) {
-    res.status(500).json(err);
   }
 };
