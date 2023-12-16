@@ -469,8 +469,6 @@ export default function MedHistoryPatient() {
       </Modal>
       </div>
       {histories.map((history) => (
-        <div style={{display:"flex",}}>
-      {history.documents && history.documents.map((document) => (     
 
     <Card sx={{ width:"300px",m:"20px",height:"200px"}}>
       <CardContent>
@@ -487,15 +485,20 @@ export default function MedHistoryPatient() {
               alignItems:"flex-end" }}
               >DELETE</Button>
               </div>
+              {history.documents && history.documents.map((document) => (     
         <Typography key={document._id} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           {document.filename}
         </Typography>
-        
+        ))}
         <Typography variant="h5" component="div">
           
         </Typography>
         
-        
+        <Typography variant="body2">
+          well meaning and kindly.
+          <br />
+          {'"a benevolent smile"'}
+        </Typography>
       </CardContent>
       <CardActions>
       <div style= {{width:"100%",
@@ -517,8 +520,6 @@ export default function MedHistoryPatient() {
          </div>               
       </CardActions>
     </Card>
-    ))}
-    </div>
        ))}
       
   </div>

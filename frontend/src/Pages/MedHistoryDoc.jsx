@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { DataGrid } from '@mui/x-data-grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
@@ -33,44 +32,12 @@ const PageContainer = styled('div')({
   backgroundColor: 'white',
   padding: '16px',
 });
-
-const HeaderContainer = styled('div')({
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  marginBottom: '16px',
-});
-
-const CardWrapper = styled(Card)(({ theme }) => ({
-  width: '250px',
-  marginBottom: '16px',
-  border: '1px solid #0070F3',
-  backgroundColor: '#f0f8ff',
-  marginRight: '16px',
-  boxShadow: '0px 6px 6px rgba(0, 0, 0, 0.9)',
-  borderRadius: '5px',
-  marginLeft: '5px',
-}));
-
-const NameTypography = styled(Typography)({
-  color: '#000080',
-  marginBottom: '1rem',
-  fontWeight: 'bold',
-});
-
-const NotesTypography = styled(Typography)({
-  color: '#00008B', // Dark blue color
-  marginBottom: '1rem',
-});
-
 const modalStyle = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
   backgroundColor: 'white',
-  border: '2px solid #0070F3',
-  borderRadius: '10px',
   border: '2px solid #0070F3',
   borderRadius: '10px',
   boxShadow: 24,
@@ -81,13 +48,6 @@ const modalStyle = {
 function MedHistory() {
   const { id } = useParams(); // This is the doctor's ID, not the patient's ID
   const [currentImage, setCurrentImage] = useState(I2);
-  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
-  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
-  const [healthPackages, setHealthPackages] = useState([]);
-  const navigate = useNavigate();
-  const [apps, setApps] = useState([]);  const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -364,94 +324,6 @@ function MedHistory() {
   useEffect(() => {
     fetchMedicalHistories();
   }, [id]);
-
-  const TwoColumnLayout = styled('div')({
-    margintop:"auto",
-    display: 'flex',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
-  });
-  
-  const LeftSide = styled('div')({
-     
-    marginLeft: 'auto',
-    // Add styles for the left side if needed
-  });
-  
-  const RightSide = styled('div')({
-   marginRight:"auto",
-    marginLeft: 'auto', // This will move the content to the right
-  padding: '16px',
-   
-    // Add styles for the right side if needed
-  });
-  const buttonStyles = {
-    background: 'white',
-    color: '#0070F3', // Blue color
-    border: '1px solid #0070F3', // Blue border
-  };
-  const BlueDataGrid = styled(DataGrid)(({ theme }) => ({
-   fontSize:"18px",
-    border: '2px solid #0070F3', // Blue border
-    // Shadow
-    
-  }));
-
-  const columns = [
-    { field: 'id', headerName: 'ID', width: 100 },
-    { field: 'patientName', headerName: 'Patient Name', width: 200 },
-    { field: 'doctorNotes', headerName: 'Doctor Notes', width: 200 },
-    {
-      field: 'addNotes',
-      headerName: 'Add Notes',
-      width: 200,
-      renderCell: (params) => (
-        <Button
-        style={buttonStyles}
-          variant="contained"
-          color="primary"
-          onClick={() => {
-            setCurrentHistoryId(params.row.id);
-            setOpenModal(true);
-          }}
-        >
-          Add Notes
-        </Button>
-      ),
-    },
-    {
-      field: 'viewDocuments',
-      headerName: 'View Documents',
-      width: 200,
-      renderCell: (params) => (
-        <Button
-        style={buttonStyles}
-          variant="contained"
-          color="primary"
-          onClick={() => handleViewDocuments(params.row.id)}
-        >
-          View Documents
-        </Button>
-      ),
-    },
-    // ... Add more columns as needed
-  ];
-
-  const rows = histories.map((history) => ({
-    id: history._id,
-    patientName: history.patientName || 'Unknown Patient',
-    doctorNotes: history.doctorNotes || '',
-    // ... Add more fields as needed
-  }));
-
-  const handleViewDocuments = (historyId) => {
-    // Handle the logic to fetch and set patient documents based on historyId
-    const selectedHistory = histories.find((history) => history._id === historyId);
-    // Set the documents for the right side
-    setPatientDocuments(selectedHistory.documents || []);
-  };
-
-  const [patientDocuments, setPatientDocuments] = useState([]);
 
   const TwoColumnLayout = styled('div')({
     margintop:"auto",

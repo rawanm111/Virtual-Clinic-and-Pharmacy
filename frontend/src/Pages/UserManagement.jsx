@@ -8,8 +8,8 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import {Button , TextField} from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
-
-
+import WalletModal from './walletModal'
+import Modal from '@mui/material/Modal';
 import S1 from '../css/open-iconic-bootstrap.min.css';
 import S2 from '../css/animate.css';
 import S3 from '../css/owl.carousel.min.css';
@@ -26,13 +26,25 @@ import L1 from "../images/docD.jpeg";
 import P1 from "../images/engKOKO.jpg";
 import A1 from "../images/admins.jpg";
 import pharm from "../images/pharm.jpg";
-
-
-
+import { Container} from '@mui/material';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
-import WalletModal from './walletModal';
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  pt: 2,
+  px: 4,
+  pb: 3,
+};
+ 
 
 
 
@@ -45,6 +57,62 @@ import WalletModal from './walletModal';
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const inputRef = useRef();
+  const [formData, setFormData] = useState({
+    username: '',
+    password: '',
+  });
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    
+    setOpen(false);
+  };
+  const validatePassword = (password) => {
+    const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+    return regex.test(password);
+  };
+
+  const handleSubmit = () => {
+    handleClose();
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
+    axios.post('http://localhost:3000/admin/', formData) // Use '/admin' for the POST request
+      .then(response => {
+        console.log('Response:', response.data);
+
+        axios.get('http://localhost:3000/admin')
+    .then((response) => {
+      if (response.data) {
+        const transformedData = response.data.map((item) => ({
+          id: item._id, 
+          username: item.username,   
+        }));
+        setAdmins(transformedData);
+        setFilteredRowsA(transformedData);
+
+      } else {
+        console.error('No data received from the API');
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching admins:', error);
+    });
+        // Reset the form or display a success message as needed
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle errors or display an error message
+      });
+  };
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
 
   
@@ -525,7 +593,7 @@ const handleChange = (event, newValue) => {
                   <a className="dropdown-item" 
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                   onClick={() => navigate(`/doctor-requests}`)} 
+                   onClick={() => navigate(`/doctor-requests`)} 
                    style={{cursor:"pointer" } }>
                     Doctor Requests
                   </a>

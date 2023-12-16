@@ -472,8 +472,6 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       console.error('Error fetching available appointments:', error);
     }
   };
-
-
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
       const items = cartData;
@@ -519,7 +517,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               product_data: {
                 name: selectedAppointmentId.toString(),
               },
-              unit_amount: discountedPrice * 100, // Convert to cents
+              unit_amount: discountedPrice * 100, 
             },
             quantity: 1,
           },
@@ -542,7 +540,6 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       console.error('Error fetching available appointments:', error);
     }
   };
-  
 
   
 

@@ -189,54 +189,6 @@ const changePass = async (req, res) => {
   }
 };
 
-// const login = async (req, res) => {
-//   try {
-//     const { username, password } = req.body;
-//     const userTypes = [
-//       { model: patients },
-//       { model: doccs},
-//       { model: Admin },
-//       { model: Pharmacist }
-//     ];
-    
-//     for (const userType of userTypes) {
-//       const user = await userType.model.findOne({ username: username });
-      
-//       if (user) {
-//         console.log('User found:', user); 
-//         const passwordMatch = await bcrypt.compare(password, user.password);
-//         console.log('Password Match:', passwordMatch); 
-//         if (passwordMatch) {
-//           return res.json({
-//             success: true,
-//             message: 'Logged in successfully',
-//             role: user.role,
-//             //role: userType.role,
-//             userId: user._id
-//           });
-//         } else {
-//           // Check if user is an admin
-//           if (user.role === 'admin') {
-//             return res.status(402).json({ success: false, message: 'Admin password incorrect' });
-//           } else {
-//             return res.status(406).json({ success: false, message: 'Wrong password' });
-//           }
-//         }
-//       }
-//     }
-
-  
-
-
-
-//     return res.status(404).json({ success: false, message: 'invalid username' });
-//   } catch (error) {
-//     console.error(error); 
-//     res.status(500).json({ success: false, message: 'An error occurred during login' });
-//   }
-// };
-
-
 const login = async (req, res) => {
   try {
     const { username, password } = req.body;
@@ -246,33 +198,20 @@ const login = async (req, res) => {
       { model: Admin },
       { model: Pharmacist }
     ];
-
+    
     for (const userType of userTypes) {
       const user = await userType.model.findOne({ username: username });
-
+      
       if (user) {
+        console.log('User found:', user); 
         const passwordMatch = await bcrypt.compare(password, user.password);
-
+        console.log('Password Match:', passwordMatch); 
         if (passwordMatch) {
-          // Log in successful
-          // Add your chat engine code here
-          try {
-            const r = await axios.put(
-              'https://api.chatengine.io/users/',
-              { username: username, secret: password, fist_name: username },
-              { headers: { 'PRIVATE-KEY': "ce4d826c-fec3-49d4-8686-b96370a473bd" } }
-            );
-            console.log('Chat engine response:', r.data);
-          } catch (e) {
-            console.error('Error in chat engine:', e);
-            return res.status(500).json({ success: false, message: 'Error in chat engine' });
-          }
-
-          // Return the login response
           return res.json({
             success: true,
             message: 'Logged in successfully',
             role: user.role,
+            //role: userType.role,
             userId: user._id
           });
         } else {
@@ -286,12 +225,74 @@ const login = async (req, res) => {
       }
     }
 
-    return res.status(404).json({ success: false, message: 'Invalid username' });
+  
+
+
+
+    return res.status(404).json({ success: false, message: 'invalid username' });
   } catch (error) {
-    console.error(error);
+    console.error(error); 
     res.status(500).json({ success: false, message: 'An error occurred during login' });
   }
 };
+
+
+// const login = async (req, res) => {
+//   try {
+//     const { username, password } = req.body;
+//     const userTypes = [
+//       { model: patients },
+//       { model: doccs },
+//       { model: Admin },
+//       { model: Pharmacist }
+//     ];
+
+//     for (const userType of userTypes) {
+//       const user = await userType.model.findOne({ username: username });
+
+//       if (user) {
+//         const passwordMatch = await bcrypt.compare(password, user.password);
+
+//         if (passwordMatch) {
+//           // Log in successful
+//           // Add your chat engine code here
+//           try {
+//             const r = await axios.put(
+//               'https://api.chatengine.io/users/',
+//               { username: username, secret: password, first_name: username }, // Fix the typo here
+//               { headers: { 'PRIVATE-KEY': "ce4d826c-fec3-49d4-8686-b96370a473bd" } }
+//             );
+//             console.log('Chat engine response:', r.data);
+//           } catch (e) {
+//             console.error('Error in chat engine:', e);
+//             return res.status(500).json({ success: false, message: 'Error in chat engine' });
+//           }
+
+//           // Return the login response
+//           return res.json({
+//             success: true,
+//             message: 'Logged in successfully',
+//             role: user.role,
+//             userId: user._id
+//           });
+//         } else {
+//           // Check if user is an admin
+//           if (user.role === 'admin') {
+//             return res.status(402).json({ success: false, message: 'Admin password incorrect' });
+//           } else {
+//             return res.status(406).json({ success: false, message: 'Wrong password' });
+//           }
+//         }
+//       }
+//     }
+
+//     return res.status(404).json({ success: false, message: 'Invalid username' });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ success: false, message: 'An error occurred during login' });
+//   }
+// };
+
 
 
 

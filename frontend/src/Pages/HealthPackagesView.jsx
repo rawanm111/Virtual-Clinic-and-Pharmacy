@@ -199,17 +199,6 @@ export default function HealthPackagesView() {
   };
 
 
-  const [openModal, setOpenModal] = useState(false);
-
-  const handleOpenModal = () => {
-    setOpenModal(true);
-  };
-
-  const handleCloseModal = () => {
-    setOpenModal(false);
-  };
-
-
   const handleSubmit = async (event) => {
     // event.preventDefault();
 
@@ -324,73 +313,254 @@ export default function HealthPackagesView() {
   };
   
 
-
-  // const handleWallet = async () => {
-  //   try {
-      
-  //       // Make a request to your backend to process wallet payment
-        
-  //       const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
-          
-  //       });
-  //       // const prev= response.data.balance - 200;
-  //       console.log(response.data)
-
-  //       if (response.data.balance < 200) {
-  //         console.error("Insufficient balance");
-          
-  //       }
-  //       else{
-  //         {handleSubmitPayment()}
-  //       if (response && response.status === 200) {
-  //         console.log('Wallet payment successful!');
-  //         // Optionally, you can handle any additional logic after a successful wallet payment
-          
-  //         // Update the user's wallet balance (assuming you have a state for wallet balance)
-  //         // setWalletBalance(prev);
-  //         // console.log(walletBalance)
-          
-  //         const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
-            
-  //           patientId: id,
-  //           balance: response.data.balance - 200,
-  //         });
-
-          
-  //       } else {
-  //         console.error('Wallet payment failed:', response && response.data);
-  //         // Handle wallet payment failure (e.g., show error message to the user)
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error('Error processing wallet payment:', error);
-  //     // Handle error (e.g., show error message to the user)
-  //   }
-  // };
-  
-
-
-
   return (
-    <div>
-      <AppBarComponent />
-      <PageContainer>
-        <HeaderContainer>
-          <Typography variant="h4" component="div" sx={{ color: '#000080' }}>
-            Health Packages
-          </Typography>
-        </HeaderContainer>
-
-
+    <div style={{ backgroundColor: "white" }}>
+  <title>MetaCare </title>
+   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+        <div className="container"  >
+          <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
+            <div className="col-lg-2 pr-4 align-items-center">
+              <a className="navbar-brand" >
+                Meta<span>Care</span>
+              </a>
+              
+            </div>
+          </div>
+        </div>
+      </nav>
+      <nav
+        className="navbar navbar-expand-lg navbar-dark bg-dark ftco-navbar-light"
+        id="ftco-navbar"
         
-        <CardsContainer>
+      >
+        <div className="container d-flex align-items-center">
+          <button
+            className="navbar-toggler"
+            type="button"
+            data-toggle="collapse"
+            data-target="#ftco-nav"
+            aria-controls="ftco-nav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="oi oi-menu" /> Menu
+          </button>
+        
+          <div className="collapse navbar-collapse" id="ftco-nav">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item" style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)} style={{cursor:"pointer" } }>
+                  Home
+                </a>
+              </li>
+              <li
+                className="nav-item dropdown"
+                onMouseEnter={() => setShowPersonalDropdown(true)}
+                onMouseLeave={() => setShowPersonalDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  style={{cursor:"pointer" } }
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={setShowPersonalDropdown}
+                >
+                  Personal
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showPersonalDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="personalDropdown"
+                >
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/my-fam/${id}`)}
+                  style={{cursor:"pointer" } }>
+                    My Family
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/MedHistory/${id}`)}
+                  style={{cursor:"pointer" } }>
+                    My Medical History
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                 onClick={() => navigate(`/Prescription/${id}`)} style={{cursor:"pointer" } }>
+                    My Prescriptions
+                  </a>
+                 
+                </div>
+              </li>
+              {/* New dropdown for Doctors */}
+              <li
+                className="nav-item dropdown"
+                onMouseEnter={() => setShowDoctorsDropdown(true)}
+                onMouseLeave={() => setShowDoctorsDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  style={{cursor:"pointer" } }
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={showDoctorsDropdown}
+                >
+                  Doctors
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showDoctorsDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="doctorsDropdown"
+                >
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                onClick={() => navigate(`/doctorsTable/${id}`)} style={{cursor:"pointer" } }>
+                    Doctors List
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+             onClick={() => navigate(`/appPagePatient/${id}`)} style={{cursor:"pointer" } }>
+                    My Appointments
+                  </a>
+                  <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/appPagePatientt/${id}`)} style={{cursor:"pointer" } }>
+                    Book Appointment
+                  </a>
+                </div>
+              </li>
+              
+              <li
+                className="nav-item dropdown active"
+                onMouseEnter={() => setShowHealthPackagesDropdown(true)}
+                onMouseLeave={() => setShowHealthPackagesDropdown(false)}
+              >
+                <a
+                  className="nav-link dropdown-toggle"
+                  style={{cursor:"pointer" } }
+                  id="doctorsDropdown"
+                  role="button"
+                  data-toggle="dropdown"
+                  aria-haspopup="true"
+                  aria-expanded={setShowHealthPackagesDropdown}
+                >
+                  Pricings
+                </a>
+                <div
+                  className={`dropdown-menu ${
+                    showHealthPackagesDropdown ? 'show' : ''
+                  }`}
+                  aria-labelledby="doctorsDropdown"
+                >
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={() => navigate(`/health-packages-VIEW/${id}`)}>
+                    Health Packages
+                  </a>
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                 onClick={() => navigate(`/health-packages-sub/${id}`)}>
+                    Subscribed Packages
+                  </a>
+                 
+                </div>
+              </li>
+              {/* Profile dropdown */}
+<li
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowProfileDropdown(true)}
+  onMouseLeave={() => setShowProfileDropdown(false)}
+  style={{marginLeft:"640px"}}
+>
+  <a 
+    className="nav-link dropdown-toggle"
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showProfileDropdown}
+    style={{cursor:"pointer" } }
+  >
+    <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+    <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={handleOpenChangePassword} style={{cursor:"pointer" } }>
+      Change Password
+    </a>
+    <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+               onClick={() => navigate(`/clinic`)} style={{cursor:"pointer" } }>
+      Logout
+    </a>
+  </div>
+</li>
 
-          {healthPackages.map((healthPackage) => (
-            <CardWrapper key={healthPackage._id} variant="outlined">
-              <CardContent>
-                <NameTypography variant="h5" component="div">
-                  {healthPackage.name}
-                </NameTypography>
+{/* Wallet icon without dropdown */}
+<li className="nav-item ">
+<WalletModal/>
+</li>
+
+            </ul>
+          </div>
+        </div>
+      </nav>
+
+      
+      <section
+      className="hero-wrap hero-wrap-2"
+      style={{ backgroundImage: `url(${I2})` }}
+      data-stellar-background-ratio="0.5"
+    >
+      <div className="overlay" />
+      <div className="container">
+        <div className="row no-gutters slider-text align-items-center justify-content-center">
+          <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+            <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
+              Health Packages
+            </h1>
+            <p className="breadcrumbs">
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                <a >
+                  Home <i className="ion-ios-arrow-forward" />
+                </a>
+              </span>{' '}
+              <span style={{ fontSize: '14px', color: '#fff' }}>
+                Pricings <i className="ion-ios-arrow-forward" />
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section className="ftco-section ftco-departments bg-light">
+      <div className="container" style={{ marginTop: '-100px' }}>
+        <div className="row">
+          {healthPackages.map((pack) => (
+            <div className="col-md-4" key={pack.id}>
+              <div className="pricing-entry pb-5 text-center" style={{borderRadius:'8px'}}>
                 <div>
                   <h3 className="mb-4">{pack.name}</h3>
                   <p>
@@ -415,34 +585,55 @@ export default function HealthPackagesView() {
                   </p>
                 </div>
                 <div>
-                 
+                  
+                  <p>
+                    <span className="price">{pack.discountOnFamilyMemberSubscription}%</span>{' '}
+                    </p> <p>
+                    <span className="per" style={{fontSize:"16px"}}>  Discount on Family Subscriptions</span>
+                  </p>
                 </div>
-              </CardContent>
-            </CardWrapper>
+                <p className="button text-center">
+                <Button
+                variant="contained"
+                color="primary"
+                className="btn btn-primary px-4 py-3"
+                onClick={() => handleSubscribeButtonClick(pack.id)}  
+              >
+                Subscribe
+              </Button>
+                  
+                </p>
+              </div>
+            </div>
           ))}
-        </CardsContainer>
-      </PageContainer>
-
-    <br/>    <br/>    <br/>
-    <form onSubmit={handleSubmit}>
-        <FormControl fullWidth>
-          <InputLabel id="package-type-label">Package Type</InputLabel>
-          <Select
-            labelId="package-type-label"
-            id="package-type-select"
-            value={selectedHealthPackage} // Updated state
-            label="Package Type"
-            onChange={handleSelectPackage}
-            sx={{ mb: 2 }}
+        </div>
+      </div>
+    </section>
+     {/* Family and Payment Modal */}
+     <Dialog
+        open={isOpen}
+        onClose={closePaymentDialog}
+      >
+        <DialogTitle style={{color:'#2f89fc', fontWeight:'900px'}}>Select Payment Method</DialogTitle>
+        <DialogContent>
+          
+          <RadioGroup
+            name="paymentOption"
+            value={paymentOption}
+            onChange={handlePaymentOptionChange}
           >
-            {healthPackages.map((pkg) => (
-              <MenuItem key={pkg.id} value={pkg}>
-                {pkg.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-        <FormControl fullWidth>
+            <FormControlLabel
+              value="wallet"
+              control={<Radio />}
+              label=" Wallet"
+            />
+            <FormControlLabel
+              value="visa"
+              control={<Radio />}
+              label=" Visa"
+            />
+          </RadioGroup>
+          <FormControl fullWidth>
           <InputLabel id="family-member-label">
             Subscription for:
           </InputLabel>
