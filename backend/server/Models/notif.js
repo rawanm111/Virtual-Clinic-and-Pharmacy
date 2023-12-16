@@ -15,7 +15,11 @@ const notifSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
+<<<<<<< HEAD
+    enum: ['Confirmed', 'Cancelled', 'Rescheduled']
+=======
     enum: ['Confirmed', 'Cancelled', 'Rescheduled','Accepted','Rejected']
+>>>>>>> origin/main
   },
   content: {
     patientUsername: String,

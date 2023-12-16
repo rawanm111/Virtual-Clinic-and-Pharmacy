@@ -51,6 +51,7 @@ import MessagesPharmToDoc from "./Pages/messagesPharmtoDoc";
 import MessagesPharmToPat from "./Pages/messagesPharmtoPat";
 import MessagesPatToPharm from "./Pages/messagesPattoPharm";
 import MessagesDocToPharm from "./Pages/messagesDoctoPharm";
+import Notification from "./Pages/notifModal";
 
 
 export default function Paths() {
@@ -112,6 +113,7 @@ export default function Paths() {
         <Route path="/messagesPattoPharm/:id"element={<MessagesPatToPharm/>}  />
         <Route path="/messagesDoctoPharm/:id"element={<MessagesDocToPharm/>}  />
         <Route path="/admin-home" element={<AdminHome />} />
+        <Route path="/notification" element={<Notification />} />
       </Routes>
     </Router>
   );

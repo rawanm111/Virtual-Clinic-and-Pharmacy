@@ -20,6 +20,9 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import { format } from 'date-fns';
 import Notif from "./notifModal";
+import Tabs from '@mui/material/Tabs';
+import Tab from '@mui/material/Tab';
+
 import {
   Dialog,
   DialogTitle,
@@ -39,6 +42,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
  export default function() {
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
   const [isRescheduelOpen,setIsRescheduelOpen] = useState();
+  const [isRescheduelOpenFamily,setIsRescheduelOpenFamily] = useState();
   const [app,setApp] = useState();
   const[openFU,setOpenFU]= useState();
   const [passwords, setPasswords] = useState({
@@ -47,11 +51,15 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     confirmNewPassword: '',
   });
   const [success, setSuccess] = useState(false); 
+  const [tabValue, setTabValue] = useState(0); 
+
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
+  };
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
     setSuccess(false); 
-  };  
-  const handleOpenChangePassword = () => {
+  };  const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
   };
   const handleCloseChangePassword = () => {
@@ -133,6 +141,21 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   const [followUpDateTime, setFollowUpDateTime] = useState('');
   const [followUpPatientName, setFollowUpPatientName] = useState('');
   const [appointmentStatus, setAppointmentStatus] = useState('');
+  const [selectedStatusFilterFam, setSelectedStatusFilterFam] = useState('All');
+  const [filteredRowsFam, setFilteredRowsFam] = useState([]);
+  const [appsFam, setAppsFam] = useState([]);
+  const [dateFilterStartFam, setDateFilterStartFam] = useState(null);
+  const [dateFilterEndFam, setDateFilterEndFam] = useState(null);
+  const [selectedAppointmentIdFam, setSelectedAppointmentIdFam] = useState(null);
+  const [selectedFamilyMemberFam, setSelectedFamilyMemberFam] = useState('myself');
+  const [familyMembersFam, setFamilyMembersFam] = useState([]);
+  const [isPaymentDialogOpenFam, setIsPaymentDialogOpenFam] = useState(false);
+  const [paymentOptionFam, setPaymentOptionFam] = useState('wallet');
+  const [walletBalanceFam, setWalletBalanceFam] = useState(0);
+  const [selectedSpecialtyFam, setSelectedSpecialtyFam] = useState('All');
+
+
+
   const navigate = useNavigate();
 
   const { patientId2 } = useParams(); 
@@ -228,6 +251,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   useEffect(() => {
     axios.get(`http://localhost:3000/apps/available-appointments`)
       .then((response) => {
+        console.log(response.data, 'response.data');
         if (response.data) {
           const availableData = response.data.map((item) => ({
             id: item._id,
@@ -245,6 +269,77 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
         console.error('Error fetching available appointments:', error);
       });
   }, []);
+
+
+//get family members 
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/patients/family_members/user/${id}`)
+      .then((response) => {
+        console.log(response.data, 'family mems');
+        if (response.data) {
+          setFamilyMembersFam(response.data);
+        } else {
+          console.error('No family members data received from the API');
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching family members:', error);
+      });
+  }, [id]);
+
+
+  //get apps of all family members in family members fam list by maping through it
+  useEffect(() => {
+    familyMembersFam.map((member) => {
+      axios
+        .get(`http://localhost:3000/apps/patient/${member.patient._id}`)
+        .then((response) => {
+          if (response.data) {
+            const transformedData = response.data.map((item) => ({
+              id: item._id,
+              patientId: member.patient._id,
+              FamilyMemberName: member.patient.fullName,
+              DoctorName: item.doctor
+                ? item.doctor.fullName
+                : 'Doctor Not Found',
+              status: item.status,
+              date: new Date(item.date),
+            }));
+            setAppsFam((prev) => [...prev, ...transformedData]);
+            setFilteredRowsFam((prev) => [...prev, ...transformedData]);
+          } else {
+            console.error('No data received from the API');
+          }
+        })
+        .catch((error) => {
+          console.error('Error fetching apps:', error);
+        });
+    });
+    
+  }, [familyMembersFam]);
+
+//i dont want any repeated appointments in the table
+  useEffect(() => {
+    const uniqueApps = appsFam.filter(
+      (app, index, self) =>
+
+        index === self.findIndex((t) => t.id === app.id)
+    );
+    setAppsFam(uniqueApps);
+    setFilteredRowsFam(uniqueApps);
+  }, [appsFam]);
+
+
+
+  
+
+
+
+
+
+
+
   
   const calculateDiscountedPrice = (appointment) => {
     // console.log(appointment, 'appointment');
@@ -303,6 +398,48 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     
   ];
 
+  const columnsFamily = [
+    { field: 'DoctorName', headerName: 'Doctor Name', width: 150 },
+    { field: 'FamilyMemberName', headerName: 'Family Member Name', width: 150 },
+    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'date', headerName: 'Date', width: 550 },
+    {
+      field: 'discountedPrice',
+      headerName: 'Discounted Price',
+
+      width: 130,
+      renderCell: (params) => {
+        const discountedPrice = calculateDiscountedPrice(params.row);
+        return <span>{discountedPrice.toFixed(2)}</span>;
+      },
+    },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 250,
+      renderCell: (params) => (
+        <>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleButtonCancel(params.row.id)}
+        >
+          Cancel
+        </Button>
+         <Button
+         variant="outlined"
+         color="primary"
+         onClick={() => openModalFamily(params.row.id)}
+       >
+         Reschedule
+       </Button> </>
+      ),
+  
+    },
+    
+    
+  ];
+
 
   const availableColumns = [
     { field: 'DoctorName', headerName: 'Doctor Name', width: 150 },
@@ -348,6 +485,11 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     setSelectedStatusFilter(event.target.value);
   };
 
+  const handleStatusFilterChangeFam = (event) => {
+    setSelectedStatusFilterFam(event.target.value);
+  };
+
+
   const handleFilterChange = () => {
     const filteredApps = apps.filter((app) => {
       const isDateInRange =
@@ -362,11 +504,37 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     setFilteredRows(filteredApps);
   };
 
+  const handleFilterChangeFam = () => {
+    const filteredApps = appsFam.filter((app) => {
+      const isDateInRange =
+
+        (!dateFilterStartFam || app.date >= dateFilterStartFam) &&
+        (!dateFilterEndFam || app.date <= dateFilterEndFam);
+        
+      const isStatusMatch =
+
+        selectedStatusFilterFam === 'All' || app.status === selectedStatusFilterFam;
+        setFilteredRowsFam(filteredApps);
+
+      return isDateInRange && isStatusMatch;
+    });
+    
+  };
+
+
  
   const openModal =(selectedapp) => {
     setApp(selectedapp);
     setIsRescheduelOpen(true);
    }
+
+    const openModalFamily =(selectedapp) => {
+      setApp(selectedapp);
+      setIsRescheduelOpenFamily(true);
+      }
+
+  
+
   const handleButtonCancel = async (appointmentId) => {
 const id = "6575267573a2d909817e94e5";
 // const cancel = 'cancel';
@@ -466,52 +634,6 @@ const id = "6575267573a2d909817e94e5";
 
 
 
-  // const handleCreateFollowup = async () => {
-
-
-  //   const docid="657cca37df1f409c49514615";
-  //   if (!username) {
-  //     console.error('Please enter a doctor\'s username');
-  //     return;
-  //   }
-
-  //   // Check if doctorInfo is already fetched, if not, fetch it
-  //   if (!doctorInfo) {
-  //     try {
-  //       const response = await axios.get(`http://localhost:3000/doctors/${username}`);
-
-  //       if (response.status === 200) {
-  //         setDoctorInfo(response.data);
-  //       } else {
-  //         console.error('API call failed.');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error making API call:', error);
-  //     }
-  //   } else {
-  //     // If doctorInfo is already fetched, create a follow-up appointment
-  //     if (!dateFollowup ) {
-  //       console.error('Please fill in all required fields');
-  //       return;
-  //     }
-
-  //     try {
-  //       const response = await axios.post(`http://localhost:3000/followup`, {
-  //         doctor: doctorInfo.id,
-  //         patient: patientId  ,
-  //         date: dateFollowup,
-  //       });
-
-  //       if (response.status === 201) {
-  //         console.log('Follow-up appointment created successfully.');
-  //         // Handle success or navigate to a confirmation page
-  //       } else {
-  //         console.error('API call failed.');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error making API call:', error);
-  //     }
-  //   }}
   
   const fetchDoctorInfo = async () => {
     
@@ -562,6 +684,37 @@ const id = "6575267573a2d909817e94e5";
       console.error('Error making follow-up API call:', error);
     }
   };
+
+const handleCreateFollowupFamily = async () => {
+  if (!doctorInfo) {
+    // console.error('Doctor information is not available.');
+    return;
+  }
+
+  if (!dateFollowup) {
+    console.error('Please fill in all required fields');
+    return;
+  }
+
+  try {
+    const followUpResponse = await axios.post(`http://localhost:3000/followup`, {
+      doctor: doctorInfo._id,
+      patient: selectedFamilyMember, 
+      date: dateFollowup,
+    });
+
+    if (followUpResponse.status === 201) {
+      console.log('Follow-up appointment created successfully.');
+      // Handle success or navigate to a confirmation page
+    } else {
+      console.error('API call to create follow-up appointment failed.');
+    }
+  } catch (error) {
+    console.error('Error making follow-up API call:', error);
+  }
+};
+
+
 
   const handleGetDoctorInfo = async () => {
     if (!username) {
@@ -670,6 +823,9 @@ const id = "6575267573a2d909817e94e5";
       }
     }
   };
+
+
+
   const getAppointment = async () => {
     try {
       const response = await axios.get('http://localhost:3000/apps/available-appointments');
@@ -694,6 +850,12 @@ const id = "6575267573a2d909817e94e5";
     const handleOpenFU = () => {
       setOpenFU(true);
     };
+
+    const [openFUFamily, setOpenFUFamily] = useState(false);
+    const handleOpenFUFamily = () => {
+      setOpenFUFamily(true);
+    };
+
 
 
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
@@ -741,7 +903,7 @@ const id = "6575267573a2d909817e94e5";
               product_data: {
                 name: selectedAppointmentId.toString(),
               },
-              unit_amount: discountedPrice * 100, 
+              unit_amount: discountedPrice * 100, // Convert to cents
             },
             quantity: 1,
           },
@@ -764,6 +926,7 @@ const id = "6575267573a2d909817e94e5";
       console.error('Error fetching available appointments:', error);
     }
   };
+  
 
   
 
@@ -1084,14 +1247,26 @@ const id = "6575267573a2d909817e94e5";
     </section>
     <>
   
-<Button variant="contained"
+    <Tabs
+  value={tabValue}  // You'll need to manage the selected tab value in your component state
+  onChange={handleTabChange}  // Implement a function to handle tab changes
+  centered  // or use "variant='fullWidth'" based on your preference
+>
+  <Tab label="Personal Appointments" />
+  <Tab label="Family Appointments" />
+</Tabs>
+
+
+{tabValue === 0 && (
+  // Follow Up Tab
+  <>
+   <Button variant="contained"
 //  onClick={handleCreateFollowup} 
 onClick={handleOpenFU}
  sx={{ flex: 1 , paddingTop: '16px', marginLeft:'5%', marginTop:'1%', marginBottom:'-2%', width:'90%'}}> {/* Adjust the flex property */}
     Request FollowUp Appointement 
   </Button>
 
- {/* Right Section */}
  <Box sx={{ flex: 1, backgroundColor: '#FFFFFF', padding: '12px', margin: '70px', marginTop: '70', border: '2px solid #007bff', borderRadius: '8px', textAlign: 'center', width: '90%' }}>
           
           
@@ -1134,13 +1309,7 @@ onClick={handleOpenFU}
   </Button>
 </Box>
 
-        <Box sx={{ marginTop: '16px' }}>
-
-
-   
-
-          
-          {/* DataGrid Section */}          
+        <Box sx={{ marginTop: '16px' }}>        
           <DataGrid
               rows={filteredRows}
               columns={columns}
@@ -1166,9 +1335,99 @@ onClick={handleOpenFU}
 
 </Box>
       </Box>
+  </>
+)}
+
+
+
+{tabValue === 1 && (
+  // Other Tab
+  <>
+    <Button variant="contained"
+//  onClick={handleCreateFollowup} 
+onClick={handleOpenFUFamily}
+ sx={{ flex: 1 , paddingTop: '16px', marginLeft:'5%', marginTop:'1%', marginBottom:'-2%', width:'90%'}}> {/* Adjust the flex property */}
+    Request FollowUp Appointement 
+  </Button>
+
+ <Box sx={{ flex: 1, backgroundColor: '#FFFFFF', padding: '12px', margin: '70px', marginTop: '70', border: '2px solid #007bff', borderRadius: '8px', textAlign: 'center', width: '90%' }}>
+          
+          
+        
+
+          <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '100%' }}>
+  <TextField
+    type="date"
+    variant="outlined"
+    value={dateFilterStartFam ? dateFilterStartFam.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateFilterStart(new Date(e.target.value))}
+    sx={{ flex: 1 }} // Adjust the flex property
+  />
+  <TextField
+    type="date"
+    variant="outlined"
+    value={dateFilterEnd ? dateFilterEnd.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateFilterEnd(new Date(e.target.value))}
+    sx={{ flex: 1 }} // Adjust the flex property
+  />
+  <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}>
+    <InputLabel id="status-filter-label">Status</InputLabel>
+    <Select
+      labelId="status-filter-label"
+      id="status-filter"
+      value={selectedStatusFilterFam}
+      onChange={handleStatusFilterChangeFam}
+    >
+      <MenuItem value="All">All</MenuItem>
+      <MenuItem value="Upcoming">Upcoming</MenuItem>
+      <MenuItem value="Completed">Completed</MenuItem>
+      <MenuItem value="Cancelled">Cancelled</MenuItem>
+      <MenuItem value="Rescheduled">Rescheduled</MenuItem>
+      <MenuItem value="Accepted Followup">Accepted Followup</MenuItem>
+      <MenuItem value="Rejected Followup">Rejected Followup</MenuItem>
+    </Select>
+  </FormControl>
+  <Button variant="contained" onClick={handleFilterChangeFam} sx={{ flex: 1 }}> {/* Adjust the flex property */}
+    Apply Filters
+  </Button>
+</Box>
+
+        <Box sx={{ marginTop: '16px' }}>      
+          <DataGrid
+              rows={filteredRowsFam}
+              columns={columnsFamily}
+              pageSize={5}
+              rowHeight={40}
+              autoHeight
+              columnBuffer={5}
+              cellClassName={() => 'custom-cell-class'}
+            />
+
+
+
+
+        </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '75%' }}>
+
+
+
+
+
+
+
+</Box>
+      </Box>
+  </>
+)}
+
+
+
+
+
+
 
   </>
-  {/* Change Password pop-up */}
   <Modal
         open={isChangePasswordOpen}
         onClose={handleCloseChangePassword}
@@ -1245,6 +1504,7 @@ onClick={handleOpenFU}
             alignItems: 'center',
           }}
         >
+          
           <Box
             sx={{
               width: '400px',
@@ -1266,6 +1526,9 @@ onClick={handleOpenFU}
     onChange={(e) => setDateReschedule(new Date(e.target.value))}
     sx={{ flex: 1, marginLeft: 'auto',paddingTop: '16px'  }}
   />
+
+
+        
               <Button
                 type="submit"
                 fullWidth
@@ -1338,6 +1601,152 @@ onClick={handleOpenFU}
     </Box>
   </Box>
 </Modal>
+
+
+
+
+<Modal
+        open={isRescheduelOpenFamily}
+        aria-labelledby="resched popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Reschedule
+            </Typography>
+            <Box component="form"  sx={{ mt: 3 }}>
+              <h5>Choose a date to reschedule</h5>
+          <TextField
+    type="date"
+    variant="outlined"
+    value={dateReschedule ? dateReschedule.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateReschedule(new Date(e.target.value))}
+    sx={{ flex: 1, marginLeft: 'auto',paddingTop: '16px'  }}
+  />
+
+
+        {/* <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}> */}
+    <InputLabel id="status-filter-label">Family Member</InputLabel>
+    <Select
+
+      labelId="status-filter-label"
+      id="status-filter"
+      value={selectedFamilyMember}
+      onChange={handleFamilyMemberChange}
+    >
+      {/* <MenuItem value="myself">Myself</MenuItem> */}
+      {familyMembers.map((member) => (
+        <MenuItem value={member._id}>{member.fullName}</MenuItem>
+      ))}
+    </Select>
+  {/* </FormControl> */}
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => {
+                  handleReschedule(app);
+                  sendNotif();
+                }}
+              >
+                Submit 
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal
+  open={openFUFamily}
+  aria-labelledby="resched popup"
+>
+  <Box
+    sx={{
+      marginTop: '15%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }}
+  >
+    <Box
+      sx={{
+        width: '400px',
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+        Request Follow Up Appointment
+      </Typography>
+      <Box component="form" sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <h5>Choose a date for follow up</h5>
+        <TextField
+          type="date"
+          variant="outlined"
+          value={dateFollowup ? dateFollowup.toISOString().split('T')[0] : ''}
+          onChange={(e) => setDateFollowup(new Date(e.target.value))}
+        />
+        <input
+          type="text"
+          placeholder="Doctor's username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}>
+    <InputLabel id="status-filter-label">Family Member</InputLabel>
+    <Select
+
+      labelId="status-filter-label"
+      id="status-filter"
+      value={selectedFamilyMember}
+      onChange={handleFamilyMemberChange}
+    >
+      {/* <MenuItem value="myself">Myself</MenuItem> */}
+      {familyMembers.map((member) => (
+        <MenuItem value={member.patient._id}>{member.patient.fullName}</MenuItem>
+      ))}
+    </Select>
+  </FormControl>
+
+        <Button
+          variant="contained"
+          onClick={handleGetDoctorInfo} 
+        > 
+          Load Doctor
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          onClick={handleCreateFollowupFamily(selectedFamilyMember)} 
+        >
+          Submit 
+        </Button>
+      </Box>
+    </Box>
+  </Box>
+</Modal>
+
+
 
   </div>
 )}

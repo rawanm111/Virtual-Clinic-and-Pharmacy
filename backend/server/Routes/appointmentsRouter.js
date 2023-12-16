@@ -19,7 +19,6 @@ router.get('/receiver/:receiverId', appoincontroller.getNotificationsByReceiver)
 router.put('/:id/cancel', appoincontroller.cancelAppointment);
 // Define a route to cancel an appointment
 router.put('/:id/cancel', appoincontroller.cancelAppointment);
-// Define a route to reschedule an appointment
 router.put('/:id/reschedule', appoincontroller.rescheduleAppointment);
 
 module.exports = router;
