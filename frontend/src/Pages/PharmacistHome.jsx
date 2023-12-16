@@ -20,7 +20,8 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import Modal from '@mui/material/Modal';
-import WalletModal from './walletModal'
+import PharmacistWallet from "./walletModalPharmacist";
+
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -203,7 +204,7 @@ import WalletModal from './walletModal'
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<WalletModal/>
+<PharmacistWallet/>
 </li>
 
             </ul>

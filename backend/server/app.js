@@ -25,6 +25,8 @@ const authroutes = require('./Routes/authenticationRoutes');
 const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
 const OrderRoutes=require("./Routes/OrderRouter.js")
 const FollowupRoutes= require('./Routes/followupsRouter');
+const walletPharmacistRoutes = require('./Routes/walletPharmacistRoutes');
+const CancelOrderRoutes = require('./Routes/CancelOrderRoutes');
 const cors = require('cors');
 
 
@@ -69,7 +71,8 @@ app.use('/', authroutes)
 app.use('/employmentContract',EmploymentContract);
 app.use("/Order",OrderRoutes);
 app.use('/followup',FollowupRoutes);
-
+app.use('/walletspharm', walletPharmacistRoutes);
+app.use('/CancelOrder', CancelOrderRoutes);
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const Packages = require('./Models/PatientPackages'); 
@@ -216,7 +219,7 @@ app.post('/paymentPack', async (req, res) => {
           product_data: {
             name: healthPackageItem.name,
           },
-          unit_amount: healthPackageItem.annualPrice * 1000, // Amount should be in cents
+          unit_amount: healthPackageItem.annualPrice * 100, // Amount should be in cents
         },
         quantity: 1,
       }
