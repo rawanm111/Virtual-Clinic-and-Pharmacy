@@ -18,6 +18,8 @@ import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
+import { format } from 'date-fns';
+import Notif from "./notifModal";
 import {
   Dialog,
   DialogTitle,
@@ -36,6 +38,9 @@ import Modal from '@mui/material/Modal';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
  export default function() {
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [isRescheduelOpen,setIsRescheduelOpen] = useState();
+  const [app,setApp] = useState();
+  const[openFU,setOpenFU]= useState();
   const [passwords, setPasswords] = useState({
     currentPassword: '',
     newPassword: '',
@@ -92,10 +97,14 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       alert('Error updating password');
     }
   };
+  const [doctorInfo, setDoctorInfo] = useState(null);
+  const [username, setUsername] = useState('');
   const [apps, setApps] = useState([]);
+  const [dateFollowup, setDateFollowup] = useState(null);
   const [filteredRows, setFilteredRows] = useState([]);
   const [availableApps, setAvailableApps] = useState([]);
   const [dateFilterStart, setDateFilterStart] = useState(null);
+  const [dateReschedule, setDateReschedule] = useState(null);
   const [dateFilterEnd, setDateFilterEnd] = useState(null);
   const currentDate = new Date();
   const { id } = useParams();
@@ -125,7 +134,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   const [appointmentStatus, setAppointmentStatus] = useState('');
   const navigate = useNavigate();
 
-  
+  const { patientId2 } = useParams(); 
 
   const patientId = id;
 
@@ -252,18 +261,44 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     return sessionPrice;
   };
   const columns = [
-    { field: 'DoctorName', headerName: 'Doctor Name', width: 200 },
-    { field: 'status', headerName: 'Status', width: 200 },
-    { field: 'date', headerName: 'Date', width: 600 },
+    { field: 'DoctorName', headerName: 'Doctor Name', width: 150 },
+    { field: 'status', headerName: 'Status', width: 150 },
+    { field: 'date', headerName: 'Date', width: 550 },
     {
       field: 'discountedPrice',
       headerName: 'Discounted Price',
+
       width: 130,
       renderCell: (params) => {
         const discountedPrice = calculateDiscountedPrice(params.row);
         return <span>{discountedPrice.toFixed(2)}</span>;
       },
     },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 250,
+      renderCell: (params) => (
+        <>
+        <Button
+          variant="outlined"
+          color="primary"
+          onClick={() => handleButtonCancel(params.row.id)}
+        >
+          Cancel
+        </Button>
+         <Button
+         variant="outlined"
+         color="primary"
+         onClick={() => openModal(params.row.id)}
+       >
+         Reschedule
+       </Button> </>
+      ),
+  
+    },
+    
+    
   ];
 
 
@@ -325,6 +360,78 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     setFilteredRows(filteredApps);
   };
 
+ 
+  const openModal =(selectedapp) => {
+    setApp(selectedapp);
+    setIsRescheduelOpen(true);
+   }
+  const handleButtonCancel = async (appointmentId) => {
+const id = "6575267573a2d909817e94e5";
+// const cancel = 'cancel';
+    
+    try {
+       // Make an API call here using axios or your preferred library
+      const response = await axios.put(`http://localhost:3000/apps/${appointmentId}/cancel`);
+      
+     if (response.status === 200) {
+       console.log('Button clicked and API call successful.');
+         // You can update state or perform any other actions here
+       } else {
+         console.error('API call failed.');
+        // Handle error cases here
+      }
+      try {
+        const response = await axios.get('http://localhost:3000/apps/notifications/cancelled');
+        // Process the response as needed
+        console.log('Last Appointment:', response.data);
+      } catch (error) {
+        console.error('Error fetching last appointment:', error);
+      }
+      window.location.reload();
+
+     } catch (error) {
+      console.error('Error making API call:', error);
+        // Handle error cases here
+    }
+  };
+  const sendNotif = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/apps/notifications/rescheduled');
+      // Process the response as needed
+      console.log('Last Appointment:', response.data);
+    } catch (error) {
+      console.error('Error fetching last appointment:', error);
+    }
+  };
+  const handleReschedule = async (appointmentId) => {
+    if (!dateReschedule) {
+      console.error('Please select a reschedule date');
+      return;
+    }
+
+    const formattedDate = format(dateReschedule, 'yyyy-MM-dd');
+
+    try {
+      const response = await axios.put(`http://localhost:3000/apps/${appointmentId}/reschedule`, {
+        newDate: formattedDate,
+      });
+
+      if (response.status === 200) {
+        console.log('Reschedule API call successful.');
+        // You can update state or perform any other actions here
+      } else {
+        console.error('API call failed.');
+        // Handle error cases here
+      }
+    } catch (error) {
+      console.error('Error making API call:', error);
+      // Handle error cases here
+    }
+  };
+
+  
+  
+
 
 
   const handleFilterChangeOne = () => {
@@ -352,6 +459,115 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     });
   
     setAvailableApps(filteredAvailableApps);
+  };
+
+
+
+
+  // const handleCreateFollowup = async () => {
+
+
+  //   const docid="657cca37df1f409c49514615";
+  //   if (!username) {
+  //     console.error('Please enter a doctor\'s username');
+  //     return;
+  //   }
+
+  //   // Check if doctorInfo is already fetched, if not, fetch it
+  //   if (!doctorInfo) {
+  //     try {
+  //       const response = await axios.get(`http://localhost:3000/doctors/${username}`);
+
+  //       if (response.status === 200) {
+  //         setDoctorInfo(response.data);
+  //       } else {
+  //         console.error('API call failed.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error making API call:', error);
+  //     }
+  //   } else {
+  //     // If doctorInfo is already fetched, create a follow-up appointment
+  //     if (!dateFollowup ) {
+  //       console.error('Please fill in all required fields');
+  //       return;
+  //     }
+
+  //     try {
+  //       const response = await axios.post(`http://localhost:3000/followup`, {
+  //         doctor: doctorInfo.id,
+  //         patient: patientId  ,
+  //         date: dateFollowup,
+  //       });
+
+  //       if (response.status === 201) {
+  //         console.log('Follow-up appointment created successfully.');
+  //         // Handle success or navigate to a confirmation page
+  //       } else {
+  //         console.error('API call failed.');
+  //       }
+  //     } catch (error) {
+  //       console.error('Error making API call:', error);
+  //     }
+  //   }}
+  
+  const fetchDoctorInfo = async () => {
+    
+    try {
+      const response = await axios.get(`http://localhost:3000/doctors/${username}`);
+
+      if (response.status === 200) {
+        setDoctorInfo(response.data);
+       
+        console.log(doctorInfo._id);
+        console.log(doctorInfo.id);
+      } else {
+        console.error('API call to fetch doctor info failed.');
+      }
+    } catch (error) {
+      console.error('Error fetching doctor info:', error);
+    }
+   
+    
+  };
+  
+
+  const handleCreateFollowup = async () => {
+    if (!doctorInfo) {
+      console.error('Doctor information is not available.');
+      return;
+    }
+
+    if (!dateFollowup) {
+      console.error('Please fill in all required fields');
+      return;
+    }
+
+    try {
+      const followUpResponse = await axios.post(`http://localhost:3000/followup`, {
+        doctor: doctorInfo._id,
+        patient: patientId,
+        date: dateFollowup,
+      });
+
+      if (followUpResponse.status === 201) {
+        console.log('Follow-up appointment created successfully.');
+        // Handle success or navigate to a confirmation page
+      } else {
+        console.error('API call to create follow-up appointment failed.');
+      }
+    } catch (error) {
+      console.error('Error making follow-up API call:', error);
+    }
+  };
+
+  const handleGetDoctorInfo = async () => {
+    if (!username) {
+      console.error('Please enter a doctor\'s username');
+      return;
+    }
+
+    await fetchDoctorInfo();
   };
   
 
@@ -472,6 +688,10 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       console.error('Error fetching available appointments:', error);
     }
   };
+
+    const handleOpenFU = () => {
+      setOpenFU(true);
+    };
 
 
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
@@ -619,7 +839,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -656,7 +876,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown "
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -787,7 +1007,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -825,7 +1045,9 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>
@@ -861,6 +1083,13 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     </section>
     <>
   
+<Button variant="contained"
+//  onClick={handleCreateFollowup} 
+onClick={handleOpenFU}
+ sx={{ flex: 1 , paddingTop: '16px', marginLeft:'5%', marginTop:'1%', marginBottom:'-2%', width:'90%'}}> {/* Adjust the flex property */}
+    Request FollowUp Appointement 
+  </Button>
+
  {/* Right Section */}
  <Box sx={{ flex: 1, backgroundColor: '#FFFFFF', padding: '12px', margin: '70px', marginTop: '70', border: '2px solid #007bff', borderRadius: '8px', textAlign: 'center', width: '90%' }}>
           
@@ -895,6 +1124,8 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       <MenuItem value="Completed">Completed</MenuItem>
       <MenuItem value="Cancelled">Cancelled</MenuItem>
       <MenuItem value="Rescheduled">Rescheduled</MenuItem>
+      <MenuItem value="Accepted Followup">Accepted Followup</MenuItem>
+      <MenuItem value="Rejected Followup">Rejected Followup</MenuItem>
     </Select>
   </FormControl>
   <Button variant="contained" onClick={handleFilterChange} sx={{ flex: 1 }}> {/* Adjust the flex property */}
@@ -903,6 +1134,11 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 </Box>
 
         <Box sx={{ marginTop: '16px' }}>
+
+
+   
+
+          
           {/* DataGrid Section */}          
           <DataGrid
               rows={filteredRows}
@@ -914,7 +1150,20 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               cellClassName={() => 'custom-cell-class'}
             />
 
+
+
+
         </Box>
+
+        <Box sx={{ display: 'flex', flexDirection: 'row', gap: '16px', width: '75%' }}>
+
+
+
+
+
+
+
+</Box>
       </Box>
 
   </>
@@ -983,6 +1232,111 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
           </Box>
         </Box>
       </Modal>
+      <Modal
+        open={isRescheduelOpen}
+        aria-labelledby="resched popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Reschedule
+            </Typography>
+            <Box component="form"  sx={{ mt: 3 }}>
+              <h5>Choose a date to reschedule</h5>
+          <TextField
+    type="date"
+    variant="outlined"
+    value={dateReschedule ? dateReschedule.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateReschedule(new Date(e.target.value))}
+    sx={{ flex: 1, marginLeft: 'auto',paddingTop: '16px'  }}
+  />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => {
+                  handleReschedule(app);
+                  sendNotif();
+                }}
+              >
+                Submit 
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal
+  open={openFU}
+  aria-labelledby="resched popup"
+>
+  <Box
+    sx={{
+      marginTop: '15%',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }}
+  >
+    <Box
+      sx={{
+        width: '400px',
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '8px',
+        boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+      }}
+    >
+      <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+        Request Follow Up Appointment
+      </Typography>
+      <Box component="form" sx={{ mt: 3, display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <h5>Choose a date for follow up</h5>
+        <TextField
+          type="date"
+          variant="outlined"
+          value={dateFollowup ? dateFollowup.toISOString().split('T')[0] : ''}
+          onChange={(e) => setDateFollowup(new Date(e.target.value))}
+        />
+        <input
+          type="text"
+          placeholder="Doctor's username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          onClick={handleGetDoctorInfo} 
+        > 
+          Load Doctor
+        </Button>
+        <Button
+          type="submit"
+          fullWidth
+          variant="contained"
+          onClick={handleCreateFollowup} 
+        >
+          Submit 
+        </Button>
+      </Box>
+    </Box>
+  </Box>
+</Modal>
 
   </div>
 )}

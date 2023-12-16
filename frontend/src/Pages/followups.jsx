@@ -1,15 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { DataGrid } from '@mui/x-data-grid';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import { TextField,  Container, Box } from '@mui/material';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import CardContent from '@mui/material/CardContent';
 import S1 from '../css/open-iconic-bootstrap.min.css';
 import S2 from '../css/animate.css';
 import S3 from '../css/owl.carousel.min.css';
@@ -25,241 +19,40 @@ import S12 from '../css/style.css';
 import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
+import { useNavigate,useParams } from 'react-router-dom';
 import { FaUser, FaWallet } from 'react-icons/fa';
-import WalletModal from './walletModal';
-import MenuItem from '@mui/material/MenuItem';
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
+import WalletModal from './walletModal'
 import Notif from "./notifdoc";
-const PageContainer = styled('div')({
-  backgroundColor: 'white',
-  padding: '16px',
-});
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  backgroundColor: 'white',
-  border: '2px solid #0070F3',
-  borderRadius: '10px',
-  boxShadow: 24,
-  padding: '16px',
-  overflow: 'auto',
+import { TextField, Button, Container, Typography, Box } from '@mui/material';
+import Modal from '@mui/material/Modal';
+// Move base64toBlob function here
+const base64toBlob = (base64Data, contentType) => {
+  try {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64Data);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      byteArrays.push(byteArray);
+    }
+
+    const blob = new Blob(byteArrays, { type: contentType });
+    return blob;
+  } catch (error) {
+    console.error('Error decoding base64:', error);
+    return null; // Return null to indicate an error
+  }
 };
 
-function MedHistory() {
+function AdminRequests() {
 
-   const [openPrescriptionModal, setOpenPrescriptionModal] = useState(false);
-   const [pid, setPatId] = useState(0);
-   const [prescriptionData, setPrescriptionData] = useState({
-    medicines: [{ medicine: '', dosage: '' }],
-  });
-  const { id } = useParams(); 
-  const [filteredRows, setFilteredRows] = useState([]);
-  const [medicines, setMedicines] = useState([]);
-  const handleSubmitPres = async () => {
-    try {
-      console.log(pid);
-      const response = await fetch('http://localhost:3000/Prescription/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Date: new Date().toISOString(),
-          Patient: pid,
-          Doctor: id,
-          filled: false,
-          medicines: prescriptionData.medicines.map((medicine, index) => ({
-            medicine: selectedMedicines[index],
-            dosage: dosages[index],
-          })),
-        }),
-      });
-  
-      // Handle the response accordingly
-      const data = await response.json();
-      console.log(data);
-  
-      // Optionally close the modal or perform other actions
-      setPrescriptionModalOpen(false);
-    } catch (error) {
-      console.error('Error creating prescription:', error);
-    }
-  };
-  const disabledButtonStyles = {
-    backgroundColor: '#CCCCCC', 
-    color: '#666666',
-    
-  };
-  const addToCart = async (prescription) => {
-    const patientId = pid.toString();
-    const prescriptionId= prescription._id;
-    for (const medicineData of prescription.medicines) {
-      const medicationId = medicineData.medicine._id;
-  
-      try {
-        const response = await axios.post('http://localhost:3000/Cart/add', {
-          patientId,
-          medicationId,
-          quantity: 1,
-        });
-  
-        console.log('Medication added to cart:', response.data);
-      } catch (error) {
-        console.error('Error adding medication to cart:', error);
-      }
-    }
-  
-    try {
-      const response = await fetch(`http://localhost:3000/Prescription/update/${prescriptionId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ filled: true }), // Set the 'filled' property to true
-      });
-  
-      if (response.ok) {
-        const updatedPrescription = await response.json();
-        // Handle the updated prescription data if needed
-        console.log('Prescription updated:', updatedPrescription);
-      } else {
-        throw new Error('Failed to update prescription');
-      }
-    } catch (error) {
-      console.error('Error updating prescription:', error.message);
-      // Handle errors or display an error message to the user
-    }
-    window.location.reload();
-  };
-  
-  const [selectedMedicines, setSelectedMedicines] = useState([]);
-  const [isEditModalOpen, setEditModalOpen] = useState(false);
-  const [editedPrescription, setEditedPrescription] = useState(null);
-  const [editedMedicines, setEditedMedicines] = useState([]);
-  const handleEditClick = (prescriptionId) => {
-    const index = patientDocuments.findIndex((document) => document._id === prescriptionId);
-    const selectedPrescription = patientDocuments[index];
-    setEditedPrescription(selectedPrescription);
-    setEditedMedicines(
-      selectedPrescription.medicines.map((medicineData) => ({
-        medicine: medicineData.medicine._id,
-        dosage: medicineData.dosage,
-      }))
-    );
-    setEditModalOpen(true);
-  };
-  const handleUpdatePrescription = async () => {
-    try {
-      const response = await fetch(`http://localhost:3000/Prescription/update/${editedPrescription._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          Date: new Date().toISOString(), 
-          medicines: editedMedicines.map((medicine, index) => ({
-            medicine: medicine.medicine,
-            dosage: medicine.dosage,
-          })),
-        }),
-      });
-      const data = await response.json();
-      console.log(data);
-      window.location.reload();
-    } catch (error) {
-      console.error('Error updating prescription:', error);
-    }
-  };
-  
-      
-  const handleMedicineChange = (index, event) => {
-    const updatedMedicines = [...selectedMedicines];
-    updatedMedicines[index] = event.target.value;
-    setSelectedMedicines(updatedMedicines);
-  };
-  
-  const [dosages, setDosages] = useState([]);
-
-const handleDosageChange = (index, event) => {
-  const newDosages = [...dosages];
-  newDosages[index] = event.target.value;
-  setDosages(newDosages);
-};
-
-  
-  useEffect(() => {
-    fetch('http://localhost:3000/meds')
-      .then(response => response.json())
-      .then(data => setMedicines(data))
-      .catch(error => console.error('Error fetching medicines:', error));
-  }, []);
-
-const [selectedPrescription, setSelectedPrescription] = useState(null);
-const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null);
-
-  const [prescriptionModalOpen, setPrescriptionModalOpen] = useState(false);
-  const handlePrescriptionChange = (index) => (event) => {
-    const { name, value } = event.target;
-    const updatedMedicines = [...prescriptionData.medicines];
-    updatedMedicines[index] = { ...updatedMedicines[index], [name]: value };
-    setPrescriptionData({ ...prescriptionData, medicines: updatedMedicines });
-  };
-  const handleAddMedicineRow = () => {
-    setPrescriptionData({
-      ...prescriptionData,
-      medicines: [...prescriptionData.medicines, { medicine: '', dosage: '' }],
-    });
-  };
-  const handleRemoveMedicineRow = (index) => {
-    const updatedMedicines = prescriptionData.medicines.filter((_, i) => i !== index);
-    setPrescriptionData({ ...prescriptionData, medicines: updatedMedicines });
-  };
-        
-  useEffect(() => {
-    axios
-      .get(`http://localhost:3000/patients/p/${id}`)
-      .then((response) => {
-        if (response.data) {
-          const transformedData = response.data.map((item) => ({
-            id: item._id,
-            fullName: item.fullName,
-
-          }));
-          setHistories(transformedData);
-          setFilteredRows(transformedData);
-        } else {
-          console.error('No data received from the API');
-        }
-      })
-      .catch((error) => {
-        console.error('Error fetching patients:', error);
-      });
-  }, [id]);
-
-  const handleOpenPrescriptionModal = (p) => {
-    console.log(p);
-    setPatId(p);
-    setOpenPrescriptionModal(true);
-  };
-  
-  const handleClosePrescriptionModal = () => {
-    setSelectedMedicines([]);
-    setDosages([]);
-    setOpenPrescriptionModal(false);
-  };
-  const handleEditModalClose = () => {
-    setEditModalOpen(false);
-  };
-
-  const [currentImage, setCurrentImage] = useState(I2);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
-  const navigate = useNavigate();
-  const [histories, setHistories] = useState([]);
+  const { id } = useParams();
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const [username, setUsername] = useState();
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -278,7 +71,36 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
   };
-
+  const sendNotifA = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/apps/notifications/accepted');
+      // Process the response as needed
+      console.log('Last Appointment:', response.data);
+    } catch (error) {
+      console.error('Error fetching last appointment:', error);
+    }
+  };
+  
+  const sendNotifR = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/apps/notifications/rejected');
+      // Process the response as needed
+      console.log('Last Appointment:', response.data);
+    } catch (error) {
+      console.error('Error fetching last appointment:', error);
+    }
+  };
+  
+  useEffect(() => {
+    axios
+      .get(`http://localhost:3000/followup/doctor/${id}`)
+      .then((response) => {
+        setAdminRequests(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching Admin Requests:', error);
+      });
+  }, []);
   const updatePassword = async (newPassword) => {
     try {
       // Replace '/api/reset-password' with your actual API endpoint
@@ -290,7 +112,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
       alert('Error updating password');
     }
   };
-  const handleSubmitt = () => {
+  const handleSubmit = () => {
     axios
       .put(`http://localhost:3000/doctors/${username}`, formData)
       .then((response) => {
@@ -302,7 +124,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
       });
   };
 
-  const handleInputChangeD = (event) => {
+  const handleInputChange = (event) => {
     const { name, value } = event.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -345,7 +167,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
     dateOfBirth: '',
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmitt = (event) => {
     event.preventDefault();
     
     setSuccess(false);
@@ -396,33 +218,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
   const handleProfilePopupClose = () => {
     setProfilePopupOpen(false);
   };
-  const handleDownload = () => {
-    // Combine document data into a string
-    const fileContent = patientDocuments.map((document) => {
-      const medicinesList = document.medicines.map((medicineData) => {
-        return `${medicineData.medicine.name} - Dosage: ${medicineData.dosage}`;
-      }).join('\n');
   
-      return `
-  Date: ${document.Date}
-  Status: ${document.filled ? 'Filled' : 'Not Filled'}
-  Medicines:
-  ${medicinesList}
-  -----------------------------------------
-  `;
-    }).join('\n');
-  
-    // Create a Blob from the content
-    const blob = new Blob([fileContent], { type: 'text/plain' });
-  
-    // Create a link element and trigger the download
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = 'patient_documents.txt';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
 
   useEffect(() => {
@@ -448,30 +244,6 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
     marginLeft: '0.5rem',
     fontSize: '20px'
   });
-  const [prescription, setPrescription] = useState();
-  const [medicinesList, setMedicinesList] = useState([]);
-
-  useEffect(() => {
-    // Fetch medicines from the server when the component mounts
-    axios.get('http://localhost:3000/meds')
-      .then((response) => {
-        setMedicinesList(response.data);
-      })
-      .catch((error) => {
-        console.error('Error fetching medicines:', error);
-      });
-  }, []);
-
-  const CenteredContainer = styled('div')({
-    display: 'finlineblock',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '100vh', 
-  });
-const handleInputChange = (event) => {
-  const { name, value } = event.target;
-  setFormData({ ...formData, [name]: value });
-};
   
   const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
@@ -480,130 +252,122 @@ const handleInputChange = (event) => {
   const handleCloseChangePassword = () => {
     setChangePasswordOpen(false);
   };
+  const [adminRequests, setAdminRequests] = useState([]);
+  const navigate = useNavigate();
+  const [currentRequestIndex, setCurrentRequestIndex] = useState(0);
+  const [currentImage, setCurrentImage] = useState(I2);
+  const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
+  const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/api/drReq')
+      .then((response) => {
+        setAdminRequests(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching Admin Requests:', error);
+      });
+  }, []);
 
-  const TwoColumnLayout = styled('div')({
-    margintop:"auto",
-    display: 'flex',
-    gridTemplateColumns: '1fr 1fr',
-    gap: '16px',
-  });
-  const handleMedicineChangee = (index, event) => {
-    const updatedMedicines = [...editedMedicines];
-    updatedMedicines[index] = {
-      ...updatedMedicines[index],
-      medicine: event.target.value,
+  useEffect(() => {
+    axios
+      .get('http://localhost:3000/api/drReq')
+      .then((response) => {
+        setAdminRequests(response.data);
+      })
+      .catch((error) => {
+        console.error('Error fetching Admin Requests:', error);
+      });
+  }, []);
+
+
+  const handleRejectRequest = (requestId, adminRequest) => {
+    const appointmentData = {
+      doctor: id, 
+      patient:  adminRequest.patient._id,
+      date: adminRequest.date, 
+      status:"Rejected Followup"
     };
-    setEditedMedicines(updatedMedicines);
-  };
-  // Add this function to handle dosage changes
-const handleDosageChangee = (index, event) => {
-  const updatedMedicines = [...editedMedicines];
-  updatedMedicines[index] = {
-    ...updatedMedicines[index],
-    dosage: event.target.value,
-  };
-  setEditedMedicines(updatedMedicines);
-};
-
   
-  const LeftSide = styled('div')({
-     
-    marginLeft: 'auto',
-    // Add styles for the left side if needed
-  });
   
-  const RightSide = styled('div')({
-   marginRight:"auto",
-    marginLeft: 'auto', 
-
-  });
-  const buttonStyles = {
-    background: 'white',
-    color: '#0070F3', 
-    border: '1px solid #0070F3', 
-    width:'80%'
-  };
-  const buttonStyless = {
-    background: 'white',
-    color: '#0070F3', // Blue color
-    border: '1px solid #0070F3', // Blue border
-    marginLeft:'20%',
-    width:'80%'
-  };
-  const BlueDataGrid = styled(DataGrid)(({ theme }) => ({
-   fontSize:"18px",
-    border: '2px solid #0070F3', 
-
-  }));
-  const handleAddMedicineRoww = () => {
-    setEditedMedicines((prevMedicines) => [
-      ...prevMedicines,
-      { medicine: '', dosage: '' },
-    ]);
-  };
+    // Create the upcoming appointment
+    axios
+      .post('http://localhost:3000/apps', appointmentData)
+      .then((response) => {
+        console.log('Appointment created successfully:', response.data);
+        // Optionally handle success, such as showing a success message to the admin
+      })
+      .catch((error) => {
+        console.error('Error creating appointment:', error);
+        // Optionally handle errors, such as showing an error message to the admin
+      });
   
-  const handleRemoveMedicineRoww = (index) => {
-    setEditedMedicines((prevMedicines) =>
-      prevMedicines.filter((_, i) => i !== index)
-    );
+    // Delete the follow-up request
+    axios
+      .delete(`http://localhost:3000/followup/del/${requestId}`)
+      .then((response) => {
+        console.log('Request rejected and removed successfully');
+        // Optionally handle success, such as showing a success message to the admin
+      })
+      .catch((error) => {
+        console.error('Error rejecting request:', error);
+        // Optionally handle errors, such as showing an error message to the admin
+      });
+      window.location.reload();
+
   };
+
+  const handleAcceptRequest = (requestId, adminRequest) => {
+    const appointmentData = {
+      doctor: id, 
+      patient:  adminRequest.patient._id,
+      date: adminRequest.date, 
+      status:"Accepted Followup"
+    };
   
-  const columns = [
-    { field: 'patientName', headerName: 'Patient Name', width: 300 },
-    {
-      field: 'addNotes',
-      headerName: 'Actions',
-      width: 800,
-      renderCell: (params) => (
-        <div>
-         <Button
-  style={buttonStyles}
-  variant="contained"
-  color="primary"
-  onClick={() => {
-   
-    handleOpenPrescriptionModal(params.row.id)
-  }}
+    // Create the upcoming appointment
+    axios
+      .post('http://localhost:3000/apps', appointmentData)
+      .then((response) => {
+        console.log('Appointment created successfully:', response.data);
+        // Optionally handle success, such as showing a success message to the admin
+      })
+      .catch((error) => {
+        console.error('Error creating appointment:', error);
+        // Optionally handle errors, such as showing an error message to the admin
+      });
   
->
-  Write Prescription
-</Button>
-          <Button
-            style={buttonStyless}
-            variant="contained"
-            color="primary"
-            onClick={() => handleViewDocuments(params.row.id)} 
-          >
-            View Prescriptions
-          </Button>
-        </div>
-      ),
-    },
+    // Delete the follow-up request
+    axios
+      .delete(`http://localhost:3000/followup/del/${requestId}`)
+      .then((response) => {
+        console.log('Request rejected and removed successfully');
+        // Optionally handle success, such as showing a success message to the admin
+      })
+      .catch((error) => {
+        console.error('Error rejecting request:', error);
+        // Optionally handle errors, such as showing an error message to the admin
+      });
+      window.location.reload();
+  };
 
-  ];
-
-  const rows = histories.map((history) => ({
-    id: history.id,
-    patientName: history.fullName ,
-  }));
-
-  const handleViewDocuments = async (patientId) => {
-    try {
-      setPatId(patientId);
-      const response = await axios.get(`http://localhost:3000/Prescription/pat/${patientId}`);
-      const patientPrescriptions = response.data;
-      setPatientDocuments(patientPrescriptions || []);
-    } catch (error) {
-      console.error('Error fetching prescriptions:', error);
+  const handleForward = () => {
+    if (currentRequestIndex < adminRequests.length - 1) {
+      setCurrentRequestIndex(currentRequestIndex + 1);
     }
   };
-  
-  const [patientDocuments, setPatientDocuments] = useState([]);
 
+  const handleBackward = () => {
+    if (currentRequestIndex > 0) {
+      setCurrentRequestIndex(currentRequestIndex - 1);
+    }
+  };
   return (
-<div style={{ backgroundColor: "white" }}>
-  <title>MetaCare </title>
-  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+    <div style={{ backgroundColor: "white" }}>
+      <title>MetaCare </title>
+      <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -1032,7 +796,7 @@ const handleDosageChangee = (index, event) => {
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-            My Patients' Prescriptions
+              Follow-up Requests
             </h1>
             <p className="breadcrumbs">
               <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
@@ -1041,257 +805,111 @@ const handleDosageChangee = (index, event) => {
                 </a>
               </span>{' '}
               <span style={{ fontSize: '14px', color: '#fff' }}>
-              My Patients <i className="ion-ios-arrow-forward" />
+                Patients <i className="ion-ios-arrow-forward" />
               </span>
             </p>
           </div>
         </div>
       </div>
     </section>
-    <section >
- 
-  <section style={{width:'98.5%', marginTop:'2%',  marginLeft:'1%'}}>
-    <BlueDataGrid rows={rows} columns={columns} pageSize={5} />
-  </section>
-  <RightSide>
-  <div className="d-flex flex-wrap">
-    {patientDocuments.map((document) => (
-      <div key={document._id} style={{ borderRadius: '8px', margin: '8px', flex: '1 0 30%', position: 'relative' }}>
-       {/* Edit Icon */}
-    
-        <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', height: '100%' }}>
-          <IconButton 
-      color="primary" 
-      onClick={() => handleEditClick(document._id)}
-      style={{ position: 'absolute', top: '8px', right: '8px' }}
-    >
-      <EditIcon />
-    </IconButton>
-          <div>
-            <h3 className="mb-4">Date:</h3>
-            <p className="mb-4">{document.Date}</p>
-            <h3 className="mb-4">Status:</h3>
-            <p className="mb-4">{document.filled ? 'Filled' : 'Not Filled'}</p>
-            <h3 className="mb-4">Medicines:</h3>
-            <ul>
-              {document.medicines.map((medicineData) => (
-                <li key={medicineData.medicine._id}>
-                  {medicineData.medicine.name} - Dosage: {medicineData.dosage}
-                </li>
-              ))}
-            </ul>
-          </div>
-          
-          <div>
-            <Button
-              style={buttonStyles}
-              variant="contained"
-              color="primary"
-              onClick={() => handleDownload(document._id)}
-            >
-              Download Prescription
-            </Button>
-            <Button
-  style={document.filled === true ? disabledButtonStyles : buttonStyles}
-  variant="contained"
-  color="primary"
-  onClick={() => addToCart(document)}
-  disabled={document.filled === true}
->
-  Add Prescription to Patient's Cart
-</Button>
-          </div>
-        </div>
-      </div>
-    ))}
-  </div>
-</RightSide>
-
-
-
-</section>
-    
-{/* Prescription modal */}
-<Modal open={openPrescriptionModal} onClose={handleClosePrescriptionModal}>
-  <div style={modalStyle}>
-    <h2 id="modal-modal-title" style={{ textAlign: 'center', fontWeight: 'bold', color: '#0070F3' }}>
-      New Prescription
-    </h2>
-    <form>
-
-    {prescriptionData.medicines.map((medicine, index) => (
-  <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-   <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-  <TextField
-    select
-    label="Select Medicine"
-    id="medicine"
-    name="medicine"
-    value={selectedMedicines[index]}
-    style={{ minWidth: '300px' }}
-    onChange={(event) => handleMedicineChange(index, event)}
-    fullWidth
-  >
-    <MenuItem value="" disabled>Select a medicine</MenuItem>
-    {medicines.map((medicine) => (
-      <MenuItem key={medicine._id} value={medicine._id}>
-        {medicine.name}
-      </MenuItem>
-    ))}
-  </TextField>
+    <div className="col-12 text-center mt-3">
 </div>
 
-    <TextField
-      label="Dosage"
-      type="text"
-      name="dosage"
-      value={dosages[index]}
-      onChange={(event) => handleDosageChange(index, event)}
-    />
-    <IconButton
-      color="primary"
-      onClick={() => handleRemoveMedicineRow(index)}
-    >
-      <DeleteIcon />
-    </IconButton>
-  </div>
-))}
-
-      <Button color="primary" onClick={handleAddMedicineRow}>
-        + Add Medicine
-      </Button>
-      <div></div>
-      <Button
-        style={{
-          background: 'white',
-          color: '#0070F3',
-          border: '2px solid #0070F3',
-          marginTop: '10px',
-        }}
-        variant="contained"
-        onClick={handleSubmitPres}
-      >
-        Add Prescription
-      </Button>
-      <Button
-        style={{
-          background: 'white',
-          color: '#0070F3',
-          border: '2px solid #0070F3',
-          marginTop: '10px',
-          marginLeft: '10px',
-        }}
-        variant="contained"
-        color="secondary"
-        onClick={handleClosePrescriptionModal}
-      >
-        Close
-      </Button>
-    </form>
-  </div>
-</Modal>
-{isEditModalOpen && (
-  <Modal
-    open={isEditModalOpen}
-    onClose={() => setEditModalOpen(false)}
-    aria-labelledby="edit-prescription-modal"
-    aria-describedby="edit-prescription-description"
-  >
-    <PageContainer style={modalStyle}>
-      <h2 id="modal-modal-title" style={{ textAlign: 'center', fontWeight: 'bold', color: '#0070F3' }}>
-        Update Prescription
-      </h2>
-      <form onSubmit={handleUpdatePrescription}>
-  <div>
-    <h3>Date:</h3>
-    <p>{editedPrescription?.Date}</p>
-  </div>
-  <div>
-    <h3>Status:</h3>
-    <p>{editedPrescription?.filled ? 'Filled' : 'Not Filled'}</p>
-  </div>
-  <div>
-    <h3>Medicines:</h3>
+    <div className="container" style={{marginTop:'40px'}}>
     
-    {editedMedicines.map((medicine, index) => (
-  <div key={index} style={{ display: 'flex', marginBottom: '8px' }}>
-    <TextField
-      select
-      label={`Medicine ${index + 1}`}
-      value={medicine.medicine}
-      onChange={(e) => handleMedicineChangee(index, e)}
-      variant="outlined"
-      fullWidth
-      style={{ marginRight: '8px' }}
-    >
-      {medicinesList.map((med) => (
-        <MenuItem key={med._id} value={med._id}>
-          {med.name}
-        </MenuItem>
-      ))}
-    </TextField>
-    <TextField
-      label="Dosage"
-      type="text"
-      value={medicine.dosage}
-      onChange={(e) => handleDosageChangee(index, e)}
-      variant="outlined"
-      fullWidth
-      style={{ marginRight: '8px' }}
-    />
-    <IconButton
-      color="primary"
-      onClick={() => handleRemoveMedicineRoww(index)}
-    >
-      <DeleteIcon />
-    </IconButton>
-   
 
-  </div>
-))}
-  </div>
-  <Button
-    color="primary"
-    onClick={handleAddMedicineRoww}
-  >
-    + Add Medicine
-  </Button>
-  
-</form>
-<Button
-     style={{
-      background: 'white',
-      color: '#0070F3',
-      border: '2px solid #0070F3',
-      marginTop: '10px',
-    }}
-    variant="contained"
-    color="primary"
-    type="submit"
-    onClick={handleUpdatePrescription}
-  >
-    Update Prescription
-  </Button>
-  <Button
-        style={{
-          background: 'white',
-          color: '#0070F3',
-          border: '2px solid #0070F3',
-          marginTop: '10px',
-          marginLeft: '10px',
-        }}
-        variant="contained"
-        color="secondary"
-        onClick={handleEditModalClose}
-      >
-        Close
-      </Button>
-    </PageContainer>
-  </Modal>
-)}
+    <div className="col-12 text-center mt-3">
+        <Button
+          variant="contained"
+          color="primary"
+          className="btn btn-primary px-4 py-3"
+          style={{ marginRight: '10px', borderRadius: '8px' , width:'40%'}}
+          onClick={() => {
+            handleAcceptRequest(adminRequests[currentRequestIndex]._id, adminRequests[currentRequestIndex]);
+            sendNotifA();
+          }}
+          
+        >
+          Accept
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          className="btn btn-primary px-4 py-3"
+          style={{ borderRadius: '8px' , width:'40%'}}
+          //onClick={() => handleRejectRequest(adminRequests[currentRequestIndex]._id, adminRequests[currentRequestIndex])}
+          onClick={() => {
+            handleRejectRequest(adminRequests[currentRequestIndex]._id, adminRequests[currentRequestIndex])
+            sendNotifR();
+          }}
+          
+        >
+          Reject
+        </Button>
+      </div>
 
+      <div className="container" style={{ marginTop: '40px' }}>
+        <div className="row">
+          {/* Left Arrow Button */}
+          <div className="col-md-1 text-center mt-3">
+            <Button
+              variant="contained"
+              color="primary"
+              className="btn btn-primary px-4 py-3"
+              style={{ borderRadius: '20px'  , marginTop:'130px'}}
+              onClick={handleBackward}
+              disabled={currentRequestIndex === 0}
+            >
+              <ArrowBackIcon />
+            </Button>
+          </div>
+
+          {adminRequests.length > 0 && (
+          <div className="col-md-10 text-center">
+            <div
+              className="pricing-entry pb-5 text-center"
+              style={{
+                marginBottom:'5%',
+                borderRadius: '8px',
+                ":hover": {
+                  backgroundColor: 'transparent',
+                },
+              }}
+            >
+              <div>
+                <img
+                  src={I3}
+                  alt="Request Image"
+                  className="img-fluid mb-4"
+                  style={{ borderRadius: '50%', width: '100px', height: '100px' }}
+                />
+                <h3 className="mb-4">Appointment Request</h3>
+                <p>Patient: {adminRequests[currentRequestIndex].patient.fullName}</p>
+                <p>Appointment date: {adminRequests[currentRequestIndex].date}</p>
+               
+              
+              </div>
+            </div>
+          </div>
+        )}
+
+          {/* Right Arrow Button */}
+          <div className="col-md-1 text-center mt-3">
+            <Button
+              variant="contained"
+              color="primary"
+              className="btn btn-primary px-4 py-3"
+              style={{ borderRadius: '20px' , marginTop:'130px' }}
+              onClick={handleForward}
+              disabled={currentRequestIndex === adminRequests.length - 1}
+            >
+              <ArrowForwardIcon />
+            </Button>
+           </div>
+      </div>
     </div>
-  );
-}
+    </div>
+    </div>
+    )}
 
-export default MedHistory;
+export default AdminRequests;

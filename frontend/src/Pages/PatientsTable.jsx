@@ -22,6 +22,7 @@ import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
+import Notif from "./notifdoc";
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -386,7 +387,12 @@ import CardContent from '@mui/material/CardContent';
                    onClick={() => navigate(`/healthRecs/${id}`)}>
                      Patients Health Record
                      </a>
-                 
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescriptions/${id}`)}>
+                     Patients Prescriptions
+                     </a>
                 </div>
               </li>
               
@@ -404,7 +410,7 @@ import CardContent from '@mui/material/CardContent';
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"650px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -715,7 +721,9 @@ import CardContent from '@mui/material/CardContent';
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
 
             </ul>
           </div>

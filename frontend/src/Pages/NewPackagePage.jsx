@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
-
+import Notif from "./notifModal";
 export default function NewPackage() {
   const [formData, setFormData] = useState({
     name: '',
