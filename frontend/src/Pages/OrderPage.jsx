@@ -326,6 +326,10 @@ function OrderPage() {
                     </p>
                     <h4 className="mb-4">{order.status} </h4>
                     <p>
+                      <span className="price">Date:</span>
+                    </p>
+                    <h4 className="mb-4">{order.createdAt} </h4>
+                    <p>
                       <span className="price">Cart:</span>
                     </p>
                     <div>
@@ -336,7 +340,7 @@ function OrderPage() {
                       ))}
                     </div>
                     <p>
-                      <span className="price">Total Price: ${order.items.reduce((total, item) => total + item.price, 0)}</span>
+                    <span className="price">Total Price: ${order.items.reduce((total, item) => total + (item.price * item.quantity), 0)}</span>
                     </p>
                     <p className="button text-center">
                       <Button

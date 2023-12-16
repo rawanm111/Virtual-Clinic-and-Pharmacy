@@ -595,48 +595,56 @@ const [paymentOption, setPaymentOption] = useState('wallet');
 const [totalAmount, setTotalAmount] = useState(0); // State to store the total amount
 const navigate = useNavigate();
 
-const handleFinish = () => {
-  // Make an API call to add the cart to orders
-  axios.post('http://localhost:3000/Order/place-order', {
-    patientId: id, // Assuming patient ID is available in the component
-    // Add other necessary data for the order
-  })
-  .then((response) => {
-    // If the order is successfully placed, delete the cart
-    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
-    .then(() => {
-      // Redirect to a confirmation or thank-you page
-      navigate(`/Thankyou/${id}`);
+const handleFinish = async () => {
+  try {
+    // Make an API call to add the cart to orders
+    const orderResponse = await axios.post('http://localhost:3000/Order/place-order', {
+      patientId: id, // Assuming patient ID is available in the component
+      // Add other necessary data for the order
+    });
 
-      // Change '/confirmation' to the desired route
-    })
-    .catch((error) => {
-      console.error('Error deleting cart:', error);
-    });
-  })
-  .catch((error) => {
-    console.error('Error placing order:', error);
-  });
-};
-const handleFinishVisa = () => {
-  // Make an API call to add the cart to orders
-  axios.post('http://localhost:3000/Order/place-order', {
-    patientId: id, // Assuming patient ID is available in the component
-    // Add other necessary data for the order
-  })
-  .then((response) => {
     // If the order is successfully placed, delete the cart
-    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
-    .then(() => {
-      
-    })
-    .catch((error) => {
-      console.error('Error deleting cart:', error);
+    await axios.delete(`http://localhost:3000/Cart/delete/${id}`);
+
+    // Deduct medication quantities from inventory
+    const orderItems = orderResponse.data.items;
+    orderItems.forEach(async (item) => {
+      await axios.put(`http://localhost:3000/meds/deduct-quantity/${item.medicationId}`, {
+        quantity: item.quantity,
+      });
     });
-  })
-  .catch((error) => {
-    console.error('Error placing order:', error);
-  });
+
+    // Redirect to a confirmation or thank-you page
+    navigate(`/Thankyou/${id}`);
+  } catch (error) {
+    console.error('Error handling finish:', error);
+  }
+};
+
+const handleFinishVisa = async () => {
+  try {
+    // Make an API call to add the cart to orders
+    const orderResponse = await axios.post('http://localhost:3000/Order/place-order', {
+      patientId: id, // Assuming patient ID is available in the component
+      // Add other necessary data for the order
+    });
+
+    // If the order is successfully placed, delete the cart
+    await axios.delete(`http://localhost:3000/Cart/delete/${id}`);
+
+    // Deduct medication quantities from inventory
+    const orderItems = orderResponse.data.items;
+    orderItems.forEach(async (item) => {
+      await axios.put(`http://localhost:3000/meds/deduct-quantity/${item.medicationId}`, {
+        quantity: item.quantity,
+      });
+    });
+
+    // Redirect to a confirmation or thank-you page
+    navigate(`/Thankyou/${id}`);
+  } catch (error) {
+    console.error('Error handling finish:', error);
+  }
 };
 
 

@@ -19,7 +19,8 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
-
+import CallIcon from '@mui/icons-material/Call';
+import IconButton from '@mui/material/IconButton';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import { TextField, Button } from '@mui/material';
@@ -224,6 +225,7 @@ useEffect(() => {
         });
         console.log(id);
 
+        setText('');
         getMessages();
       } catch (error) {
         console.error('Error creating message:', error.response ? error.response.data : error.message);
@@ -239,18 +241,16 @@ useEffect(() => {
     //get doc
     const getMessages = async () => {
       try {
-        const response = await axios.get(`http://localhost:3000/api/messagesPharmPat/${id}`);
-    
+        setMessages(dataRes.aggregatedMessages);
+  
+        console.log(messages, 'messages');
+        const response = await axios.get(`http://localhost:3000/api/messagesDoc/${id}/${receiver}`);
+
         console.log(response.data);
         const dataRes = response.data;
-    
-        // Assuming the data structure is an array of messages directly
-        // Adjust this based on the actual structure of your data
-        // const aggregatedMessages = dataRes.map(message => message.aggregatedMessages).flat();
-    
-        setMessages(dataRes.aggregatedMessages);
-    
-        console.log(messages, 'messages');
+        console.log(dataRes.chat.aggregatedMessages,"dataRes");
+        setMessages(dataRes.chat.aggregatedMessages);
+        console.log(messages,"messages");
       } catch (error) {
         console.error('Error fetching messages:', error.response ? error.response.data : error.message);
       }
@@ -321,9 +321,37 @@ useEffect(() => {
         {isDoctor && (
           <p style={{ fontWeight: 'bold', marginBottom: '5px' }}>{selectedDoctor.fullName}</p>
         )}
-        <p style={{ margin: '0' }}>{message.text}</p>
+       <p
+      style={{ margin: '0', wordBreak: 'break-all' }}
+      dangerouslySetInnerHTML={{ __html: message.text }}
+    />
       </div>
     );
+    const [shouldSendMessage, setShouldSendMessage] = useState(false);
+    const handleCallClick = (doctor) => {
+      // Open video call link for yourself
+      const videoCallLink = `http://localhost:3001/Vid/${id}?roomID=zooni`;
+      window.open(videoCallLink, '_blank');
+    
+      // Send personal link in the chat
+      const personalLinkMessage = `Hey, let's connect! Click <a href="${videoCallLink}" target="_blank">here</a> for a video call.`;
+
+    
+      
+      setText(personalLinkMessage);
+      setShouldSendMessage(true);
+      
+    };
+    useEffect(() => {
+      if (shouldSendMessage) {
+        createMessage();
+        // Reset the flag after sending the message
+        setShouldSendMessage(false);
+      }
+    }, [shouldSendMessage]);
+      
+    
+    
     
     
   
@@ -454,12 +482,13 @@ useEffect(() => {
   </a>
   </div>
 </li>             
+              
     
 <li
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"700px"}}
+  style={{marginLeft:"700px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -795,6 +824,9 @@ useEffect(() => {
        <Avatar alt={doctor.fullName} src="/static/images/avatar/1.jpg" />
      </ListItemAvatar>
      <ListItemText primary={doctor.fullName} style={{ color: "" }} />
+      <IconButton color="primary" onClick={() => handleCallClick(doctor)}>
+        <CallIcon />
+      </IconButton>
    </ListItem>
  </Link>
 ))}

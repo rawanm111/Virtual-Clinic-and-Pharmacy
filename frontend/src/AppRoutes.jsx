@@ -42,7 +42,6 @@ import StorePharm from "./Pages/storePharm";
 import StoreAdmin from "./Pages/storeAdmin";
 import StoreMed from "./Pages/storeMed";
 import ThankYou from "./Pages/thanks";
-
 import FU from "./Pages/followups";
 import ChatsPage from "./Pages/ChatsPage";
 import Messages from "./Pages/messages";
@@ -52,6 +51,9 @@ import MessagesPharmToPat from "./Pages/messagesPharmtoPat";
 import MessagesPatToPharm from "./Pages/messagesPattoPharm";
 import MessagesDocToPharm from "./Pages/messagesDoctoPharm";
 import Notification from "./Pages/notifModal";
+import SalesRepo from "./Pages/SalesrReportAdmin"
+import SalesRepoPharm from "./Pages/SalesReportPharm"
+import Video from "./Pages/videoCallPatient";
 
 
 export default function Paths() {
@@ -114,6 +116,11 @@ export default function Paths() {
         <Route path="/messagesDoctoPharm/:id"element={<MessagesDocToPharm/>}  />
         <Route path="/admin-home" element={<AdminHome />} />
         <Route path="/notification" element={<Notification />} />
+        <Route path="/sales"element={<SalesRepo/>}  />
+        <Route path="/salespharm"element={<SalesRepoPharm/>}  />
+        <Route path="/Vid/:roomId"element={<Video/>}  />
+        <Route path="/messages/:id"element={<Messages/>}  />
+        <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
       </Routes>
     </Router>
   );

@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const medController = require('../Controllers/medscontrollers.js');
-
+const notifcontroller = require('../Controllers/notifControllers');
 // Set up Multer for handling file uploads
 const storage = multer.memoryStorage(); // You can customize the storage as needed
 const upload = multer({ storage: storage });
@@ -18,5 +18,6 @@ router.get('/:medicationId', medController.getMedicationById);
 router.get('/getMedAlternatives/:id', medController.getMedicationAlternatives);
 // Route for updating picture with file upload
 router.put('/updatePicture/:id', upload.single('file'), medController.updatePicture);
-
+router.put('/deduct-quantity/:medicationId', medController.deductQuantity);
+router.put('/notif',notifcontroller.addNotificationPharm);
 module.exports = router;

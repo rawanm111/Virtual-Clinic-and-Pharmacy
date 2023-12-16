@@ -21,6 +21,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import { styled } from '@mui/system';
 import Modal from '@mui/material/Modal';
 import WalletModal from './walletModal'
+import NotifModel from './NotifModel'
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -157,6 +158,11 @@ import WalletModal from './walletModal'
                   Store
                 </a>
               </li>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
+                  Sales report 
+                </a>
+              </li>
               
              
               
@@ -167,7 +173,7 @@ import WalletModal from './walletModal'
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"800px"}}
+  style={{marginLeft:"700px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -205,6 +211,11 @@ import WalletModal from './walletModal'
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
 <WalletModal/>
+
+</li>
+<li className="nav-item ">
+<NotifModel/>
+
 </li>
 
             </ul>

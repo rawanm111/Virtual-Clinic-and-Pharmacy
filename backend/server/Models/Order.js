@@ -42,6 +42,12 @@ const orderSchema = new mongoose.Schema({
     enum: ['pending', 'delivered', 'canceled'],
     default: 'pending', // Default status is pending
   },
+
+  createdAt: {
+    type: Date,
+    default: Date.now, // Set the default value to the current date and time
+  },
+
 });
 
 module.exports = mongoose.model('orders', orderSchema);

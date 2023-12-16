@@ -28,7 +28,7 @@ const messageRoutes = require('./Routes/MessageRoutes');
 const messageDocRoutes = require('./Routes/MessageDocRoutes');
 const messagePharmPatRoutes = require('./Routes/MessagePharmPatRoutes');
 const messagesPharmDocRoutes = require('./Routes/MessagePharmDocRoutes');
-
+const notificationsRoutes=require("./Routes/notifications.js");
 
 
 const cors = require('cors');
@@ -109,6 +109,11 @@ app.use('/api/messagesPharmDoc', messagesPharmDocRoutes);
 
 app.use('/followup',FollowupRoutes);
 
+
+app.use('/api/messages', messageRoutes);
+app.use('/api/messagesDoc', messageDocRoutes);
+
+app.use('/notif',notificationsRoutes);
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
 const Packages = require('./Models/PatientPackages'); 
@@ -221,8 +226,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/Thankyou/${patientId}`,
-      cancel_url: `http://localhost:3001/Thankyou/${patientId}`,
+      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
     });
 
     res.json({ url: session.url });
@@ -304,6 +309,7 @@ const socketIo = new Server(socketServer, {
 
 socketIo.on('connection', (socket) => {
   console.log(`User Connected: ${socket.id}`);
+
   socket.on('join_room', (data) => {
     socket.join(data);
   });

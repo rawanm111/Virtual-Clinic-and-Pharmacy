@@ -63,9 +63,10 @@ exports.placeOrder = async (req, res) => {
         items: orderItems,
         address: cart.pataddress,
         status: 'pending',
+
         // Add other order details if needed
       });
-  
+      order.createdAt = new Date();
       // Save the order
       const savedOrder = await order.save();
   
@@ -116,7 +117,38 @@ exports.cancelOrder = async (req, res) => {
       res.status(500).json(err);
     }
   };
+  // Get all orders
+exports.getAllOrders = async (req, res) => {
+  try {
+    // Find all orders
+    const orders = await Order.find();
+
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
   
 
 
+exports.getAllOrdersByMonth = async (req, res) => {
+  try {
+    const { year, month } = req.params;
 
+    // Calculate the start and end dates for the specified month
+    const startDate = new Date(`${year}-${month}-01`);
+    const endDate = new Date(startDate);
+    endDate.setMonth(endDate.getMonth() + 1);
+
+    // Find orders within the specified month
+    const orders = await Order.find({
+      createdAt: { $gte: startDate, $lt: endDate },
+    });
+
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error(`Error fetching orders by month: ${err}`);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+};

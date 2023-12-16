@@ -22,6 +22,8 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import { useNavigate } from 'react-router-dom';
 import { FaMessage } from 'react-icons/fa6';
+import CallIcon from '@mui/icons-material/Call';
+import IconButton from '@mui/material/IconButton';
 
 const socket = io.connect("http://localhost:3002");
 
@@ -109,12 +111,12 @@ function Messages() {
     setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
   };
 
-  useEffect(() => {
+    useEffect(() => {
       // Scroll to the bottom when messages change
       if (chatContainerRef.current) {
         chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
       }
-  }, [messages]);
+    }, [messages]);
 
     const createMessage = async () => {
       setSender(id);
@@ -129,7 +131,7 @@ function Messages() {
         });
         console.log(id,"id");
         console.log(selectedDoctor,"selectedDoctor");
-
+        setText('');
         getMessages();
       } catch (error) {
         console.error('Error creating message:', error.response ? error.response.data : error.message);
@@ -220,9 +222,36 @@ function Messages() {
         {isDoctor && (
           <p style={{ fontWeight: 'bold', marginBottom: '5px' }}>{selectedDoctor.fullName}</p>
         )}
-        <p style={{ margin: '0' }}>{message.text}</p>
+       <p
+      style={{ margin: '0', wordBreak: 'break-all' }}
+      dangerouslySetInnerHTML={{ __html: message.text }}
+    />
       </div>
     );
+    const [shouldSendMessage, setShouldSendMessage] = useState(false);
+    const handleCallClick = (doctor) => {
+      // Open video call link for yourself
+      const videoCallLink = `http://localhost:3001/Vid/${id}?roomID=zooni`;
+      window.open(videoCallLink, '_blank');
+    
+      // Send personal link in the chat
+      const personalLinkMessage = `Hey, let's connect! Click <a href="${videoCallLink}" target="_blank">here</a> for a video call.`;
+
+    
+      
+      setText(personalLinkMessage);
+      setShouldSendMessage(true);
+      
+    };
+    useEffect(() => {
+      if (shouldSendMessage) {
+        createMessage();
+        // Reset the flag after sending the message
+        setShouldSendMessage(false);
+      }
+    }, [shouldSendMessage]);
+      
+    
     
     
     return (
@@ -401,7 +430,7 @@ function Messages() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"640px"}}
+  style={{marginLeft:"640px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -460,10 +489,13 @@ function Messages() {
         onClick={() => handleDoctorClick(doctor)}
       >
         <ListItemAvatar>
-          <Avatar alt={doctor.fullName} src="/static/images/avatar/1.jpg" />
-        </ListItemAvatar>
-        <ListItemText primary={doctor.fullName} style={{ color: "" }} />
-      </ListItem>
+        <Avatar alt={doctor.fullName} src="/static/images/avatar/1.jpg" />
+      </ListItemAvatar>
+      <ListItemText primary={doctor.fullName} style={{ color: "" }} />
+      <IconButton color="primary" onClick={() => handleCallClick(doctor)}>
+        <CallIcon />
+      </IconButton>
+    </ListItem>
     </Link>
   ))}
 </Grid>
