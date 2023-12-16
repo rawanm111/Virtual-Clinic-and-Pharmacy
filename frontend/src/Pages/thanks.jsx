@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import WalletModal from './walletModal';
 import { FaUser, FaWallet, FaShoppingBasket  } from 'react-icons/fa';
 import Modal from '@mui/material/Modal';
+import Alert from '@mui/material/Alert';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import axios from 'axios';
 export default function(){
@@ -27,6 +28,30 @@ const handleChange = (prop) => (event) => {
 };  const handleOpenChangePassword = () => {
   setChangePasswordOpen(true);
 };
+
+
+
+const [alertType, setAlertType] = useState(null);
+const [isAlertOpen, setAlertOpen] = useState(false);
+
+const handleAlertClose = () => {
+  setAlertOpen(false);
+  setAlertType(null);
+};
+
+useEffect(() => {
+  if (isAlertOpen) {
+    const timer = setTimeout(() => {
+      setAlertOpen(false);  // Use the state updater function
+      setAlertType(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen]);
+
+
+
 const handleSubmit = (event) => {
   event.preventDefault();
   
@@ -51,7 +76,7 @@ const handleSubmit = (event) => {
 
  
   updatePassword(passwords.newPassword)
-  alert("Password changed successfully");
+  setChangePasswordOpen(false);
 };
 
 const isValidPassword = (password) => {
@@ -64,16 +89,52 @@ const updatePassword = async (newPassword) => {
     // Replace '/api/reset-password' with your actual API endpoint
     const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
     console.log(response.data);
-    alert('Password successfully updated');
+    setAlertType('success');
+    setAlertOpen(true);
   } catch (error) {
     console.error('Error updating password:', error);
-    alert('Error updating password');
+    setAlertType('error');
+    setAlertOpen(true);
   }
 };
   
   return(
     <div>
     <title>MetaCare </title>
+    <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '5px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+             Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+             Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
     <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

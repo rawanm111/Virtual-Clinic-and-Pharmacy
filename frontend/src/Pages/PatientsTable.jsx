@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { useNavigate ,useParams} from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
 import S2 from '../css/animate.css';
@@ -36,6 +37,9 @@ import CardContent from '@mui/material/CardContent';
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const [username, setUsername] = useState();
   const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
+  const [alertType, setAlertType] = useState(null);
+const [isAlertOpen, setAlertOpen] = useState(false);
+
   const toggleImage = () => {
     setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
   };
@@ -59,6 +63,22 @@ import CardContent from '@mui/material/CardContent';
 
   
   const [isUpdateModalOpen, setUpdateModalOpen] = useState(false);
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        setAlertOpen(false);  // Use the state updater function
+        setAlertType(null);
+      }, 5000); // Adjust the time as needed (in milliseconds)
+  
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen]);
 
   useEffect(() => {
     axios
@@ -211,17 +231,19 @@ import CardContent from '@mui/material/CardContent';
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
   const updatePassword = async (newPassword) => {
     try {
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType('success');
+      setAlertOpen(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType('error');
+      setAlertOpen(true);
     }
   };
 
@@ -315,6 +337,40 @@ import CardContent from '@mui/material/CardContent';
 
       <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

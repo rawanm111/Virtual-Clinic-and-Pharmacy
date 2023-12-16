@@ -7,6 +7,7 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { TextField,  Container, Box } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
@@ -74,6 +75,26 @@ function MedHistory() {
     setSuccess(false); 
   };
 
+  const [alertType, setAlertType] = useState(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+  
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        setAlertOpen(false);  // Use the state updater function
+        setAlertType(null);
+      }, 5000); // Adjust the time as needed (in milliseconds)
+  
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen]);
+
+
   const isValidPassword = (password) => {
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
@@ -84,10 +105,12 @@ function MedHistory() {
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType('success');
+      setAlertOpen(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType('error');
+      setAlertOpen(true);
     }
   };
   const handleSubmitt = () => {
@@ -169,7 +192,7 @@ function MedHistory() {
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false); 
   };
   const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
   const toggleImage = () => {
@@ -416,6 +439,40 @@ function MedHistory() {
   return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

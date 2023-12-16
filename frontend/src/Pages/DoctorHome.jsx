@@ -3,6 +3,7 @@ import { useNavigate,useParams } from 'react-router-dom';
 import Modal from '@mui/material/Modal';
 import CardContent from '@mui/material/CardContent';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { styled } from '@mui/system';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -40,6 +41,26 @@ import WalletModal from './walletModal'
     newPassword: '',
     confirmNewPassword: '',
   });
+
+const [alertType, setAlertType] = useState(null);
+const [isAlertOpen, setAlertOpen] = useState(false);
+
+const handleAlertClose = () => {
+  setAlertOpen(false);
+  setAlertType(null);
+};
+
+useEffect(() => {
+  if (isAlertOpen) {
+    const timer = setTimeout(() => {
+      setAlertOpen(false);  // Use the state updater function
+      setAlertType(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen]);
+
   const [success, setSuccess] = useState(false); 
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
@@ -56,10 +77,12 @@ import WalletModal from './walletModal'
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType('success');
+    setAlertOpen(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType('error');
+    setAlertOpen(true);
     }
   };
   const handleSubmit = () => {
@@ -141,7 +164,8 @@ import WalletModal from './walletModal'
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
+
   };
   const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
   const toggleImage = () => {
@@ -205,6 +229,40 @@ import WalletModal from './walletModal'
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

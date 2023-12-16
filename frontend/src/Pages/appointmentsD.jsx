@@ -1,6 +1,7 @@
 import React, { useEffect ,useState} from 'react';
 import { useNavigate,useParams } from 'react-router-dom';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { Box, Button, TextField, MenuItem, Container, Typography } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import { DataGrid } from '@mui/x-data-grid';
@@ -47,6 +48,76 @@ import WalletModal from './walletModal'
   const navigate = useNavigate();
   const { id } = useParams();
   
+  const [alertType, setAlertType] = useState(null);
+const [isAlertOpen, setAlertOpen] = useState(false);
+const [alertType1, setAlertType1] = useState(null);
+const [isAlertOpen1, setAlertOpen1] = useState(false);
+const [alertType2, setAlertType2] = useState(null);
+const [isAlertOpen2, setAlertOpen2] = useState(false);
+const [alertType3, setAlertType3] = useState(null);
+const [isAlertOpen3, setAlertOpen3] = useState(false);
+
+const handleAlertClose = () => {
+  setAlertOpen(false);
+  setAlertType(null);
+};
+
+const handleAlertClose1 = () => {
+  setAlertOpen1(false);
+  setAlertType1(null);
+};
+const handleAlertClose2 = () => {
+  setAlertOpen2(false);
+  setAlertType2(null);
+};
+const handleAlertClose3 = () => {
+  setAlertOpen3(false);
+  setAlertType3(null);
+};
+
+useEffect(() => {
+  if (isAlertOpen) {
+    const timer = setTimeout(() => {
+      setAlertOpen(false);  // Use the state updater function
+      setAlertType(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen]);
+
+useEffect(() => {
+  if (isAlertOpen1) {
+    const timer = setTimeout(() => {
+      setAlertOpen1(false);  // Use the state updater function
+      setAlertType1(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen1]);
+
+useEffect(() => {
+  if (isAlertOpen2) {
+    const timer = setTimeout(() => {
+      setAlertOpen2(false);  // Use the state updater function
+      setAlertType2(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen2]);
+  
+useEffect(() => {
+  if (isAlertOpen3) {
+    const timer = setTimeout(() => {
+      setAlertOpen3(false);  // Use the state updater function
+      setAlertType3(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen3]);
   
 
   const toggleImage = () => {
@@ -89,6 +160,8 @@ import WalletModal from './walletModal'
       axios.post('http://localhost:3000/apps', newAppointment)
         .then((response) => {
           console.log('New appointment created:', response.data);
+          setAlertType1('success');
+          setAlertOpen1(true);
           axios.get(`http://localhost:3000/apps/doctor/${id}`)
             .then((response) => {
               if (response.data) {
@@ -110,9 +183,13 @@ import WalletModal from './walletModal'
         })
         .catch((error) => {
           console.error('Error creating appointment:', error);
+          setAlertType1('error');
+          setAlertOpen1(true);
         });
     } else {
       console.error('Selected date is before the current date');
+      setAlertType3('error');
+      setAlertOpen3(true);
     }
   };
 
@@ -126,6 +203,8 @@ import WalletModal from './walletModal'
       axios.post('http://localhost:3000/apps/create-upcoming-appointment', followUpAppointment)
         .then((response) => {
           console.log('Follow-up appointment created:', response.data);
+          setAlertType2('success');
+          setAlertOpen2(true);
           axios.get(`http://localhost:3000/apps/doctor/${id}`)
             .then((response) => {
               if (response.data) {
@@ -147,9 +226,13 @@ import WalletModal from './walletModal'
         })
         .catch((error) => {
           console.error('Error creating follow-up appointment:', error);
+          setAlertType2('error');
+          setAlertOpen2(true);
         });
     } else {
       console.error('Selected date is before the current date');
+      setAlertType3('error');
+      setAlertOpen3(true);
     }
   };
 
@@ -203,10 +286,12 @@ import WalletModal from './walletModal'
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType('success');
+    setAlertOpen(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType('error');
+      setAlertOpen(true);
     }
   };
   const handleSubmitt = () => {
@@ -288,7 +373,7 @@ import WalletModal from './walletModal'
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
   const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
  
@@ -350,6 +435,137 @@ import WalletModal from './walletModal'
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+            Appointment added successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+           Failed to add appointment
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen2}
+        onClose={handleAlertClose2}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType2 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose2}>
+            Appointment booked successfully
+            </Alert>
+          )}
+          {alertType2 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose2}>
+           Failed to book appointment
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen3}
+        onClose={handleAlertClose3}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType3 === 'error' && (
+            <Alert severity="warning" onClose={handleAlertClose3}>
+          Selected date is before the current date
+            </Alert>
+          )}
+        </div>
+      </Modal>
    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
