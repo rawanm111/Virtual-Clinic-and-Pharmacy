@@ -1,12 +1,8 @@
 const Prescription = require('../Models/Prescription');
-<<<<<<< HEAD
 const Patient = require('../Models/patients');
 const Appointments = require('../Models/appointements');
-=======
-const Appointments = require('../Models/appointements');
-const Patient = require('../Models/patients');
 
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
+
 // Create a new Prescription
 exports.createPrescription = async (req, res) => {
   try {

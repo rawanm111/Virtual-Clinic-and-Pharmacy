@@ -28,29 +28,6 @@ async function createNotification(receiver, time, content, title) {
   }
 }
 
-// exports.getallNoificationsPatient = async (req, res) => {
-//   try {
-//     const patientId = req.params.receiver;
-//     const patientnotif = await Notification.find({ receiver: patientId })
-      
-//     res.status(200).json(patientnotif);
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// };
-
-// exports.getallNoificationsPatient = async (req, res) => {
-//   try {
-//     const patientId = req.params.id;
-
-//     // Find all notifications where the receiver is the specified patient ID
-//     const patientNotifications = await Notification.find({ receiver: patientId });
-
-//     res.status(200).json(patientNotifications);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// };
 
 exports.getallappointementsPatient = async (req, res) => {
   try {
@@ -180,66 +157,7 @@ exports.createUpcomingAppointment = async (req, res) => {
   }
 };
 
-exports.cancelAppointment = async (req, res) => {
-  try {
-    // Extract appointment ID from request parameters
-    const appointmentId = req.params.id;
 
-<<<<<<< HEAD
-// exports.getlastappointement = async (req, res) => {
-//   try {
-//     // Retrieve the patient ID from the request body
-//     const patientId = req.body.id;
-
-//     if (!patientId) {
-//       return res.status(400).json({ message: "Patient ID is required" });
-//     }
-
-//     // Query to find the last appointment and populate both patient and doctor
-//     const lastPatientAppointment = await appointement.findOne({ patient: patientId })
-//       .sort({ date: -1 }) // Assuming 'date' is the field to sort by
-//       .populate('patient') // Populating patient information
-//       .populate('doctor'); // Populating doctor information
-
-//     // Check if an appointment was found
-//     if (lastPatientAppointment) {
-//       res.status(200).json(lastPatientAppointment);
-
-//       // Create a notification for the patient
-//       const patientNotif = new Notif({
-//         receiver: patientId,
-//         onModel: 'patients',
-//         title: 'Confirmed',
-//         content: {
-//           patientUsername: lastPatientAppointment.patient.username, // Now it should be populated
-//           doctorUsername: lastPatientAppointment.doctor.username,
-//           appointmentTime: lastPatientAppointment.date
-//         }
-//       });
-
-//       // Create a notification for the doctor
-//       const doctorNotif = new Notif({
-//         receiver: lastPatientAppointment.doctor._id,
-//         onModel: 'doctors',
-//         title: 'Confirmed',
-//         content: {
-//           patientUsername: lastPatientAppointment.patient.username, // Now it should be populated
-//           doctorUsername: lastPatientAppointment.doctor.username,
-//           appointmentTime: lastPatientAppointment.date
-//         }
-//       });
-
-//       // Save the notifications
-//       await patientNotif.save();
-//       await doctorNotif.save();
-
-//     } else {
-//       res.status(404).json({ message: "No appointments found for this patient" });
-//     }
-//   } catch (err) {
-//     res.status(500).json(err);
-//   }
-// };
 const nodemailer = require('nodemailer');
 
 // NodeMailer transporter configuration
@@ -335,8 +253,6 @@ exports.cancelAppointment = async (req, res) => {
     // Extract appointment ID from request parameters
     const appointmentId = req.params.id;
 
-=======
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
     // Check if the appointment exists
     const appointment = await appointement.findById(appointmentId);
 
@@ -354,13 +270,8 @@ exports.cancelAppointment = async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
-<<<<<<< HEAD
-}; exports.rescheduleAppointment = async (req, res) => {
-=======
-};
-
+}; 
 exports.rescheduleAppointment = async (req, res) => {
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
   try {
     // Extract appointment ID and new date from request parameters and body
     const appointmentId = req.params.id;
@@ -385,7 +296,6 @@ exports.rescheduleAppointment = async (req, res) => {
     res.status(500).json(err);
   }
 };
-<<<<<<< HEAD
 
 
 exports.cancelledNotif = async (req, res) => {
@@ -638,5 +548,3 @@ exports.acceptedNotif = async (req, res) => {
     res.status(500).json(err);
   }
 };
-=======
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2

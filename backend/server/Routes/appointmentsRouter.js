@@ -14,15 +14,12 @@ router.get('/doctor/:id', appoincontroller.getallappointementsDoctor);
 router.put('/:id', appoincontroller.updateappointements);
 router.delete('/:id', appoincontroller.deleteappointement);
 router.post('/create-upcoming-appointment', appoincontroller.createUpcomingAppointment);
-<<<<<<< HEAD
 router.post('/lastAppointment', appoincontroller.getlastappointement);
 router.get('/receiver/:receiverId', appoincontroller.getNotificationsByReceiver);
 router.put('/:id/cancel', appoincontroller.cancelAppointment);
-=======
 // Define a route to cancel an appointment
 router.put('/:id/cancel', appoincontroller.cancelAppointment);
 // Define a route to reschedule an appointment
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
 router.put('/:id/reschedule', appoincontroller.rescheduleAppointment);
 
 module.exports = router;
