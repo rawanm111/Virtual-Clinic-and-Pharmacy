@@ -1,5 +1,5 @@
 const meds = require('../Models/meds.js');
-
+const notifcontroller = require('../Controllers/notifControllers');
 exports.createmeds = async (req, res) => {
   try {
     const newmed = new meds(req.body);
@@ -129,6 +129,49 @@ exports.getMedicationById = async (req, res) => {
   } catch (err) {
     console.error(`Error fetching medication by ID: ${err}`);
     res.status(500).json({ error: 'Internal server error' });
+  }
+};
+
+exports.deductQuantity = async (req, res) => {
+  try {
+    const { medicationId } = req.params;
+    const { quantity } = req.body;
+
+    const medication = await meds.findById(medicationId);
+
+    if (!medication) {
+      return res.status(404).json({ message: 'Medication not found' });
+    }
+
+    
+
+    // Deduct the quantity from the inventory
+    medication.availableQuantity -= quantity;
+
+    // Save the updated medication
+    await medication.save();
+    console.log('Medication updated:', medication);
+    if (medication.availableQuantity === 0) {
+      console.log('Quantity reached zero. Adding notification.');
+
+      const newReq = {
+        ...req,
+        body: {
+          content: medication.name,
+        },
+      };
+
+      // Pass the new request and the original response to addNotificationPharm
+      await notifcontroller.addNotificationPharm(newReq, res);
+      console.log(' Added notification.');
+      return;
+    }
+
+
+    res.status(200).json({ message: 'Quantity deducted successfully' });
+  } catch (err) {
+    console.error('Error:', err);
+    res.status(500).json(err);
   }
 };
 

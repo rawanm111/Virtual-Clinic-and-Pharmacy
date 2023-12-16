@@ -618,6 +618,12 @@ const handleChange = (event, newValue) => {
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/health-packages`)} style={{cursor:"pointer" } }>
                   Health Packages
                 </a>
+                
+              </li>
+              <li className="nav-item  " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/sales`)} style={{cursor:"pointer" } }>
+                  Sales Report
+                </a>
               </li>
            
                      
@@ -626,7 +632,7 @@ const handleChange = (event, newValue) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"500px"}}
 >
   
   <a
