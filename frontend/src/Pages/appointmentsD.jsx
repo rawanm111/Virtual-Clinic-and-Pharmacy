@@ -55,6 +55,8 @@ import Notif from "./notifdoc";
   setApp(selectedapp);
   setIsRescheduelOpen(true);
  }
+
+
   useEffect(() => {
     axios.get(`http://localhost:3000/apps/doctor/${id}`)
       .then((response) => {
@@ -172,7 +174,11 @@ import Notif from "./notifdoc";
             <Button
               variant="outlined"
               color="primary"
-              onClick={() => handleButtonCancel(params.row.id)}
+              onClick={() => {
+                handleButtonCancel(params.row.id);
+              
+              }}
+              
             >
               Cancel
             </Button>
@@ -231,12 +237,34 @@ import Notif from "./notifdoc";
           }
           
           window.location.reload();
+          handleRefund(appointmentId);
          } catch (error) {
           console.error('Error making API call:', error);
             // Handle error cases here
         }
       };
     
+      const handleRefund = async (appointmentId) => {
+
+    
+        try {
+         
+          const response = await axios.put(`http://localhost:3000/wallet/${appointmentId}/patient-refund`);
+          
+         if (response.status === 200) {
+           console.log('Button clicked and API call successful.');
+             // You can update state or perform any other actions here
+           } else {
+             console.error('API call failed.');
+            // Handle error cases here
+          }
+          
+          window.location.reload();
+         } catch (error) {
+          console.error('Error making API call:', error);
+            // Handle error cases here
+        }
+      };
       const handleRescheduleAppointmentt = async (appointmentId) => {
        // window.location.reload();
         if (!dateReschedule) {
@@ -267,6 +295,7 @@ import Notif from "./notifdoc";
         }
       };
     
+      
       const sendNotif = async () => {
         try {
           const response = await axios.get('http://localhost:3000/apps/notifications/rescheduled');

@@ -10,5 +10,5 @@ router.get('/:patientId', walletController.getWallet);
 
 // Update the wallet balance for a patient
 router.put('/:patientId/update-balance', walletController.updateWalletBalance);
-
+router.put('/:appointmentId/patient-refund', walletController.refundPatient);
 module.exports = router;

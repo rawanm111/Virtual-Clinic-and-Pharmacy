@@ -234,7 +234,8 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
             DoctorName: item.doctor ? item.doctor.fullName : 'Doctor Not Found',
             date: new Date(item.date),
           })).filter((item) => item.date >= currentDate);
-
+          
+          console.log(availableData);
           setAvailableApps(availableData);
         } else {
           console.error('No data received from the API');

@@ -129,8 +129,9 @@ export default function HealthPackagesView() {
     setSelectedPackageName(selectedPackage.name); // Update the selected package name
   };
   
-  const handleSubscribeButtonClick = (selectedPackageId) => {
-    setSelectedPackageId(selectedPackageId); 
+  const handleSubscribeButtonClick = (selectedPackage) => {
+    setSelectedHealthPackage(selectedPackage);
+    setSelectedPackageId(selectedPackage.id); 
     setIsOpen(true);
   };
   const handleConfirmSubscription = () => {
@@ -284,14 +285,18 @@ export default function HealthPackagesView() {
       healthPackages.map((healthPackage) => (
         healthPackage.name === packageType ? setSelectedHealthPackage(healthPackage) : null
       ));
+      console.log("pack")
+      console.log(selectedHealthPackage)
       const response = await axios.get(`http://localhost:3000/wallet/${id}`);
       const price=selectedHealthPackage.annualPrice;
+      console.log("price")
       console.log(price)
       if (response.data.balance < price ) {
         console.error("Insufficient balance");
       } else {
         handleSubmit();
-        
+        console.log("balance")
+        console.log(response.data.balance);
         const updatedBalance = response.data.balance - price;
         setWalletBalance(updatedBalance);
         console.log(walletBalance);
@@ -599,7 +604,7 @@ export default function HealthPackagesView() {
                 variant="contained"
                 color="primary"
                 className="btn btn-primary px-4 py-3"
-                onClick={() => handleSubscribeButtonClick(pack.id)}  
+                onClick={() => handleSubscribeButtonClick(pack)}  
               >
                 Subscribe
               </Button>

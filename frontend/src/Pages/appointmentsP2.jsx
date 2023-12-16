@@ -411,7 +411,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               date: new Date(item.date),
             }))
             .filter((item) => item.date >= currentDate);
-
+          console.log(response);
           setAvailableApps(availableData);
         } else {
           console.error(
