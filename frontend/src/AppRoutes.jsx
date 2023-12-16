@@ -42,6 +42,8 @@ import StorePharm from "./Pages/storePharm";
 import StoreAdmin from "./Pages/storeAdmin";
 import StoreMed from "./Pages/storeMed";
 import ThankYou from "./Pages/thanks";
+
+import FU from "./Pages/followups";
 import ChatsPage from "./Pages/ChatsPage";
 import Messages from "./Pages/messages";
 import MessagesDoc from "./Pages/messageDoc";
@@ -101,6 +103,8 @@ export default function Paths() {
         <Route path="/admin-meds"element={<StoreAdmin/>} />
         <Route path="/med/:idmed/:id"element={<StoreMed/>}  />
         <Route path="/ThankYou/:id"element={<ThankYou/>}  />
+        <Route path="/admin-home"element={<AdminHome/>}  />
+        <Route path="/follow-ups/:id"element={<FU/>}  />
         <Route path="/chats/:username"element={<ChatsPage/>}  />
         <Route path="/messages/:id"element={<Messages/>}  />
         <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />

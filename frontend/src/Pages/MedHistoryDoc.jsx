@@ -27,7 +27,7 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
-
+import Notif from "./notifdoc";
 const PageContainer = styled('div')({
   backgroundColor: 'white',
   padding: '16px',
@@ -487,7 +487,12 @@ function MedHistory() {
                    onClick={() => navigate(`/healthRecs/${id}`)}>
                      Patients Health Record
                      </a>
-                 
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescriptions/${id}`)}>
+                     Patients Prescriptions
+                     </a>
                 </div>
               </li>
               
@@ -505,7 +510,7 @@ function MedHistory() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"650px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -816,7 +821,9 @@ function MedHistory() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
 
             </ul>
           </div>

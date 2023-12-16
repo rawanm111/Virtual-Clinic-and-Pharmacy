@@ -21,4 +21,16 @@ exports.createFollowup = async (req, res) => {
       res.status(500).json(err);
     }
   }
+  exports.deleteFollowup = async (req, res) => {
+    try {
+      const followupId = req.params.id;
+      const deletedFollowup = await followup.findByIdAndDelete(followupId);
+      if (!deletedFollowup) {
+        return res.status(404).json({ message: 'Followup not found' });
+      }
+      res.status(200).json({ message: 'Followup deleted successfully' });
+    } catch (err) {
+      res.status(500).json(err);
+    }
+  };
   

@@ -28,6 +28,7 @@ async function createNotification(receiver, time, content, title) {
   }
 }
 
+<<<<<<< HEAD
 // exports.getallNoificationsPatient = async (req, res) => {
 //   try {
 //     const patientId = req.params.receiver;
@@ -51,6 +52,8 @@ async function createNotification(receiver, time, content, title) {
 //     res.status(500).json({ message: err.message });
 //   }
 // };
+=======
+>>>>>>> origin/main
 
 exports.getallappointementsPatient = async (req, res) => {
   try {
@@ -181,6 +184,7 @@ exports.createUpcomingAppointment = async (req, res) => {
 };
 
 
+<<<<<<< HEAD
 // exports.getlastappointement = async (req, res) => {
 //   try {
 //     // Retrieve the patient ID from the request body
@@ -235,6 +239,8 @@ exports.createUpcomingAppointment = async (req, res) => {
 //     res.status(500).json(err);
 //   }
 // };
+=======
+>>>>>>> origin/main
 const nodemailer = require('nodemailer');
 
 // NodeMailer transporter configuration
@@ -347,7 +353,12 @@ exports.cancelAppointment = async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
+<<<<<<< HEAD
 }; exports.rescheduleAppointment = async (req, res) => {
+=======
+}; 
+exports.rescheduleAppointment = async (req, res) => {
+>>>>>>> origin/main
   try {
     // Extract appointment ID and new date from request parameters and body
     const appointmentId = req.params.id;
@@ -498,3 +509,132 @@ exports.rescheduledNotif = async (req, res) => {
     res.status(500).json(err);
   }
 };
+<<<<<<< HEAD
+=======
+
+
+exports.rejectedNotif = async (req, res) => {
+  try {
+    // Find the last appointment with status "Cancelled"
+    const lastCancelledAppointment = await appointement.findOne({ status: 'Rejected Followup' })
+      .sort({ date: -1 })
+      .populate('patient')
+      .populate('doctor');
+    
+    if (!lastCancelledAppointment) {
+      return res.status(404).json({ message: "No Rescheduled appointments found" });
+    }
+    console.log(lastCancelledAppointment);
+    // Create and save notifications for both patient and doctor
+    const patientNotif = new Notif({
+      receiver: lastCancelledAppointment.patient.id,
+      onModel: 'patients',
+      title: 'Rejected',
+      content: {
+        patientUsername: lastCancelledAppointment.patient.username,
+        doctorUsername: lastCancelledAppointment.doctor.username,
+        appointmentTime: lastCancelledAppointment.date
+      }
+    });
+
+    const doctorNotif = new Notif({
+      receiver: lastCancelledAppointment.doctor.id,
+      onModel: 'doctors',
+      title: 'Rejected',
+      content: {
+        patientUsername: lastCancelledAppointment.patient.username,
+        doctorUsername: lastCancelledAppointment.doctor.username,
+        appointmentTime: lastCancelledAppointment.date
+      }
+    });
+
+    await patientNotif.save();
+    await doctorNotif.save();
+
+    // Prepare and send email to the patient
+    const patientEmailContent = `Dear ${lastCancelledAppointment.patient.username},\n\nYour appointment has been Rejected.\nDoctor: ${lastCancelledAppointment.doctor.username}\nTime: ${lastCancelledAppointment.date}`;
+    transporter.sendMail({
+      from: 'Marwantest70@gmail.com',
+      to: lastCancelledAppointment.patient.email,
+      subject: 'Rejected Followup',
+      text: patientEmailContent
+    });
+
+    // Prepare and send email to the doctor
+    const doctorEmailContent = `Dear ${lastCancelledAppointment.doctor.username},\n\nAn appointment has been Rejected.\nPatient: ${lastCancelledAppointment.patient.username}\nTime: ${lastCancelledAppointment.date}`;
+    transporter.sendMail({
+      from: 'Marwantest70@gmail.com',
+      to: lastCancelledAppointment.doctor.email,
+      subject: 'Rejected Followup',
+      text: doctorEmailContent
+    });
+
+    res.status(200).json({ message: "Notifications and emails sent for the last Rescheduled appointment" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+
+exports.acceptedNotif = async (req, res) => {
+  try {
+    // Find the last appointment with status "Cancelled"
+    const lastCancelledAppointment = await appointement.findOne({ status: 'Accepted Followup' })
+      .sort({ date: -1 })
+      .populate('patient')
+      .populate('doctor');
+    
+    if (!lastCancelledAppointment) {
+      return res.status(404).json({ message: "No Rescheduled appointments found" });
+    }
+    console.log(lastCancelledAppointment);
+    // Create and save notifications for both patient and doctor
+    const patientNotif = new Notif({
+      receiver: lastCancelledAppointment.patient.id,
+      onModel: 'patients',
+      title: 'Accepted',
+      content: {
+        patientUsername: lastCancelledAppointment.patient.username,
+        doctorUsername: lastCancelledAppointment.doctor.username,
+        appointmentTime: lastCancelledAppointment.date
+      }
+    });
+
+    const doctorNotif = new Notif({
+      receiver: lastCancelledAppointment.doctor.id,
+      onModel: 'doctors',
+      title: 'Accepted',
+      content: {
+        patientUsername: lastCancelledAppointment.patient.username,
+        doctorUsername: lastCancelledAppointment.doctor.username,
+        appointmentTime: lastCancelledAppointment.date
+      }
+    });
+
+    await patientNotif.save();
+    await doctorNotif.save();
+
+    // Prepare and send email to the patient
+    const patientEmailContent = `Dear ${lastCancelledAppointment.patient.username},\n\nYour appointment has been Accepted.\nDoctor: ${lastCancelledAppointment.doctor.username}\nTime: ${lastCancelledAppointment.date}`;
+    transporter.sendMail({
+      from: 'Marwantest70@gmail.com',
+      to: lastCancelledAppointment.patient.email,
+      subject: 'Accepted Followup',
+      text: patientEmailContent
+    });
+
+    // Prepare and send email to the doctor
+    const doctorEmailContent = `Dear ${lastCancelledAppointment.doctor.username},\n\nAn appointment has been Rescheduled.\nPatient: ${lastCancelledAppointment.patient.username}\nTime: ${lastCancelledAppointment.date}`;
+    transporter.sendMail({
+      from: 'Marwantest70@gmail.com',
+      to: lastCancelledAppointment.doctor.email,
+      subject: 'Accepted Followup',
+      text: doctorEmailContent
+    });
+
+    res.status(200).json({ message: "Notifications and emails sent for the last Rescheduled appointment" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+>>>>>>> origin/main

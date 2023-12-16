@@ -4,6 +4,7 @@ const followup = require('../Controllers/followupController');
 
 router.post('/', followup.createFollowup);
 router.get('/doctor/:id', followup.getallfollowupsDoctor);
+router.delete('/del/:id', followup.deleteFollowup);
 
 
 module.exports = router;

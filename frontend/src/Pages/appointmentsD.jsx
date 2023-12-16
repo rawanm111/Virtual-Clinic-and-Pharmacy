@@ -23,6 +23,8 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
+import { format } from 'date-fns';
+import Notif from "./notifdoc";
 
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
@@ -31,7 +33,9 @@ import WalletModal from './walletModal'
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const [healthPackages, setHealthPackages] = useState([]);
-  
+  const [dateReschedule, setDateReschedule] = useState(null);
+  const [isRescheduelOpen,setIsRescheduelOpen] = useState();
+  const [app,setApp] = useState();
   const [apps, setApps] = useState([]);
   const [filteredRows, setFilteredRows] = useState([]);
   const [dateFilterStart, setDateFilterStart] = useState(null);
@@ -47,11 +51,10 @@ import WalletModal from './walletModal'
   const navigate = useNavigate();
   const { id } = useParams();
   
-  
-
-  const toggleImage = () => {
-    setCurrentImage((prevImage) => (prevImage === I2 ? I3 : I2));
-  };
+ const openModal =(selectedapp) => {
+  setApp(selectedapp);
+  setIsRescheduelOpen(true);
+ }
   useEffect(() => {
     axios.get(`http://localhost:3000/apps/doctor/${id}`)
       .then((response) => {
@@ -157,8 +160,123 @@ import WalletModal from './walletModal'
     { field: 'PatientName', headerName: 'Patient Name', width: 200 },
     { field: 'status', headerName: 'Status', width: 200 },
     { field: 'date', headerName: 'Date', width: 200 },
+    {
+      field: 'action',
+      headerName: 'Cancel',
+      width: 150,
+      renderCell: (params) => {
+        
+        return (
+          <span>
+           
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => handleButtonCancel(params.row.id)}
+            >
+              Cancel
+            </Button>
+          </span>
+        );
+      },
+    },
+    {
+      field: 'actions',
+      headerName: 'Reschedule',
+      width: 150,
+      renderCell: (params) => {
+        
+        return (
+          <span>
+           
+           <Button
+  variant="outlined"
+  color="primary"
+  onClick={() => openModal(params.row.id)}
+  disabled={params.row.status === "Available"}
+>
+  Reschedule
+</Button>
+
+          </span>
+        );
+      },
+    },
   ];
 
+
+
+
+  const handleButtonCancel = async (appointmentId) => {
+
+    
+        
+        try {
+          try {
+            const response = await axios.get('http://localhost:3000/apps/notifications/cancelled');
+            // Process the response as needed
+            console.log('Last Appointment:', response.data);
+          } catch (error) {
+            console.error('Error fetching last appointment:', error);
+          }
+           // Make an API call here using axios or your preferred library
+          const response = await axios.put(`http://localhost:3000/apps/${appointmentId}/cancel`);
+          
+         if (response.status === 200) {
+           console.log('Button clicked and API call successful.');
+             // You can update state or perform any other actions here
+           } else {
+             console.error('API call failed.');
+            // Handle error cases here
+          }
+          
+          window.location.reload();
+         } catch (error) {
+          console.error('Error making API call:', error);
+            // Handle error cases here
+        }
+      };
+    
+      const handleRescheduleAppointmentt = async (appointmentId) => {
+       // window.location.reload();
+        if (!dateReschedule) {
+          console.error('Please select a reschedule date');
+          return;
+        }
+    
+        const formattedDate = format(dateReschedule, 'yyyy-MM-dd');
+    
+        try {
+          
+          const response = await axios.put(`http://localhost:3000/apps/${appointmentId}/reschedule`, {
+            newDate: formattedDate,
+          });
+         
+          if (response.status === 200) {
+            console.log('Reschedule API call successful.');
+            // You can update state or perform any other actions here
+          } else {
+            console.error('API call failed.');
+            // Handle error cases here
+          }
+    
+          window.location.reload();
+        } catch (error) {
+          console.error('Error making API call:', error);
+          // Handle error cases here
+        }
+      };
+    
+      const sendNotif = async () => {
+        try {
+          const response = await axios.get('http://localhost:3000/apps/notifications/rescheduled');
+          // Process the response as needed
+          console.log('Last Appointment:', response.data);
+        } catch (error) {
+          console.error('Error fetching last appointment:', error);
+        }
+      };
+      
   const handleFilterChange = () => {
     const filteredApps = apps.filter((app) => {
       const statusCondition =
@@ -173,11 +291,6 @@ import WalletModal from './walletModal'
     setFilteredRows(filteredApps);
   };
 
-
-  useEffect(() => {
-    const intervalId = setInterval(toggleImage, 2000);
-    return () => clearInterval(intervalId);
-  }, []);
 
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const [username, setUsername] = useState();
@@ -314,12 +427,6 @@ import WalletModal from './walletModal'
     setProfilePopupOpen(false);
   };
   
-
-
-  useEffect(() => {
-    const intervalId = setInterval(toggleImage, 2000);
-    return () => clearInterval(intervalId);
-  }, []);
   useEffect(() => { 
     axios
       .get(`http://localhost:3000/doctors/get/${id}`)
@@ -350,7 +457,7 @@ import WalletModal from './walletModal'
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -382,13 +489,13 @@ import WalletModal from './walletModal'
         
           <div className="collapse navbar-collapse" id="ftco-nav">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a className="nav-link pl-0"  onClick={() => navigate(`/doc-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -421,11 +528,23 @@ import WalletModal from './walletModal'
                    onClick={() => navigate(`/healthRecs/${id}`)}>
                      Patients Health Record
                      </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescriptions/${id}`)}>
+                     Patients Prescriptions
+                     </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/follow-ups/${id}`)}>
+                    Follow-up Requests
+                     </a>
                  
                 </div>
               </li>
               
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/appPageDoc/${id}`)}>
                   My Appointments
                 </a>
@@ -439,7 +558,7 @@ import WalletModal from './walletModal'
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"650px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -640,7 +759,7 @@ import WalletModal from './walletModal'
           />
         </div>
           <div style={{ marginBottom: '1rem',  display: 'flex', justifyContent: 'center'}}>
-            <Button  onClick={handleSubmitt}>
+            <Button  onClick={handleSubmit}>
               Update
             </Button>
           </div>
@@ -750,7 +869,9 @@ import WalletModal from './walletModal'
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>
@@ -767,7 +888,7 @@ import WalletModal from './walletModal'
         <div className="row no-gutters slider-text align-items-center justify-content-center">
           <div className="col-md-9  text-center" style={{ fontWeight: 'bold', fontSize: '72px' }}>
             <h1 className="mb-2 bread" style={{ fontWeight: 'bold', fontSize: '72px' }}>
-              Appointment
+             My Appointments
             </h1>
             <p className="breadcrumbs">
               <span className="mr-2" style={{ fontSize: '14px', color: '#fff' }}>
@@ -776,7 +897,7 @@ import WalletModal from './walletModal'
                 </a>
               </span>{' '}
               <span style={{ fontSize: '14px', color: '#fff' }}>
-                MY Appointments <i className="ion-ios-arrow-forward" />
+                My Appointments <i className="ion-ios-arrow-forward" />
               </span>
             </p>
           </div>
@@ -878,9 +999,60 @@ import WalletModal from './walletModal'
         <Box sx={{ marginTop: '16px' }}>
           {/* DataGrid Section */}
           <DataGrid rows={filteredRows} columns={columns} pageSize={5}  />
+
         </Box>
       </Box>
     </Box>
   </>
+
+  <Modal
+        open={isRescheduelOpen}
+        aria-labelledby="resched popup"
+      >
+        <Box
+          sx={{
+            marginTop: '15%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          <Box
+            sx={{
+              width: '400px',
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '8px',
+              boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            }}
+          >
+            <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
+              Reschedule
+            </Typography>
+            <Box component="form"  sx={{ mt: 3 }}>
+              <h5>Choose a date to reschedule</h5>
+          <TextField
+    type="date"
+    variant="outlined"
+    value={dateReschedule ? dateReschedule.toISOString().split('T')[0] : ''}
+    onChange={(e) => setDateReschedule(new Date(e.target.value))}
+    sx={{ flex: 1, marginLeft: 'auto',paddingTop: '16px'  }}
+  />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+                onClick={() => {
+                  handleRescheduleAppointmentt(app);
+                  sendNotif();
+                }}
+              >
+                Submit 
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
   </div>
 )}

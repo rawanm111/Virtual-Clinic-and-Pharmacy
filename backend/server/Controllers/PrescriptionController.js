@@ -1,6 +1,7 @@
 const Prescription = require('../Models/Prescription');
-const Appointments = require('../Models/appointements');
 const Patient = require('../Models/patients');
+const Appointments = require('../Models/appointements');
+
 
 // Create a new Prescription
 exports.createPrescription = async (req, res) => {
@@ -83,7 +84,6 @@ exports.getPrescriptionsForDoctor = async (req, res) => {
     res.status(500).json(err);
   }
 };
-
 
 exports.getPrescriptionsForPatient = async (req, res) => {
   try {
