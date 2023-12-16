@@ -216,7 +216,7 @@ app.post('/paymentPack', async (req, res) => {
           product_data: {
             name: healthPackageItem.name,
           },
-          unit_amount: healthPackageItem.annualPrice * 1000, // Amount should be in cents
+          unit_amount: healthPackageItem.annualPrice * 100, // Amount should be in cents
         },
         quantity: 1,
       }

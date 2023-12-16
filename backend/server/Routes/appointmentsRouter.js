@@ -11,8 +11,8 @@ router.put('/:id', appoincontroller.updateappointements);
 router.delete('/:id', appoincontroller.deleteappointement);
 router.post('/create-upcoming-appointment', appoincontroller.createUpcomingAppointment);
 // Define a route to cancel an appointment
-router.put('/:id/cancel', appoincontroller.cancelAppointment);
-// Define a route to reschedule an appointment
-router.put('/:id/reschedule', appoincontroller.rescheduleAppointment);
+//router.put('/:id/cancel', appoincontroller.deleteappointement);
+//Define a route to reschedule an appointment
+//router.put('/:id/reschedule', appoincontroller.rescheduleAppointment);
 
 module.exports = router;

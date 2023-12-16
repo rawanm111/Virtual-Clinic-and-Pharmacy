@@ -130,30 +130,56 @@ function CartStep() {
   const [editedQuantity, setEditedQuantity] = useState({});
   const [activeStep, setActiveStep] = useState(0);
   const [selectedAddress, setSelectedAddress] = useState('');
-  useEffect(() => {
-    // Fetch cart data for the patient
-    axios.get(`http://localhost:3000/Cart/${id}`)
-    .then((response) => {
-      if (response.data && Array.isArray(response.data.medications)) {
-        // Access the medications array within cartData
-        setCartData(response.data.medications);
+  const [discount, setDiscount] = useState(0);
+
+
+  // ... (Previous code)
+
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const [cartResponse, medsResponse] = await Promise.all([
+        axios.get(`http://localhost:3000/Cart/${id}`),
+        axios.get('http://localhost:3000/meds/')
+      ]);
+
+      if (cartResponse.data && Array.isArray(cartResponse.data.medications)) {
+        setCartData(cartResponse.data.medications);
       } else {
-        console.error('Cart data is not as expected:', response.data);
+        console.error('Cart data is not as expected:', cartResponse.data);
       }
-    })
-    .catch((error) => {
-      console.error('Error fetching cart data:', error);
-    });
-    axios
-    .get('http://localhost:3000/meds/') // Use the appropriate URL
-    .then((response) => {
-      // Handle the response and set the medication details in state
-      setMedicationDetails(response.data);
-    })
-    .catch((error) => {
-      console.error('Error fetching medication details:', error);
-    });
+
+      setMedicationDetails(medsResponse.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchData();
 }, [id]);
+
+useEffect(() => {
+  const fetchDiscount = async () => {
+    try {
+      // Ensure that both cartData and medicationDetails are available
+      if (cartData.length > 0 && medicationDetails.length > 0) {
+        const calculatedDiscount = await calculateDiscount();
+        setDiscount(calculatedDiscount);
+      }
+    } catch (error) {
+      console.error('Error fetching and calculating discount:', error);
+      // Handle error, set a default value, or show an error message
+    }
+  };
+
+  fetchDiscount();
+}, [cartData, medicationDetails]);
+
+// ... (Rest of the code)
+
+
+
+
 const handleDelete = (medicationId) => {
   // Remove the medication from the cart in the backend
   axios
@@ -200,6 +226,10 @@ const handleEditQuantity = (medicationId) => {
 };
 
 const calculateTotal = () => {
+  
+console.log('cartData:', cartData);
+console.log('medicationDetails:', medicationDetails);
+    console.log('Medicine total:');
   let total = 0;
   cartData.forEach((item) => {
     const medicationDetail = medicationDetails.find(
@@ -209,8 +239,49 @@ const calculateTotal = () => {
       total += medicationDetail.price * item.quantity;
     }
   });
+ 
   return total;
 };
+const calculateDiscount = async () => {
+  console.log('cartData:', cartData);
+console.log('medicationDetails:', medicationDetails);
+  let totald = 0;
+
+  // Assuming you have the patient ID available
+  
+
+  try {
+    // Get medicine discount for the patient
+    const response = await axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`);
+    console.log('API Response:', response);
+
+    const medicineDiscount = parseFloat(response.data); // Use response.data instead of await response.json()
+    console.log('Medicine Discount:', medicineDiscount);
+    // Assuming cartData and medicationDetails are available
+    cartData.forEach((item) => {
+      const medicationDetail = medicationDetails.find(
+        (detail) => detail._id === item.medicationId
+      );
+      console.log('medicationDetail:', medicationDetail);
+
+      if (medicationDetail) {
+        // Apply the medicine discount to the total
+        const discountedPrice = medicationDetail.price * (1 - medicineDiscount);
+        totald += discountedPrice * item.quantity;
+        console.log('Discounted Price for item:', discountedPrice);
+      }
+    });
+
+    return totald;
+  } catch (error) {
+    console.error('Error calculating discount:', error);
+    // Handle error, you might want to return a default value or throw an error
+    return 0;
+  }
+};
+
+
+
 
 const calculateItemTotal = (medicationId) => {
   const medicationDetail = medicationDetails.find(
@@ -452,12 +523,23 @@ return null;
               <strong className="text-black">${calculateTotal()}</strong>
             </div>
           </div>
+          <div className="row mb-3">
+            <div className="col-md-6">
+              <span className="text-black">Discount</span>
+            </div>
+            <div className="col-md-6 text-right">
+            
+        <strong className="text-black">${discount}</strong>
+
+             
+            </div>
+          </div>
           <div className="row mb-5">
             <div className="col-md-6">
               <span className="text-black">Total</span>
             </div>
             <div className="col-md-6 text-right">
-              <strong className="text-black">${calculateTotal()}</strong>
+              <strong className="text-black">${calculateTotal() - discount}</strong>
             </div>
           </div>
           <div className="row">
@@ -578,6 +660,23 @@ function AddressStep({ selectedAddress, onAddressChange, onAddAddress }) {
   
     return 0;
   };
+  const [discount, setDiscount] = useState(0);
+  useEffect(() => {
+    const fetchDiscount = async () => {
+      try {
+        // Ensure that both cartData and medicationDetails are available
+        if (cartData.length > 0 && medicationDetails.length > 0) {
+          const calculatedDiscount = await calculateDiscount();
+          setDiscount(calculatedDiscount);
+        }
+      } catch (error) {
+        console.error('Error fetching and calculating discount:', error);
+        // Handle error, set a default value, or show an error message
+      }
+    };
+  
+    fetchDiscount();
+  }, [cartData, medicationDetails]);
   const calculateTotal = () => {
     let total = 0;
     cartData.forEach((item) => {
@@ -590,7 +689,45 @@ function AddressStep({ selectedAddress, onAddressChange, onAddAddress }) {
     });
     return total;
   };
-
+  const calculateDiscount = async () => {
+    console.log('cartData:', cartData);
+  console.log('medicationDetails:', medicationDetails);
+    let totald = 0;
+  
+    // Assuming you have the patient ID available
+    
+  
+    try {
+      // Get medicine discount for the patient
+      const response = await axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`);
+      console.log('API Response:', response);
+  
+      const medicineDiscount = parseFloat(response.data); // Use response.data instead of await response.json()
+      console.log('Medicine Discount:', medicineDiscount);
+      // Assuming cartData and medicationDetails are available
+      cartData.forEach((item) => {
+        const medicationDetail = medicationDetails.find(
+          (detail) => detail._id === item.medicationId
+        );
+        console.log('medicationDetail:', medicationDetail);
+  
+        if (medicationDetail) {
+          // Apply the medicine discount to the total
+          const discountedPrice = medicationDetail.price * (1 - medicineDiscount);
+          totald += discountedPrice * item.quantity;
+          console.log('Discounted Price for item:', discountedPrice);
+        }
+      });
+  
+      return totald;
+    } catch (error) {
+      console.error('Error calculating discount:', error);
+      // Handle error, you might want to return a default value or throw an error
+      return 0;
+    }
+  };
+  
+  
 const [paymentOption, setPaymentOption] = useState('wallet');
 const [totalAmount, setTotalAmount] = useState(0); // State to store the total amount
 const navigate = useNavigate();
@@ -686,10 +823,10 @@ const calculateTotalAmount = (medications) => {
       return acc + item.quantity * medicationDetail.price;
     }
 
-    return acc;
+    return acc ;
   }, 0);
 
-  setTotalAmount(total);
+  setTotalAmount(total* discount);
 };
 
 {console.log(totalAmount)}
@@ -955,12 +1092,22 @@ const calculateTotalAmount = (medications) => {
 
                   </div>
                 )}
+                 <tr>
+               
+               <td className="text-black font-weight-bold">
+                 <strong>Discount</strong>
+               </td>
+               <td className="text-black font-weight-bold">
+                 <strong>${discount}</strong>
+               </td>
+             </tr>
                 <tr>
+               
                         <td className="text-black font-weight-bold">
                           <strong>Order Total</strong>
                         </td>
                         <td className="text-black font-weight-bold">
-                          <strong>${calculateTotal()}</strong>
+                          <strong>${calculateTotal() - discount}</strong>
                         </td>
                       </tr>
                     </tbody>
@@ -1120,7 +1267,7 @@ const calculateTotalAmount = (medications) => {
     const medicationDetail = medicationDetails.find((detail) => detail._id === item.medicationId);
 
     if (medicationDetail) {
-      return acc + item.quantity * medicationDetail.price;
+      return acc + item.quantity * (medicationDetail.price);
     }
 
     return acc;

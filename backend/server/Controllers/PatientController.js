@@ -250,66 +250,80 @@ exports.getDrSessionDiscount = async (req, res) => {
     if (!patient) {
       return res.status(404).json("Patient not found");
     }
-   //check if the patient subscribed to a package
-   const package1 = await PatientPackages.findOne({ patient: patient._id });
+
+    // Check if the patient subscribed to a package
+    const package1 = await PatientPackages.findOne({ patient: patient._id });
     if (!package1) {
       return res.status(404).json(1);
     }
+
+    // Retrieve the health package details
     const healthPackageItem = await healthPackage.findById(package1.package);
     if (!healthPackageItem) {
       return res.status(404).json(1);
     }
-    res.status(200).json(healthPackageItem.discountOnDoctorSessionPrice/100);
+
+    // Return the discount on doctor session prices relative to the package
+    res.status(200).json(healthPackageItem.discountOnDoctorSessionPrice / 100);
   } catch (err) {
     res.status(500).json(err);
   }
 };
 
-//get the discount of the medicine orders if the patient subscribed to a package 
+
 exports.getMedicineDiscount = async (req, res) => {
   try {
     const patient = await patients.findById(req.params.id);
     if (!patient) {
       return res.status(404).json("Patient not found");
     }
-   //check if the patient subscribed to a package
-   const package1 = await PatientPackages.findOne({ patient: patient._id });
+
+    // Check if the patient subscribed to a package
+    const package1 = await PatientPackages.findOne({ patient: patient._id });
     if (!package1) {
       return res.status(404).json(1);
     }
+
+    // Retrieve the health package details
     const healthPackageItem = await healthPackage.findById(package1.package);
     if (!healthPackageItem) {
       return res.status(404).json(1);
     }
-    res.status(200).json(healthPackageItem.discountOnMedicineOrders/100);
+
+    // Return the discount on medicine orders relative to the package
+    res.status(200).json(healthPackageItem.discountOnMedicineOrders / 100);
   } catch (err) {
     res.status(500).json(err);
   }
 };
 
-//get the discount of the family member subscription if the patient subscribed to a package
 exports.getFamilyMemberSubscriptionDiscount = async (req, res) => {
   try {
     const family_member = await patients.findById(req.params.id);
     if (!family_member) {
       return res.status(404).json("Family member not found");
     }
-   // get that patient who is the family member owner
+
+    // Get the patient who is the family member owner
     const patient = await patients.findOne({ familyMembers: { $elemMatch: { patient: family_member._id } } });
     if (!patient) {
-      return res.status(404).json("not a family member for any patient");
+      return res.status(404).json("Not a family member for any patient");
     }
-    //check if the patient subscribed to a package
+
+    // Check if the patient subscribed to a package
     const package1 = await PatientPackages.findOne({ patient: patient._id });
     if (!package1) {
       return res.status(404).json(1);
     }
+
+    // Retrieve the health package details
     const healthPackageItem = await healthPackage.findById(package1.package);
     if (!healthPackageItem) {
       return res.status(404).json(1);
     }
-    res.status(200).json(healthPackageItem.discountOnFamilyMemberSubscription/100);
 
+    // Return the discount on family member subscriptions relative to the package
+    res.status(200).json(healthPackageItem.discountOnFamilyMemberSubscription / 100);
   } catch (err) {
     res.status(500).json(err);
   }

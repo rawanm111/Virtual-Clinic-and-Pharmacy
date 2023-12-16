@@ -54,23 +54,44 @@ const [quantity, setQuantity] = useState(1);
   };
   const addToCart = () => {
     const patientId = id.toString();
-    const medicationId= idmed;
-
+    const medicationId = idmed;
+  
+    // Check if the medication is available
+    const selectedMedication = medicationData.find((med) => med._id === idmed);
+    if (!selectedMedication) {
+      // Medication not found
+      console.error('Selected medication not found.');
+      return;
+    }
+  
+    if (selectedMedication.availableQuantity < quantity) {
+      // Medication quantity is less than the requested quantity
+      alert('Not enough quantity available.');
+      return;
+    }
+  
+    if (selectedMedication.availableQuantity === 0) {
+      // Medication is out of stock
+      alert('This medication is out of stock.');
+      return;
+    }
+  
     // Send a request to your backend to add the medication to the patient's cart
-    axios.post('http://localhost:3000/Cart/add', {
-      patientId,
-      medicationId: idmed ,
-      quantity: quantity,
-       // You can specify the quantity to add
-    })
-    .then((response) => {
-      console.log('Medication added to cart:', response.data);
-      navigate(`/patient-meds/${id}`)
-    })
-    .catch((error) => {
-      console.error('Error adding medication to cart:', error);
-    });
+    axios
+      .post('http://localhost:3000/Cart/add', {
+        patientId,
+        medicationId: idmed,
+        quantity: quantity,
+      })
+      .then((response) => {
+        console.log('Medication added to cart:', response.data);
+        navigate(`/patient-meds/${id}`);
+      })
+      .catch((error) => {
+        console.error('Error adding medication to cart:', error);
+      });
   };
+  
 useEffect(() => {
   const fetchMedicationData = async () => {
     try {
