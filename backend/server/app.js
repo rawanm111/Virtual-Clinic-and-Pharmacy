@@ -24,6 +24,7 @@ const PatientPackagesRoutes = require('./Routes/PatientPackagesRoutes');
 const authroutes = require('./Routes/authenticationRoutes');
 const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
 const OrderRoutes=require("./Routes/OrderRouter.js")
+const FollowupRoutes= require('./Routes/followupsRouter');
 const messageRoutes = require('./Routes/MessageRoutes');
 const messageDocRoutes = require('./Routes/MessageDocRoutes');
 const messagePharmPatRoutes = require('./Routes/MessagePharmPatRoutes');
@@ -34,6 +35,7 @@ const messagesPharmDocRoutes = require('./Routes/MessagePharmDocRoutes');
 const cors = require('cors');
 const http = require("http");
 const { Server } = require("socket.io");
+
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -106,6 +108,8 @@ app.use('/api/messages', messageRoutes);
 app.use('/api/messagesDoc', messageDocRoutes);
 app.use('/api/messagesPharmPat', messagePharmPatRoutes);
 app.use('/api/messagesPharmDoc', messagesPharmDocRoutes);
+
+app.use('/followup',FollowupRoutes);
 
 
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY)
@@ -219,8 +223,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      success_url: `http://localhost:3001/Thankyou/${patientId}`,
+      cancel_url: `http://localhost:3001/Thankyou/${patientId}`,
     });
 
     res.json({ url: session.url });
