@@ -210,11 +210,7 @@ const updatePassword = async (newPassword) => {
     // Fetch prescription data for the specific user
     const fetchPrescriptionData = async () => {
       try {
-<<<<<<< HEAD
         const response = await axios.get(`http://localhost:3000/Prescription/pat/${id}`);
-=======
-        const response = await axios.get(`http://localhost:3000/Prescription/patientPrescription/${id}`);
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
         if (response.status === 200) {
           const responseData = response.data.map((row) => ({
             ...row,

@@ -10,11 +10,7 @@ root.render(
   <React.StrictMode>
     <App />
   </React.StrictMode>
-<<<<<<< HEAD
-
-=======
   
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
 );
 
 // If you want to start measuring performance in your app, pass a function

@@ -689,15 +689,12 @@ const id = "6575267573a2d909817e94e5";
       console.error('Error fetching available appointments:', error);
     }
   };
-<<<<<<< HEAD
 
     const handleOpenFU = () => {
       setOpenFU(true);
     };
 
 
-=======
->>>>>>> 46deba00d352edab8740c55b567574c095c75be2
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
       const items = cartData;
