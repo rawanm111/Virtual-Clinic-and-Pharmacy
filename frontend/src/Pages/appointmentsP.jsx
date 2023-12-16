@@ -508,19 +508,48 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     const filteredApps = appsFam.filter((app) => {
       const isDateInRange =
 
-        (!dateFilterStartFam || app.date >= dateFilterStartFam) &&
-        (!dateFilterEndFam || app.date <= dateFilterEndFam);
+        (!dateFilterStart || app.date >= dateFilterStart) &&
+        (!dateFilterEnd || app.date <= dateFilterEnd);
         
       const isStatusMatch =
 
         selectedStatusFilterFam === 'All' || app.status === selectedStatusFilterFam;
-        setFilteredRowsFam(filteredApps);
+
+        if (selectedStatusFilterFam === 'All') {
+          familyMembersFam.map((member) => {
+            axios
+              .get(`http://localhost:3000/apps/patient/${member.patient._id}`)
+              .then((response) => {
+                if (response.data) {
+                  const transformedData = response.data.map((item) => ({
+                    id: item._id,
+                    patientId: member.patient._id,
+                    FamilyMemberName: member.patient.fullName,
+                    DoctorName: item.doctor
+                      ? item.doctor.fullName
+                      : 'Doctor Not Found',
+                    status: item.status,
+                    date: new Date(item.date),
+                  }));
+                  setAppsFam((prev) => [...prev, ...transformedData]);
+                  setFilteredRowsFam((prev) => [...prev, ...transformedData]);
+                } else {
+                  console.error('No data received from the API');
+                }
+              })
+              .catch((error) => {
+                console.error('Error fetching apps:', error);
+              });
+          });
+        }
 
       return isDateInRange && isStatusMatch;
     });
+    setAppsFam(filteredApps);
+    setFilteredRowsFam(filteredApps);
+
     
   };
-
 
  
   const openModal =(selectedapp) => {
@@ -1359,9 +1388,9 @@ onClick={handleOpenFUFamily}
   <TextField
     type="date"
     variant="outlined"
-    value={dateFilterStartFam ? dateFilterStartFam.toISOString().split('T')[0] : ''}
+    value={dateFilterStart ? dateFilterStart.toISOString().split('T')[0] : ''}
     onChange={(e) => setDateFilterStart(new Date(e.target.value))}
-    sx={{ flex: 1 }} // Adjust the flex property
+    sx={{ flex: 1 }} 
   />
   <TextField
     type="date"
@@ -1641,22 +1670,7 @@ onClick={handleOpenFUFamily}
   />
 
 
-        {/* <FormControl variant="outlined" sx={{ flex: 1, minWidth: '120px' }}> */}
-    <InputLabel id="status-filter-label">Family Member</InputLabel>
-    <Select
-
-      labelId="status-filter-label"
-      id="status-filter"
-      value={selectedFamilyMember}
-      onChange={handleFamilyMemberChange}
-    >
-      {/* <MenuItem value="myself">Myself</MenuItem> */}
-      {familyMembers.map((member) => (
-        <MenuItem value={member._id}>{member.fullName}</MenuItem>
-      ))}
-    </Select>
-  {/* </FormControl> */}
-
+   
               <Button
                 type="submit"
                 fullWidth

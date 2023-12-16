@@ -194,6 +194,7 @@ app.post('/paymentCart', async (req, res) => {
     const cartId = req.body.cartId;
     const cart = await Cart.findById(cartId).populate('medications.medicationId');
     const patientId = req.body.patientId;
+    const discount = req.body.discount;
 
     if (!cart) {
       return res.status(404).json({ error: 'Cart not found' });
@@ -206,7 +207,7 @@ app.post('/paymentCart', async (req, res) => {
           product_data: {
             name: medication.medicationId.name,
           },
-          unit_amount: medication.medicationId.price *100,
+          unit_amount: medication.medicationId.price *100 * (1 - discount),
         },
         quantity: medication.quantity,
       };

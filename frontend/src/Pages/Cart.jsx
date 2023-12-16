@@ -216,7 +216,7 @@ const calculateItemTotal = (medicationId) => {
   const medicationDetail = medicationDetails.find(
     (detail) => detail._id === medicationId
   );
-  console.log(medicationDetail);
+  // console.log(medicationDetail);
   if (medicationDetail) {
     return medicationDetail.price * cartData.find((item) => item.medicationId === medicationId).quantity;
   }
@@ -570,7 +570,7 @@ function AddressStep({ selectedAddress, onAddressChange, onAddAddress }) {
     const medicationDetail = medicationDetails.find(
       (detail) => detail._id === medicationId
     );
-    console.log(medicationDetail);
+    // console.log(medicationDetail);
     if (medicationDetail) {
       return medicationDetail.price * cartData.find((item) => item.medicationId === medicationId).quantity;
     }
@@ -700,7 +700,7 @@ const calculateTotalAmount = (medications) => {
   setTotalAmount(total);
 };
 
-{console.log(totalAmount)}
+// {console.log(totalAmount)}
 
 
   const getCartItems = async () => {
@@ -726,6 +726,24 @@ const calculateTotalAmount = (medications) => {
       console.error('Error:', error);
     }
   };
+  const [discount, setDiscount] = useState(0); 
+  useEffect(() => {
+    // Fetch discount for the patient
+    
+    
+    axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`)
+
+      .then((response) => {
+        // Handle the response and set the discount in state
+        const discount = response.data;
+        console.log(discount);
+        setDiscount(discount);
+      })
+      .catch((error) => {
+        console.error('Error fetching discount:', error);
+      });
+  }, [id]);
+
   const handlePayment = async (cartData) => {
     try {
       const items = cartData.medications;
@@ -735,16 +753,18 @@ const calculateTotalAmount = (medications) => {
         console.error('No medications found in the cart data.');
         return;
       }
-  
+      
       const response = await axios.post('http://localhost:3000/paymentCart', {
         cartId: cartId,
         patientId: id,
+        discount: discount,
         items: items.map((item) => ({
           id: item.medicationId,
           quantity: item.quantity,
+          
         })),
       });
-      console.log(response.data);
+      console.log(response.data,"this");
       
       if (response.status === 200) {
         window.location = response.data.url;
@@ -764,6 +784,7 @@ const calculateTotalAmount = (medications) => {
       //get the discount of the patient on the medication
       const dresponse = await axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`);
       const discount = dresponse.data;
+      // console.log(discount,"here youb ho");
       if (paymentOption === 'wallet') {
         // Make a request to your backend to process wallet payment
         
