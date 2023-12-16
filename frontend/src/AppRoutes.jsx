@@ -54,6 +54,7 @@ import Notification from "./Pages/notifModal";
 import SalesRepo from "./Pages/SalesrReportAdmin"
 import SalesRepoPharm from "./Pages/SalesReportPharm"
 import Video from "./Pages/videoCallPatient";
+import New from "./Pages/New";
 
 
 import PharmacistWallet from "./Pages/walletModalPharmacist";
@@ -122,6 +123,7 @@ export default function Paths() {
         <Route path="/Vid/:roomId"element={<Video/>}  />
         <Route path="/messages/:id"element={<Messages/>}  />
         <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
+        <Route path="/new"element={<New/>}  />
         
       </Routes>
     </Router>
