@@ -39,6 +39,7 @@ DoctorSchema.add({
     type: String,
     required: true,
   },
+  
 });
 //DoctorSchema.path('role').default('doctor');
 module.exports = mongoose.model('doctors', DoctorSchema);

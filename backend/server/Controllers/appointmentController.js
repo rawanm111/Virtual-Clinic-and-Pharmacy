@@ -180,7 +180,12 @@ exports.createUpcomingAppointment = async (req, res) => {
   }
 };
 
+exports.cancelAppointment = async (req, res) => {
+  try {
+    // Extract appointment ID from request parameters
+    const appointmentId = req.params.id;
 
+<<<<<<< HEAD
 // exports.getlastappointement = async (req, res) => {
 //   try {
 //     // Retrieve the patient ID from the request body
@@ -330,6 +335,8 @@ exports.cancelAppointment = async (req, res) => {
     // Extract appointment ID from request parameters
     const appointmentId = req.params.id;
 
+=======
+>>>>>>> 46deba00d352edab8740c55b567574c095c75be2
     // Check if the appointment exists
     const appointment = await appointement.findById(appointmentId);
 
@@ -347,7 +354,13 @@ exports.cancelAppointment = async (req, res) => {
   } catch (err) {
     res.status(500).json(err);
   }
+<<<<<<< HEAD
 }; exports.rescheduleAppointment = async (req, res) => {
+=======
+};
+
+exports.rescheduleAppointment = async (req, res) => {
+>>>>>>> 46deba00d352edab8740c55b567574c095c75be2
   try {
     // Extract appointment ID and new date from request parameters and body
     const appointmentId = req.params.id;
@@ -372,6 +385,7 @@ exports.cancelAppointment = async (req, res) => {
     res.status(500).json(err);
   }
 };
+<<<<<<< HEAD
 
 
 exports.cancelledNotif = async (req, res) => {
@@ -624,3 +638,5 @@ exports.acceptedNotif = async (req, res) => {
     res.status(500).json(err);
   }
 };
+=======
+>>>>>>> 46deba00d352edab8740c55b567574c095c75be2

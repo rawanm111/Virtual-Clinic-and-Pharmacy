@@ -44,6 +44,15 @@ import StoreMed from "./Pages/storeMed";
 import ThankYou from "./Pages/thanks";
 
 import FU from "./Pages/followups";
+import ChatsPage from "./Pages/ChatsPage";
+import Messages from "./Pages/messages";
+import MessagesDoc from "./Pages/messageDoc";
+import MessagesPharmToDoc from "./Pages/messagesPharmtoDoc";
+import MessagesPharmToPat from "./Pages/messagesPharmtoPat";
+import MessagesPatToPharm from "./Pages/messagesPattoPharm";
+import MessagesDocToPharm from "./Pages/messagesDoctoPharm";
+
+
 export default function Paths() {
   return (
     <Router> 
@@ -95,9 +104,16 @@ export default function Paths() {
         <Route path="/ThankYou/:id"element={<ThankYou/>}  />
         <Route path="/admin-home"element={<AdminHome/>}  />
         <Route path="/follow-ups/:id"element={<FU/>}  />
+        <Route path="/chats/:username"element={<ChatsPage/>}  />
+        <Route path="/messages/:id"element={<Messages/>}  />
+        <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
+        <Route path="/messagesPharmtoDoc/:id"element={<MessagesPharmToDoc/>}  />
+        <Route path="/messagesPharmtoPat/:id"element={<MessagesPharmToPat/>}  />
+        <Route path="/messagesPattoPharm/:id"element={<MessagesPatToPharm/>}  />
+        <Route path="/messagesDoctoPharm/:id"element={<MessagesDocToPharm/>}  />
+        <Route path="/admin-home" element={<AdminHome />} />
       </Routes>
     </Router>
   );
 }
-
 

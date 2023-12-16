@@ -24,9 +24,17 @@ const authroutes = require('./Routes/authenticationRoutes');
 const EmploymentContract= require('./Routes/EmploymentContractRoutes.js');
 const OrderRoutes=require("./Routes/OrderRouter.js")
 const FollowupRoutes= require('./Routes/followupsRouter');
+const messageRoutes = require('./Routes/MessageRoutes');
+const messageDocRoutes = require('./Routes/MessageDocRoutes');
+const messagePharmPatRoutes = require('./Routes/MessagePharmPatRoutes');
+const messagesPharmDocRoutes = require('./Routes/MessagePharmDocRoutes');
+
+
+
 const cors = require('cors');
 const http = require("http");
 const { Server } = require("socket.io");
+
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
@@ -56,7 +64,6 @@ const io = new Server(server, {
 
 io.on("connection", (socket) => {
   console.log(`User Connected: ${socket.id}`);
-  socket.emit("me", socket.id)
   socket.on("join_room", (data) => {
     socket.join(data);
     console.log(`User with ID: ${socket.id} joined room: ${data}`);
@@ -69,14 +76,6 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log("User Disconnected", socket.id);
   });
-
-	socket.on("callUser", (data) => {
-		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
-	})
-
-	socket.on("answerCall", (data) => {
-		io.to(data.to).emit("callAccepted", data.signal)
-	})
 });
 
 
@@ -103,6 +102,11 @@ app.use('/admin',Adminroutes);
 app.use('/', authroutes)
 app.use('/employmentContract',EmploymentContract);
 app.use("/Order",OrderRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/messagesDoc', messageDocRoutes);
+app.use('/api/messagesPharmPat', messagePharmPatRoutes);
+app.use('/api/messagesPharmDoc', messagesPharmDocRoutes);
+
 app.use('/followup',FollowupRoutes);
 
 
@@ -217,8 +221,8 @@ app.post('/paymentCart', async (req, res) => {
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: lineItems,
-      success_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
-      cancel_url: `http://localhost:3001/pharm-patient-home/${patientId}`,
+      success_url: `http://localhost:3001/Thankyou/${patientId}`,
+      cancel_url: `http://localhost:3001/Thankyou/${patientId}`,
     });
 
     res.json({ url: session.url });
@@ -300,7 +304,6 @@ const socketIo = new Server(socketServer, {
 
 socketIo.on('connection', (socket) => {
   console.log(`User Connected: ${socket.id}`);
-  socket.emit("me", socket.id)
   socket.on('join_room', (data) => {
     socket.join(data);
   });
@@ -308,75 +311,11 @@ socketIo.on('connection', (socket) => {
   socket.on('send_message', (data) => {
     socket.to(data.room).emit('receive_message', data);
   });
-  socket.on("disconnect", () => {
-		socket.broadcast.emit("callEnded")
-	})
-
-	socket.on("callUser", (data) => {
-		io.to(data.userToCall).emit("callUser", { signal: data.signalData, from: data.from, name: data.name })
-	})
-
-	socket.on("answerCall", (data) => {
-		io.to(data.to).emit("callAccepted", data.signal)
-	})
 });
 
 const SOCKET_PORT = 3002;
 socketServer.listen(SOCKET_PORT, () => {
   console.log('Socket.io server is running on port 3001');
-});
-const API_KEY = 'fa904e403096f540299e9940a61ea47842354a30c65416650d7fc87a0a7cea6e'
-
-const headers = {
-  Accept: "application/json",
-  "Content-Type": "application/json",
-  Authorization: "Bearer " + API_KEY,
-};
-
-const getRoom = (room) => {
-  return fetch(`https://api.daily.co/v1/rooms/${room}`, {
-    method: "GET",
-    headers,
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      return json;
-    })
-    .catch((err) => console.error("error:" + err));
-};
-
-const createRoom = (room) => {
-  return fetch("https://api.daily.co/v1/rooms", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({
-      name: room,
-      properties: {
-        enable_screenshare: true,
-        enable_chat: true,
-        start_video_off: true,
-        start_audio_off: false,
-        lang: "en",
-      },
-    }),
-  })
-    .then((res) => res.json())
-    .then((json) => {
-      return json;
-    })
-    .catch((err) => console.log("error:" + err));
-};
-
-app.get("/video-call/:id", async function (req, res) {
-  const roomId = req.params.id;
-
-  const room = await getRoom(roomId);
-  if (room.error) {
-    const newRoom = await createRoom(roomId);
-    res.status(200).send(newRoom);
-  } else {
-    res.status(200).send(room);
-  }
 });
 
 // MongoDB Configuration

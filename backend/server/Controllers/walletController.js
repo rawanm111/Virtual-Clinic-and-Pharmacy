@@ -43,6 +43,9 @@ exports.updateWalletBalance = async (req, res) => {
     const { patientId } = req.params;
     const { balance } = req.body;
 
+    // //get the patient discount on dr session
+    // const pa
+
     // Find and update the wallet balance for the specified patient
     const updatedWallet = await Wallet.findOneAndUpdate(
       { patient: patientId },

@@ -21,6 +21,7 @@ exports.createFollowup = async (req, res) => {
       res.status(500).json(err);
     }
   }
+<<<<<<< HEAD
   exports.deleteFollowup = async (req, res) => {
     try {
       const followupId = req.params.id;
@@ -33,3 +34,6 @@ exports.createFollowup = async (req, res) => {
       res.status(500).json(err);
     }
   };
+=======
+  
+>>>>>>> 46deba00d352edab8740c55b567574c095c75be2

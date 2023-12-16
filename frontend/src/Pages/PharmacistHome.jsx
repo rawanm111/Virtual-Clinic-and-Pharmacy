@@ -39,7 +39,8 @@ import WalletModal from './walletModal'
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
     setSuccess(false); 
-  };  const handleOpenChangePassword = () => {
+  };  
+  const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
   };
   const handleCloseChangePassword = () => {

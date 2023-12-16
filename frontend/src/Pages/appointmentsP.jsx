@@ -50,7 +50,8 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
     setSuccess(false); 
-  };  const handleOpenChangePassword = () => {
+  };  
+  const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
   };
   const handleCloseChangePassword = () => {
@@ -688,12 +689,15 @@ const id = "6575267573a2d909817e94e5";
       console.error('Error fetching available appointments:', error);
     }
   };
+<<<<<<< HEAD
 
     const handleOpenFU = () => {
       setOpenFU(true);
     };
 
 
+=======
+>>>>>>> 46deba00d352edab8740c55b567574c095c75be2
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
       const items = cartData;
@@ -739,7 +743,7 @@ const id = "6575267573a2d909817e94e5";
               product_data: {
                 name: selectedAppointmentId.toString(),
               },
-              unit_amount: discountedPrice * 100, // Convert to cents
+              unit_amount: discountedPrice * 100, 
             },
             quantity: 1,
           },
@@ -762,7 +766,6 @@ const id = "6575267573a2d909817e94e5";
       console.error('Error fetching available appointments:', error);
     }
   };
-  
 
   
 
