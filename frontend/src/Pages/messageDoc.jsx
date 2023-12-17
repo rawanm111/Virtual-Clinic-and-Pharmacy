@@ -241,16 +241,15 @@ useEffect(() => {
     //get doc
     const getMessages = async () => {
       try {
-        setMessages(dataRes.aggregatedMessages);
-  
-        console.log(messages, 'messages');
+        // Fetch messages from the server
         const response = await axios.get(`http://localhost:3000/api/messagesDoc/${id}/${receiver}`);
-
-        console.log(response.data);
         const dataRes = response.data;
-        console.log(dataRes.chat.aggregatedMessages,"dataRes");
+    
+        // Update the state with fetched messages
         setMessages(dataRes.chat.aggregatedMessages);
-        console.log(messages,"messages");
+        
+        console.log(messages, 'messages');
+        console.log(dataRes.chat.aggregatedMessages, "dataRes");
       } catch (error) {
         console.error('Error fetching messages:', error.response ? error.response.data : error.message);
       }
