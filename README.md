@@ -62,7 +62,7 @@ changing your password is one button away
 for our dear admins meet your new homepage
 ![Admin_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e71380a6-b9e1-4987-aafc-6c9ff5756cd9)
 
-admins here is all registered users at one glance
+admins, here is all registered users at one glance
 ![User_Management](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e6b48f4f-48a0-4086-b9ba-40f9b82eeba3)
 
 welcome to our true heroes
