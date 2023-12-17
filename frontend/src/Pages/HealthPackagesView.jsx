@@ -24,6 +24,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
+import { FaMessage} from 'react-icons/fa6';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -489,7 +490,7 @@ export default function HealthPackagesView() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"550px"}}
+  style={{marginLeft:"530px"}}
 >
   <a 
     className="nav-link dropdown-toggle"
@@ -529,6 +530,11 @@ export default function HealthPackagesView() {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
             </ul>
           </div>
         </div>

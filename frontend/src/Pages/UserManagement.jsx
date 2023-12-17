@@ -79,6 +79,41 @@ const style = {
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
   };
+
+  const handleSubmitt = () => {
+    handleClose();
+    if (!validatePassword(formData.password)) {
+      alert("Password must contain at least one uppercase letter, one number, and be at least 4 characters long.");
+      return;
+    }
+    axios.post('http://localhost:3000/admin/', formData) // Use '/admin' for the POST request
+      .then(response => {
+        console.log('Response:', response.data);
+
+        axios.get('http://localhost:3000/admin')
+    .then((response) => {
+      if (response.data) {
+        const transformedData = response.data.map((item) => ({
+          id: item._id, 
+          username: item.username,   
+        }));
+        setAdmins(transformedData);
+        setFilteredRowsA(transformedData);
+
+      } else {
+        console.error('No data received from the API');
+      }
+    })
+    .catch((error) => {
+      console.error('Error fetching admins:', error);
+    });
+        // Reset the form or display a success message as needed
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle errors or display an error message
+      });
+  };
   const handleSubmit = (event) => {
     event.preventDefault();
     
@@ -1062,7 +1097,7 @@ const handleChange = (event, newValue) => {
             onChange={handleInputChange}
           />
         </div>
-        <Button variant="contained" color="primary" startIcon={<LockOutlinedIcon />} onClick={handleSubmit}>
+        <Button variant="contained" color="primary" startIcon={<LockOutlinedIcon />} onClick={handleSubmitt}>
           Add Admin
         </Button>
       </Container>

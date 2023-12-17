@@ -25,6 +25,7 @@ import WalletModal from './walletModal'
 import Notif from "./notifdoc";
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import Modal from '@mui/material/Modal';
+import { FaMessage} from 'react-icons/fa6';
 // Move base64toBlob function here
 const base64toBlob = (base64Data, contentType) => {
   try {
@@ -61,6 +62,7 @@ function AdminRequests() {
     newPassword: '',
     confirmNewPassword: '',
   });
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [success, setSuccess] = useState(false); 
   const handleChange = (prop) => (event) => {
     setPasswords({ ...passwords, [prop]: event.target.value });
@@ -468,7 +470,7 @@ function AdminRequests() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"550px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -782,6 +784,47 @@ function AdminRequests() {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
             </ul>
           </div>
         </div>

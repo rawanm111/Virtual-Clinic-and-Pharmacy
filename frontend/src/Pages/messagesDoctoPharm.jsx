@@ -26,7 +26,7 @@ import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import { CardContent } from '@mui/material';
-
+import Notif from "./notifdoc";
 
 const socket = io.connect("http://localhost:3002");
 
@@ -346,7 +346,7 @@ function Messages() {
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -379,7 +379,18 @@ function Messages() {
                    onClick={() => navigate(`/healthRecs/${id}`)}>
                      Patients Health Record
                      </a>
-                 
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescriptions/${id}`)}>
+                     Patients Prescriptions
+                     </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/follow-ups/${id}`)}>
+                    Follow-up Requests
+                     </a>
                 </div>
               </li>
               
@@ -391,54 +402,13 @@ function Messages() {
 
               
               {/* Profile dropdown */}
-
-              <li 
-  className="nav-item dropdown active"
-  onMouseEnter={() => setShowMessagesDropdown(true)}
-  onMouseLeave={() => setShowMessagesDropdown(false)}
-  style={{marginLeft:"600px"}}
->
-  <a
-    className="nav-link dropdown-toggle"
-    style={{cursor:"pointer" } } 
-    id="profileDropdown"
-    role="button"
-    data-toggle="dropdown"
-    aria-haspopup="true"
-    aria-expanded={showMessagesDropdown}
-    
-  >
-    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
-    
-  </a>
-  <div
-    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
-    aria-labelledby="profileDropdown"
-  >
-   <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
-  >
-    Chat with Patient
-  </a>
-  <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
-  >
-    Chat with Pharmacist
-  </a>
-  </div>
-</li>               
+              
     
 <li
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"700px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -490,7 +460,7 @@ function Messages() {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -749,7 +719,51 @@ function Messages() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
+<li className="nav-item ">
+<Notif/>
+</li>
 
+<li 
+  className="nav-item dropdown active "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
 
             </ul>
           </div>

@@ -88,14 +88,13 @@ exports.getPrescriptionsForDoctor = async (req, res) => {
 exports.getPrescriptionsForPatient = async (req, res) => {
   try {
     const patientId = req.params.id;
-
-    // Check if the patient exists
+    
     const patientExists = await Patient.findById(patientId);
+    console.log(patientId);
     if (!patientExists) {
       return res.status(404).json({ message: 'Patient not found' });
     }
 
-    // Fetch prescriptions for the specified patient
     const prescriptions = await Prescription.find({ Patient: patientId })
       .populate('Doctor', 'fullName')
       .populate('medicines.medicine', 'name');

@@ -22,7 +22,7 @@ import { format } from 'date-fns';
 import Notif from "./notifModal";
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-
+import { FaMessage} from 'react-icons/fa6';
 import {
   Dialog,
   DialogTitle,
@@ -1200,7 +1200,7 @@ const handleCreateFollowupFamily = async () => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"550px"}}
+  style={{marginLeft:"530px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -1240,7 +1240,11 @@ const handleCreateFollowupFamily = async () => {
 </li>
 <li className="nav-item ">
 <Notif/>
-</li>
+</li><li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
             </ul>
           </div>
         </div>

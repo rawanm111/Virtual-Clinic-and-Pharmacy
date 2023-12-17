@@ -22,6 +22,7 @@ import S12 from '../css/style.css';
 import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
+import { FaMessage} from 'react-icons/fa6';
 import { FaUser, FaWallet } from 'react-icons/fa';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
@@ -297,13 +298,13 @@ export default function MedHistoryPatient() {
         
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -434,7 +435,7 @@ export default function MedHistoryPatient() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"550px"}}
+  style={{marginLeft:"520px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -475,6 +476,12 @@ export default function MedHistoryPatient() {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
+
             </ul>
           </div>
         </div>
@@ -545,6 +552,9 @@ export default function MedHistoryPatient() {
               </div>
         <Typography key={document._id} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
           {document.filename}
+        </Typography>
+        <Typography key={document._id} sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+         Doctor Notes:  {document.doctorNotes}
         </Typography>
         
         <Typography variant="h5" component="div">

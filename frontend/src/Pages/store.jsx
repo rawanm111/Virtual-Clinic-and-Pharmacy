@@ -25,6 +25,7 @@ import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import WalletModal from './walletModal';
+import IconButton from '@mui/material/IconButton';
 
 export default function StoreView() {
   const [medicationData, setMedicationData] = useState([]);
@@ -160,15 +161,35 @@ const updatePassword = async (newPassword) => {
         <div className="container">
           <div className="row d-flex align-items-stretch">
             {medications.map((medication, index) => (
-              <div key={index} className="col-md-4 mb-4"> {/* Added mb-4 class for margin-bottom */}
+              <div key={index} className="col-md-6 mb-4">
                 <div className="pricing-entry pb-5 text-center" style={{ borderRadius: '8px', height: '100%' }}>
                   {medication.discountedPrice && <span className="onsale">Sale</span>}
-                  <a style={{ display: 'block', height: '200px', overflow: 'hidden' }}>
-                    <img
-                      src={medication.picture}
-                      alt="Image"
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                    />
+                  <a style={{ display: 'block', height: '200px', overflow: 'hidden', position: 'relative' }}>
+                    {medication.availableQuantity > 0 ? (
+                      <img
+                        src={medication.picture}
+                        alt="Image"
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      />
+                    ) : (
+                      <>
+                        <div style={{ position: 'absolute', top: '0', left: '0', width: '50%', height: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#007bff' }}>
+                          <p style={{ color: '#fff', fontSize: '14px' }}>Out of Stock</p>
+                        </div>
+                        <img
+                          src={medication.picture}
+                          alt="Image"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: '0.5' }}
+                        />
+                      </>
+                    )}
+                    {medication.availableQuantity > 0 && (
+                      <IconButton
+                        style={{ position: 'absolute', top: '5px', right: '5px', background: 'white' }}
+                      >
+                        {/* Icon or action for the button */}
+                      </IconButton>
+                    )}
                   </a>
                   <h3 className="text-dark" style={{ height: '50px' }}>
                     <a>{medication.name}</a>
@@ -188,8 +209,8 @@ const updatePassword = async (newPassword) => {
                     variant="contained"
                     color="primary"
                     className="btn btn-primary px-4 py-3"
-                    style={{borderRadius:'40px'}}
-                    onClick={() => navigate(`/med/${medication._id}/${id}`)}
+                    style={{ borderRadius: '40px' }}
+                    onClick={() => navigate('/med/${medication._id}/${id}')}
                   >
                     Select
                   </Button>
@@ -202,7 +223,6 @@ const updatePassword = async (newPassword) => {
       </div>
     );
   };
-  
   
   useEffect(() => {
     const queryParameters = {
