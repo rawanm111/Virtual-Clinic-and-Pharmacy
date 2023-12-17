@@ -49,15 +49,15 @@ The project follows a consistent coding style to ensure readability and maintain
 Feel free to refer to the existing codebase for examples of these conventions.
 
 ## Screenshots 🖵
-![Patient Home](src/Screenshots/Patient_Home.png)
-![Health Packages](src/Screenshots/Health_Packages.png)
-![Change Password form](src/Screenshots/Change_Password.png)
-![Admin Home](src/Screenshots/Admin_Home.png)
-![User Management](src/Screenshots/User_Management.png)
-![Doctor Home](src/Screenshots/Doctor_Home.png)
-![Doctor Appointments](src/Screenshots/Doctor_Apppointments.png)
-![Store](src/Screenshots/Store.png)
-![Pharmacist requests](src/Screenshots/Pharmacist_Requests.png)
+![Patient_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/bb39b842-2318-4120-a117-fadf8d97f942)
+![Health_Packages](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/9e867f58-e7b7-42d0-af85-d5b7a7ad8aab)
+![Change_Password](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/cdbd7943-6121-46d8-b79c-d0fcd51f1147)
+![Admin_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e71380a6-b9e1-4987-aafc-6c9ff5756cd9)
+![User_Management](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e6b48f4f-48a0-4086-b9ba-40f9b82eeba3)
+![Doctor_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/3b252ffd-b2a5-4967-b416-4fe77aae2d5e)
+![Doctor_Apppointments](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/aa8778b5-155f-4993-8123-ea3ed13766fa)
+![Store](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/a9c971c3-0b5e-4106-817f-6f4c97f0a07d)
+![Pharmacist_Requests](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/32d6622e-be09-4934-90ce-dc02dc7041fb)
 
 ## Tech/Framework used 🧰
 Frontend Development:
