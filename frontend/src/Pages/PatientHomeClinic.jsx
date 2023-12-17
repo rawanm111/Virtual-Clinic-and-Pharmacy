@@ -80,8 +80,7 @@ const handleSubmit = (event) => {
  
   updatePassword(passwords.newPassword)
   setChangePasswordOpen(false);
-  setAlertType('success');
-  setAlertOpen(true);
+  
 };
 const isValidPassword = (password) => {
   const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;

@@ -44,10 +44,16 @@ import Notif from "./notifdoc";
 
 const [alertType, setAlertType] = useState(null);
 const [isAlertOpen, setAlertOpen] = useState(false);
+const [alertType1, setAlertType1] = useState(null);
+const [isAlertOpen1, setAlertOpen1] = useState(false);
 
 const handleAlertClose = () => {
   setAlertOpen(false);
   setAlertType(null);
+};
+const handleAlertClose1 = () => {
+  setAlertOpen1(false);
+  setAlertType1(null);
 };
 
 useEffect(() => {
@@ -60,6 +66,17 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }
 }, [isAlertOpen]);
+
+useEffect(() => {
+  if (isAlertOpen1) {
+    const timer = setTimeout(() => {
+      setAlertOpen1(false);  // Use the state updater function
+      setAlertType1(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen1]);
 
   const [success, setSuccess] = useState(false); 
   const handleChange = (prop) => (event) => {
@@ -89,10 +106,14 @@ useEffect(() => {
     axios
       .put(`http://localhost:3000/doctors/${username}`, formData)
       .then((response) => {
+        setAlertType1('success');
+        setAlertOpen1(true);
         console.log('Updated doctor:', response.data);
         handleCloseUpdateModal(); // Close the update modal after updating
       })
       .catch((error) => {
+        setAlertType1('error');
+        setAlertOpen1(true);
         console.error('Error updating doctor:', error);
       });
   };
@@ -259,6 +280,40 @@ useEffect(() => {
           {alertType === 'error' && (
             <Alert severity="error" onClose={handleAlertClose}>
            Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+            Your info updated successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+           Failed to update your Info
             </Alert>
           )}
         </div>
