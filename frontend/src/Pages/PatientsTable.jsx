@@ -24,6 +24,7 @@ import { styled } from '@mui/system';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import CardContent from '@mui/material/CardContent';
 import Notif from "./notifdoc";
+import { FaMessage} from 'react-icons/fa6';
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -38,6 +39,7 @@ import Notif from "./notifdoc";
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const [username, setUsername] = useState();
   const [isProfilePopupOpen, setProfilePopupOpen] = useState(false);
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [alertType, setAlertType] = useState(null);
 const [isAlertOpen, setAlertOpen] = useState(false);
 
@@ -449,6 +451,12 @@ const [isAlertOpen, setAlertOpen] = useState(false);
                    onClick={() => navigate(`/Prescriptions/${id}`)}>
                      Patients Prescriptions
                      </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/follow-ups/${id}`)}>
+                    Follow-up Requests
+                     </a>
                 </div>
               </li>
               
@@ -466,7 +474,7 @@ const [isAlertOpen, setAlertOpen] = useState(false);
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -780,7 +788,47 @@ const [isAlertOpen, setAlertOpen] = useState(false);
 <li className="nav-item ">
 <Notif/>
 </li>
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
 
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
             </ul>
           </div>
         </div>

@@ -26,7 +26,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
 import { format } from 'date-fns';
 import Notif from "./notifdoc";
-
+import { FaMessage} from 'react-icons/fa6';
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -46,7 +46,7 @@ import Notif from "./notifdoc";
   const [followUpPatientName, setFollowUpPatientName] = useState('');
   const [appointmentStatus, setAppointmentStatus] = useState('');
   const currentDate = new Date();
-
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
  
 
   const navigate = useNavigate();
@@ -235,6 +235,7 @@ useEffect(() => {
           setAlertType2('error');
           setAlertOpen2(true);
         });
+        window.location.reload();
     } else {
       console.error('Selected date is before the current date');
       setAlertType3('error');
@@ -743,7 +744,7 @@ useEffect(() => {
                 </a>
               </li>
               <li
-                className="nav-item dropdown active"
+                className="nav-item dropdown "
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -792,7 +793,7 @@ useEffect(() => {
                 </div>
               </li>
               
-              <li className="nav-item " style={{marginRight:"10px"} }>
+              <li className="nav-item active " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/appPageDoc/${id}`)}>
                   My Appointments
                 </a>
@@ -806,7 +807,7 @@ useEffect(() => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -1120,6 +1121,47 @@ useEffect(() => {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
             </ul>
           </div>
         </div>

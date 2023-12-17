@@ -29,6 +29,7 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import Notif from "./notifdoc";
+import { FaMessage} from 'react-icons/fa6';
 const PageContainer = styled('div')({
   backgroundColor: 'white',
   padding: '16px',
@@ -49,6 +50,7 @@ const modalStyle = {
 function MedHistory() {
   const { id } = useParams(); // This is the doctor's ID, not the patient's ID
   const [currentImage, setCurrentImage] = useState(I2);
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -550,6 +552,12 @@ function MedHistory() {
                    onClick={() => navigate(`/Prescriptions/${id}`)}>
                      Patients Prescriptions
                      </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/follow-ups/${id}`)}>
+                    Follow-up Requests
+                     </a>
                 </div>
               </li>
               
@@ -567,7 +575,7 @@ function MedHistory() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -881,6 +889,48 @@ function MedHistory() {
 <li className="nav-item ">
 <Notif/>
 </li>
+
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
 
             </ul>
           </div>

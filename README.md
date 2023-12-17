@@ -4,6 +4,14 @@ The Clinic Management System streamlines patient registration, doctor requests, 
 
 
 ## Build Status 🔨
+
+* The project is currently in development.
+*   The admin need some imbrovements
+*   Course Page and API' needs Pagagination.
+*   The Unit tests needs modifications.
+*   A CI/CD pipeline needs to be migrated to Jenkins.
+*   A caching layer needs to be added to the application.
+  
 [![Build Status](Your_CI_Service_Build_Badge_Link)](Your_CI_Service_Build_Link)
 
 The build status reflects the current state of continuous integration for this project. It helps ensure that the latest changes in the repository pass automated tests and maintain the integrity of the codebase.
@@ -52,6 +60,7 @@ Feel free to refer to the existing codebase for examples of these conventions.
 ## Screenshots 🖵
 here is the Patient's main page
 ![Patient_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/bb39b842-2318-4120-a117-fadf8d97f942)
+<<<<<<< HEAD
 Don't miss our discounts on the Health Packages
 ![Health_Packages](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/9e867f58-e7b7-42d0-af85-d5b7a7ad8aab)
 
@@ -61,6 +70,31 @@ Don't miss our discounts on the Health Packages
 ![Doctor_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/3b252ffd-b2a5-4967-b416-4fe77aae2d5e)
 ![Doctor_Apppointments](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/aa8778b5-155f-4993-8123-ea3ed13766fa)
 ![Store](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/a9c971c3-0b5e-4106-817f-6f4c97f0a07d)
+=======
+
+Don't miss our discounts on the Health Packages
+![Health_Packages](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/9e867f58-e7b7-42d0-af85-d5b7a7ad8aab)
+
+changing your password is one button away
+![Change_Password](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/cdbd7943-6121-46d8-b79c-d0fcd51f1147)
+
+for our dear admins meet your new homepage
+![Admin_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e71380a6-b9e1-4987-aafc-6c9ff5756cd9)
+
+admins, here is all registered users at one glance
+![User_Management](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e6b48f4f-48a0-4086-b9ba-40f9b82eeba3)
+
+welcome to our true heroes
+![Doctor_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/3b252ffd-b2a5-4967-b416-4fe77aae2d5e)
+
+organize and book your appointment
+![Doctor_Apppointments](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/aa8778b5-155f-4993-8123-ea3ed13766fa)
+
+need meds? don't worry we got you covered
+![Store](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/a9c971c3-0b5e-4106-817f-6f4c97f0a07d)
+
+rest well knowing we accept only the best
+>>>>>>> a240e15205f0199f182cdaa61f3e67f58b6f2c3d
 ![Pharmacist_Requests](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/32d6622e-be09-4934-90ce-dc02dc7041fb)
 
 ## Tech/Framework used 🧰
@@ -86,66 +120,49 @@ Version Control:
 Git: A distributed version control system for tracking changes in source code during software development.
 
 ## Features✨
-Patient Management System:
-User registration and authentication.
-Patient profile creation and management.
-Appointment scheduling with doctors.
-Prescription and medication history tracking.
-Health record management.
-Family member addition for shared health records.
+The system serves different type of users (Admin, patient , doctor,guest)
 
-Pharmacy Management System:
-Medication inventory management.
-Online medication ordering for patients.
-Prescription validation and fulfillment.
-Sales and revenue tracking.
-Medication categorization and search.
-Pharmacist profile and authentication.
+As a guest I can,
+Register  as a patient 
+submit a request to register as doctor
+upload and submit required documents upon registrationas a doctor 
 
-Doctor Appointment System:
-Doctor profile creation and specialization.
-Appointment scheduling with patients.
-Patient medical history access.
-Prescription generation and management.
-Automated reminders for appointments.
-Secure messaging between doctors and patients.
+As an admin I can,
+change my password
+reset a forgotten password through OTP sent to email
+accept a request for the registration of a doctor
 
-Admin Dashboard:
-User management and access control.
-Health package creation and management.
-Monitoring appointment requests.
-Sales and revenue analytics.
-Dashboard customization options.
-System configuration settings.
 
-Messaging System:
-Real-time chat functionality.
-Message history and archiving.
-Secure messaging with end-to-end encryption.
-Notification system for new messages.
-Group messaging for healthcare teams.
-File and image sharing in messages.
+As a patient I can,
+upload/remove documents (PDF,JPEG,JPG,PNG) for my medical history
+login with username and password
+change my password
+view registered family members
+filter appointments by date/status
+view uploaded health records
+view all new and old prescriptions and their statuses (filled/ not filled)
+view health package options and details
+view the amount in my wallet
+chat with a doctor
+view the details of my selected prescription
+start/end a video call with the doctor
 
-Medication Store:
-Medication catalog with detailed information.
-Medication search and filtering.
-Shopping cart and order placement.
-Order tracking and history.
-Online payment integration.
-User reviews and ratings for medications.
 
-Health Package System:
-Creation and customization of health packages.
-Subscription management for users.
-Health package analytics and reports.
-Automated reminders for health checkups.
-Integration with patient profiles.
-Personalized health recommendations.
 
-Prescription System:
-Prescription creation with detailed instructions.
-Integration with pharmacy for fulfillment.
-Prescription history for doctors and patients.
+
+As a doctor I can,
+login with username and password
+edit/ update my email, hourly rate or affiliation (hospital)
+view and accept the employment contract
+filter appointments by date/status
+view uploaded health records 
+view all new and old prescriptions and their statuses (filled/ not filled)
+view a list of all my patients
+filter patients based on upcoming appointments
+receive a notification of my appointment on the system and by mail 
+filter appointments by date or status (upcoming, completed, cancelled, rescheduled)
+start/end a video call with the doctor
+view the amount in my wallet
 
 ## Code Examples💻
 ### Example 1: How to Create a Patient(Backend)

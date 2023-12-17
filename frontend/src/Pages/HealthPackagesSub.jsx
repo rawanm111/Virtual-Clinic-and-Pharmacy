@@ -25,6 +25,8 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import Modal from '@mui/material/Modal';
+import { FaMessage} from 'react-icons/fa6';
+import Notif from "./notifModal";
 export default function HealthPackagesView() {
   const [healthPackages, setHealthPackages] = useState([]);
   
@@ -620,7 +622,7 @@ export default function HealthPackagesView() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"530px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -635,6 +637,8 @@ export default function HealthPackagesView() {
     <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
     
   </a>
+ 
+
   <div
     className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
     aria-labelledby="profileDropdown"
@@ -658,7 +662,14 @@ export default function HealthPackagesView() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
+<li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
             </ul>
           </div>
         </div>

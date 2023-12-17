@@ -24,7 +24,7 @@ import { useNavigate } from 'react-router-dom';
 import { FaMessage } from 'react-icons/fa6';
 import CallIcon from '@mui/icons-material/Call';
 import IconButton from '@mui/material/IconButton';
-
+import Notif from "./notifModal";
 const socket = io.connect("http://localhost:3002");
 
 function Messages() {
@@ -258,11 +258,11 @@ function Messages() {
       
       <div>
          <title>MetaCare </title>
-    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+         <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
-              <a className="navbar-brand" >
+              <a className="navbar-brand">
                 Meta<span>Care</span>
               </a>
               
@@ -288,10 +288,10 @@ function Messages() {
             <span className="oi oi-menu" /> Menu
           </button>
         
-          <div className="collapse navbar-collapse" id="ftco-nav">
+          <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item" style={{marginRight:"10px"} }>
-                <a href="index.html" className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)}>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
               </li>
@@ -302,7 +302,7 @@ function Messages() {
               >
                 <a
                   className="nav-link dropdown-toggle"
-                  href="#"
+                  style={{cursor:"pointer" } }
                   id="doctorsDropdown"
                   role="button"
                   data-toggle="dropdown"
@@ -317,22 +317,22 @@ function Messages() {
                   }`}
                   aria-labelledby="personalDropdown"
                 >
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/my-fam/${id}`)}>
+                  onClick={() => navigate(`/my-fam/${id}`)}>
                     My Family
                   </a>
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/MedHistory/${id}`)}>
+                   onClick={() => navigate(`/MedHistory/${id}`)}>
                     My Medical History
                   </a>
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/Prescription/${id}`)}>
+                   onClick={() => navigate(`/Prescription/${id}`)}>
                     My Prescriptions
                   </a>
                  
@@ -340,13 +340,13 @@ function Messages() {
               </li>
               {/* New dropdown for Doctors */}
               <li
-                className="nav-item dropdown active"
+                className="nav-item dropdown"
                 onMouseEnter={() => setShowDoctorsDropdown(true)}
                 onMouseLeave={() => setShowDoctorsDropdown(false)}
               >
                 <a
                   className="nav-link dropdown-toggle"
-                  href="#"
+                  style={{cursor:"pointer" } }
                   id="doctorsDropdown"
                   role="button"
                   data-toggle="dropdown"
@@ -361,27 +361,27 @@ function Messages() {
                   }`}
                   aria-labelledby="doctorsDropdown"
                 >
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/doctorsTable/${id}`)}>
+                  onClick={() => navigate(`/doctorsTable/${id}`)}>
                     Doctors List
                   </a>
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#"  onClick={() => navigate(`/appPagePatient/${id}`)}>
+                  onClick={() => navigate(`/appPagePatient/${id}`)}>
                     My Appointments
                   </a>
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/appPagePatient/${id}`)}>
+                  onClick={() => navigate(`/appPagePatientt/${id}`)}>
                     Book Appointment
                   </a>
                 </div>
               </li>
-              
+              {/* New dropdown for Health Packages */}
               <li
                 className="nav-item dropdown"
                 onMouseEnter={() => setShowHealthPackagesDropdown(true)}
@@ -389,12 +389,13 @@ function Messages() {
               >
                 <a
                   className="nav-link dropdown-toggle"
-                  href="#"
+                  style={{cursor:"pointer" } }
                   id="doctorsDropdown"
                   role="button"
                   data-toggle="dropdown"
                   aria-haspopup="true"
                   aria-expanded={setShowHealthPackagesDropdown}
+                  
                 >
                   Pricings
                 </a>
@@ -404,37 +405,33 @@ function Messages() {
                   }`}
                   aria-labelledby="doctorsDropdown"
                 >
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/health-packages-VIEW/${id}`)}>
+                 onClick={() => navigate(`/health-packages-VIEW/${id}`)}>
                     Health Packages
                   </a>
-                  <a className="dropdown-item" 
+                  <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/health-packages-sub/${id}`)}>
+                 onClick={() => navigate(`/health-packages-sub/${id}`)}>
                     Subscribed Packages
                   </a>
                  
                 </div>
               </li>
               {/* Profile dropdown */}
-
-              <li className="nav-item " style={{marginLeft:"600px"}} >
-                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/messages/${id}`)}>
-                <FaMessage style={{ fontSize: '20px'}} />
-                </a>
-              </li>   
+              
+    
 <li
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"520px"}}
 >
-  <a
+  <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
-    href="#"
+   
     id="profileDropdown"
     role="button"
     data-toggle="dropdown"
@@ -449,16 +446,16 @@ function Messages() {
     className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
     aria-labelledby="profileDropdown"
   >
-    <a className="dropdown-item" 
+    <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/changepassTwo/${id}`)}>
+                  onClick={handleOpenChangePassword}>
       Change Password
     </a>
-    <a className="dropdown-item" 
+    <a className="dropdown-item" style={{cursor:"pointer" } }
                   onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
                   onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  href="#" onClick={() => navigate(`/clinic`)}>
+              onClick={() => navigate(`/clinic`)}>
       Logout
     </a>
   </div>
@@ -468,6 +465,15 @@ function Messages() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
+<li className="nav-item ">
+<Notif/>
+</li>
+<li className="nav-item active"  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
+
 
             </ul>
           </div>

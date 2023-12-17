@@ -20,6 +20,7 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import Notif from "./notifModal";
+import { FaMessage} from 'react-icons/fa6';
 import {
   Dialog,
   DialogTitle,
@@ -1009,7 +1010,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"550px"}}
+  style={{marginLeft:"530px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -1049,7 +1050,11 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 </li>
 <li className="nav-item ">
 <Notif/>
-</li>
+</li><li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
             </ul>
           </div>
         </div>

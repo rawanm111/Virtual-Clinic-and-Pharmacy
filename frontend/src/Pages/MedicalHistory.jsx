@@ -36,6 +36,7 @@ import Modal from '@mui/material/Modal';
 import { TextField,  Container, Box } from '@mui/material';
 import WalletModal from './walletModal';
 import Notif from "./notifModal";
+import { FaMessage} from 'react-icons/fa6';
 export default function MedHistoryPatient() {
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -298,13 +299,13 @@ export default function MedHistoryPatient() {
         
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -476,6 +477,12 @@ export default function MedHistoryPatient() {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
+
             </ul>
           </div>
         </div>

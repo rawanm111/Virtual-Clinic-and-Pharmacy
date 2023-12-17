@@ -55,7 +55,8 @@ import SalesRepo from "./Pages/SalesrReportAdmin"
 import SalesRepoPharm from "./Pages/SalesReportPharm"
 import Video from "./Pages/videoCallPatient";
 import New from "./Pages/New";
-
+import ChangePassword from "./Pages/changepassword";
+import ChangePasswordTwo from "./Pages/changePasswordTwo";
 
 import PharmacistWallet from "./Pages/walletModalPharmacist";
 export default function Paths() {
@@ -112,7 +113,7 @@ export default function Paths() {
         <Route path="/follow-ups/:id"element={<FU/>}  />
         <Route path="/chats/:username"element={<ChatsPage/>}  />
         <Route path="/messages/:id"element={<Messages/>}  />
-        <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
+        <Route path="/messagesDoctoPat/:id"element={<MessagesDoc/>}  />
         <Route path="/messagesPharmtoDoc/:id"element={<MessagesPharmToDoc/>}  />
         <Route path="/messagesPharmtoPat/:id"element={<MessagesPharmToPat/>}  />
         <Route path="/messagesPattoPharm/:id"element={<MessagesPatToPharm/>}  />
@@ -125,7 +126,8 @@ export default function Paths() {
         <Route path="/messages/:id"element={<Messages/>}  />
         <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />
         <Route path="/new"element={<New/>}  />
-        
+        <Route path="/changepass/:username"element={<ChangePassword/>} />
+        <Route path="/changepassTwo/:id"element={<ChangePasswordTwo/>} />
       </Routes>
     </Router>
   );

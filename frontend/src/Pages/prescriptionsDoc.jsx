@@ -32,6 +32,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import Notif from "./notifdoc";
+import { FaMessage} from 'react-icons/fa6';
 const PageContainer = styled('div')({
   backgroundColor: 'white',
   padding: '16px',
@@ -50,7 +51,7 @@ const modalStyle = {
 };
 
 function MedHistory() {
-
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
    const [openPrescriptionModal, setOpenPrescriptionModal] = useState(false);
    const [pid, setPatId] = useState(0);
    const [prescriptionData, setPrescriptionData] = useState({
@@ -704,7 +705,7 @@ const handleDosageChangee = (index, event) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -1018,6 +1019,47 @@ const handleDosageChangee = (index, event) => {
 <li className="nav-item ">
 <Notif/>
 </li>
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
             </ul>
           </div>
         </div>

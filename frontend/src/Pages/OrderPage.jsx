@@ -340,7 +340,7 @@ function OrderPage() {
                       ))}
                     </div>
                     <p>
-                    <span className="price">Total Price: ${order.items.reduce((total, item) => total + (item.price * item.quantity), 0)}</span>
+                    <span className="price">Total Price: ${order.items.reduce((total, item) => total + (item.price * item.quantity), 0)}</span>
                     </p>
                     <p className="button text-center">
                       <Button

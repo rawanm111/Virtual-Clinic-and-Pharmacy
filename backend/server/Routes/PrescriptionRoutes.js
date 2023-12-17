@@ -8,7 +8,7 @@ router.get('/:doctorId', PrescriptionController.getPrescriptionsForDoctor);
 router.get('/', PrescriptionController.getAllPrescriptions);
 router.put('/update/:id', PrescriptionController.updatePrescription);
 router.delete('/:id', PrescriptionController.deletePrescription);
-router.get('/pat/:patientId', PrescriptionController.getPrescriptionsForPatient);
+router.get('/pat/:id', PrescriptionController.getPrescriptionsForPatient);
 router.get('/patientPrescription/:id', PrescriptionController.getPrescriptionsForPatient);
 router.post('/create', PrescriptionController.createPrescription);
 

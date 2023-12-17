@@ -24,9 +24,10 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
 import Notif from "./notifdoc";
+import { FaMessage} from 'react-icons/fa6';
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
-
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -35,6 +36,7 @@ import Notif from "./notifdoc";
   const { id } = useParams();
   const [DoctorProfile, setDoctorProfile] = useState([]);
   const [username, setUsername] = useState();
+  
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
   const [passwords, setPasswords] = useState({
     currentPassword: '',
@@ -350,13 +352,13 @@ useEffect(() => {
         
           <div className="collapse navbar-collapse" id="ftco-nav">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a className="nav-link pl-0"  onClick={() => navigate(`/doc-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -401,7 +403,6 @@ useEffect(() => {
                    onClick={() => navigate(`/follow-ups/${id}`)}>
                     Follow-up Requests
                      </a>
-                 
                 </div>
               </li>
               
@@ -419,7 +420,7 @@ useEffect(() => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"650px"}}
+  style={{marginLeft:"570px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -471,7 +472,7 @@ useEffect(() => {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -620,7 +621,7 @@ useEffect(() => {
           />
         </div>
           <div style={{ marginBottom: '1rem',  display: 'flex', justifyContent: 'center'}}>
-            <Button  onClick={handleSubmit}>
+            <Button  onClick={handleSubmitt}>
               Update
             </Button>
           </div>
@@ -733,11 +734,53 @@ useEffect(() => {
 <li className="nav-item ">
 <Notif/>
 </li>
+
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesDoctoPharm/${id}`)}
+  >
+    Chat with Pharmacist
+  </a>
+  </div>
+</li>     
+
             </ul>
           </div>
         </div>
       </nav>
-
       
   <section >
     <div

@@ -21,7 +21,7 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
-
+import { FaMessage} from 'react-icons/fa6';
 
 
 
