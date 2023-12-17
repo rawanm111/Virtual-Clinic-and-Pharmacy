@@ -33,7 +33,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import WalletModal from './walletModal'
 import NotifModel from './NotifModel'
-
+import PharmacistWallet from "./walletModalPharmacist";
+import { FaMessage } from "react-icons/fa6";
 export default function StoreView() {
   const [medicationData, setMedicationData] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -44,7 +45,7 @@ export default function StoreView() {
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const [currentImage, setCurrentImage] = useState(I2);
-  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
+  const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
 const [passwords, setPasswords] = useState({
   currentPassword: '',
   newPassword: '',
@@ -495,7 +496,7 @@ const updatePassword = async (newPassword) => {
           )}
         </div>
       </Modal>
-  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+      <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -552,7 +553,7 @@ const updatePassword = async (newPassword) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"730px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -589,17 +590,63 @@ const updatePassword = async (newPassword) => {
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<WalletModal/>
+<PharmacistWallet/>
+
 </li>
 <li className="nav-item ">
 <NotifModel/>
 
+
+
+</li>
+<li 
+  className="nav-item dropdown active"
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+  
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
+  >
+    Chat with Doctor
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  </div>
 </li>
 
             </ul>
           </div>
         </div>
       </nav>
+
+
 
       
       <section

@@ -22,7 +22,8 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import { useNavigate } from 'react-router-dom';
 import { FaMessage } from "react-icons/fa6";
-
+import NotifModel from './NotifModel'
+import PharmacistWallet from "./walletModalPharmacist";
 
 const socket = io.connect("http://localhost:3002");
 
@@ -264,9 +265,14 @@ function Messages() {
                   Home
                 </a>
               </li>
-              <li className="nav-item" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/pharm-meds/${id}`)} style={{cursor:"pointer" } } >
                   Store
+                </a>
+              </li>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
+                  Sales report 
                 </a>
               </li>
               
@@ -274,55 +280,12 @@ function Messages() {
               
               {/* Profile dropdown */}
               
-
-
-<li 
-  className="nav-item dropdown active"
-  onMouseEnter={() => setShowMessagesDropdown(true)}
-  onMouseLeave={() => setShowMessagesDropdown(false)}
-  style={{marginLeft:"800px"}}
->
-  <a
-    className="nav-link dropdown-toggle"
-    style={{cursor:"pointer" } } 
-    id="profileDropdown"
-    role="button"
-    data-toggle="dropdown"
-    aria-haspopup="true"
-    aria-expanded={showMessagesDropdown}
     
-  >
-    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
-    
-  </a>
-  <div
-    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
-    aria-labelledby="profileDropdown"
-  >
-   <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
-  >
-    Chat with Doctor
-  </a>
-  <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
-  >
-    Chat with Patient
-  </a>
-  </div>
-</li>
-
 <li 
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"800px"}}
+  style={{marginLeft:"730px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -359,7 +322,55 @@ function Messages() {
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<WalletModal/>
+<PharmacistWallet/>
+
+</li>
+<li className="nav-item ">
+<NotifModel/>
+
+
+
+</li>
+<li 
+  className="nav-item dropdown active"
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+  
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
+  >
+    Chat with Doctor
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  </div>
 </li>
 
             </ul>

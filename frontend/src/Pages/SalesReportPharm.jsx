@@ -31,13 +31,14 @@ import WalletModal from './walletModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import NotifModel from './NotifModel'
-
+import PharmacistWallet from "./walletModalPharmacist";
+import { FaMessage } from "react-icons/fa6";
 
  export default function() {
     const [currentImage, setCurrentImage] = useState(I2);
     const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
     const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
     const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
@@ -305,7 +306,7 @@ import NotifModel from './NotifModel'
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -347,7 +348,7 @@ import NotifModel from './NotifModel'
                   Store
                 </a>
               </li>
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item active " style={{marginRight:"10px"} }>
                 <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
                   Sales report 
                 </a>
@@ -362,7 +363,7 @@ import NotifModel from './NotifModel'
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"730px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -399,17 +400,63 @@ import NotifModel from './NotifModel'
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<WalletModal/>
+<PharmacistWallet/>
+
 </li>
 <li className="nav-item ">
 <NotifModel/>
 
+
+
+</li>
+<li 
+  className="nav-item dropdown active"
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+  
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
+  >
+    Chat with Doctor
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  </div>
 </li>
 
             </ul>
           </div>
         </div>
       </nav>
+
+
 
       <section
       className="hero-wrap hero-wrap-2"

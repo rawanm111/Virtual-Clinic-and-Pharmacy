@@ -24,7 +24,7 @@ import Modal from '@mui/material/Modal';
 import WalletModal from './walletModal'
 import NotifModel from './NotifModel'
 import PharmacistWallet from "./walletModalPharmacist";
-
+import { FaMessage } from "react-icons/fa6";
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
@@ -33,6 +33,7 @@ import PharmacistWallet from "./walletModalPharmacist";
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
+  const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
   const [passwords, setPasswords] = useState({
     currentPassword: '',
@@ -234,7 +235,7 @@ useEffect(() => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"750px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -271,13 +272,55 @@ useEffect(() => {
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<WalletModal/>
+<PharmacistWallet/>
 
 </li>
 <li className="nav-item ">
 <NotifModel/>
 
-<PharmacistWallet/>
+
+
+</li>
+<li 
+  className="nav-item dropdown active"
+  onMouseEnter={() => setShowMessagesDropdown(true)}
+  onMouseLeave={() => setShowMessagesDropdown(false)}
+  
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showMessagesDropdown}
+    
+  >
+    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+   <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
+  >
+    Chat with Doctor
+  </a>
+  <a
+    className="dropdown-item" style={{cursor:"pointer" } } 
+    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
+  >
+    Chat with Patient
+  </a>
+  </div>
 </li>
 
             </ul>

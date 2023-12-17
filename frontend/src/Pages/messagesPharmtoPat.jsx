@@ -21,8 +21,9 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import { useNavigate } from 'react-router-dom';
-import { FaMessage } from 'react-icons/fa6';
-
+import NotifModel from './NotifModel'
+import PharmacistWallet from "./walletModalPharmacist";
+import { FaMessage } from "react-icons/fa6";
 const socket = io.connect("http://localhost:3002");
 
 function Messages() {
@@ -35,10 +36,10 @@ function Messages() {
     const [doctorsList, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [doctorId, setDoctorId] = useState(null);
-    const chatContainerRef = useRef(null);
+    const chatContainerRef = useRef(null);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
     const [currentImage, setCurrentImage] = useState(I2);
   const [chatStatus, setChatStatus] = useState("empty");
-    const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
+  
 
     const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
     const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
@@ -225,7 +226,7 @@ function Messages() {
       
       <div>
          <title>MetaCare </title>
-  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+         <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -262,9 +263,14 @@ function Messages() {
                   Home
                 </a>
               </li>
-              <li className="nav-item" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/pharm-meds/${id}`)} style={{cursor:"pointer" } } >
                   Store
+                </a>
+              </li>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
+                  Sales report 
                 </a>
               </li>
               
@@ -273,11 +279,61 @@ function Messages() {
               {/* Profile dropdown */}
               
     
-              <li 
+<li 
+  className="nav-item dropdown "
+  onMouseEnter={() => setShowProfileDropdown(true)}
+  onMouseLeave={() => setShowProfileDropdown(false)}
+  style={{marginLeft:"730px"}}
+>
+  <a
+    className="nav-link dropdown-toggle"
+    style={{cursor:"pointer" } } 
+    id="profileDropdown"
+    role="button"
+    data-toggle="dropdown"
+    aria-haspopup="true"
+    aria-expanded={showProfileDropdown}
+    
+  >
+    <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
+    
+  </a>
+  <div
+    className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
+    aria-labelledby="profileDropdown"
+  >
+    <a className="dropdown-item" style={{cursor:"pointer" } } 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                  onClick={handleOpenChangePassword}>
+      Change Password
+    </a>
+    
+    <a className="dropdown-item" style={{cursor:"pointer" } } 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/clinic`)}>
+      Logout
+    </a>
+  </div>
+</li>
+
+{/* Wallet icon without dropdown */}
+<li className="nav-item ">
+<PharmacistWallet/>
+
+</li>
+<li className="nav-item ">
+<NotifModel/>
+
+
+
+</li>
+<li 
   className="nav-item dropdown active"
   onMouseEnter={() => setShowMessagesDropdown(true)}
   onMouseLeave={() => setShowMessagesDropdown(false)}
-  style={{marginLeft:"800px"}}
+  
 >
   <a
     className="nav-link dropdown-toggle"
@@ -315,54 +371,11 @@ function Messages() {
   </div>
 </li>
 
-<li 
-  className="nav-item dropdown "
-  onMouseEnter={() => setShowProfileDropdown(true)}
-  onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"800px"}}
->
-  <a
-    className="nav-link dropdown-toggle"
-    style={{cursor:"pointer" } } 
-    id="profileDropdown"
-    role="button"
-    data-toggle="dropdown"
-    aria-haspopup="true"
-    aria-expanded={showProfileDropdown}
-    
-  >
-    <FaUser style={{ fontSize: '20px', marginRight: '5px' }} />
-    
-  </a>
-  <div
-    className={`dropdown-menu ${showProfileDropdown ? 'show' : ''}`}
-    aria-labelledby="profileDropdown"
-  >
-    <a className="dropdown-item" style={{cursor:"pointer" } } 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                  onClick={handleOpenChangePassword}>
-      Change Password
-    </a>
-    
-    <a className="dropdown-item" style={{cursor:"pointer" } } 
-                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-                   onClick={() => navigate(`/clinic`)}>
-      Logout
-    </a>
-  </div>
-</li>
-
-{/* Wallet icon without dropdown */}
-<li className="nav-item ">
-<WalletModal/>
-</li>
-
             </ul>
           </div>
         </div>
       </nav>
+
 
 
 

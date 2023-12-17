@@ -29,13 +29,15 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-
+import NotifModel from './NotifModel'
+import PharmacistWallet from "./walletModalPharmacist";
+import { FaMessage } from "react-icons/fa6";
 
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
