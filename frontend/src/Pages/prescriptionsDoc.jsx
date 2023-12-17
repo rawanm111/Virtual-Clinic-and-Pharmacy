@@ -332,7 +332,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
       setAlertOpen(true);
     }
   };
-  const handleSubmitt = () => {
+  const handleSubmit = () => {
     axios
       .put(`http://localhost:3000/doctors/${username}`, formData)
       .then((response) => {
@@ -391,7 +391,7 @@ const [selectedPrescriptionIndex, setSelectedPrescriptionIndex] = useState(null)
     dateOfBirth: '',
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmitt = (event) => {
     event.preventDefault();
     
     setSuccess(false);
