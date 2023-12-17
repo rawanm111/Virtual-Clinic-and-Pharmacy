@@ -150,13 +150,13 @@ Prescription history for doctors and patients.
 ## Code Examples💻
 ### Example 1: How to Create a Patient(Backend)
 
-const patientModel = require('../Models/patients');
-const patients = require('../Models/patients');
-const walletModel = require('../Models/Wallet'); // Import the wallet model
-const bcrypt = require('bcrypt');
+    const patientModel = require('../Models/patients');
+    const patients = require('../Models/patients');
+    const walletModel = require('../Models/Wallet'); // Import the wallet model
+    const bcrypt = require('bcrypt');
 
-exports.createPatient = async (req, res) => {
-  const {
+    exports.createPatient = async (req, res) => {
+     const {
     fullName,
     email,
     dateOfBirth,
@@ -167,8 +167,8 @@ exports.createPatient = async (req, res) => {
     emergencyContactRelationToPatient,
     password, 
     username,
-  } = req.body;
-  try {
+    } = req.body;
+    try {
  
       const salt = await bcrypt.genSalt(); 
       const hashedPassword = await bcrypt.hash(password, salt);
@@ -195,15 +195,15 @@ exports.createPatient = async (req, res) => {
       newPatient.wallet = savedWallet._id;
       const savedPatient = await newPatient.save();
       res.status(200).json(savedPatient)
-  } catch (error) {
+    } catch (error) {
       console.error(error);
       res.status(400).json({ error: error.message })
-  } };
+    } };
 
 
 ### Example 2: How to add medicine to cart(Backend)
-  exports.addToCart = async (req, res) => {
-  try {
+    exports.addToCart = async (req, res) => {
+    try {
     const { patientId, medicationId, quantity } = req.body;
 
     // Find the patient's cart or create one if it doesn't exist
@@ -230,42 +230,42 @@ exports.createPatient = async (req, res) => {
     const updatedCart = await cart.save();
 
     res.status(200).json(updatedCart);
-  } catch (err) {
+    } catch (err) {
     res.status(500).json(err);
-  }
-};
+    }
+    };
 
 ### Example 2: How to Change Password(Frontend)
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Alert from '@mui/material/Alert';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
-const isValidPassword = (password) => {
-  const regex = /^(?=.[A-Z])(?=.\d).{4,}$/;
-  return regex.test(password);
-};
-const handleCloseChangePassword = () => {
-  setChangePasswordOpen(false);
-};
+    import React, { useEffect, useState } from 'react';
+    import axios from 'axios';
+    import Alert from '@mui/material/Alert';
+    import { useNavigate } from 'react-router-dom';
+    import { useParams } from 'react-router-dom';
+    const isValidPassword = (password) => {
+    const regex = /^(?=.[A-Z])(?=.\d).{4,}$/;
+    return regex.test(password);
+    };
+    const handleCloseChangePassword = () => {
+    setChangePasswordOpen(false);
+    };
 
-const updatePassword = async (newPassword) => {
-  try {
+    const updatePassword = async (newPassword) => {
+    try {
     // Replace '/api/reset-password' with your actual API endpoint
     const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
     console.log(response.data);
     setAlertType('success');
     setAlertOpen(true);
-  } catch (error) {
+    } catch (error) {
     console.error('Error updating password:', error);
     setAlertType('error');
     setAlertOpen(true);
-  }
-};
+    }
+    };
 
-  const handleOpenChangePassword = () => {
+    const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
-  };
+    };
 
 
 ## Installation 📥
@@ -379,10 +379,14 @@ http://localhost:3000/Order
 
 
 ## Tests 🧪
-
-
-
-
+The api routes were tested using postman,
+Postman is an application used for API testing. It is an HTTP client that tests HTTP requests, utilizing a graphical user interface, through which we obtain different types of responses that need to be subsequently validated. Postman offers many endpoint interaction methods. The following are some of the most used, including their functions:
+*   GET: Obtain information
+*   POST: Add information
+*   PUT: Replace information
+*   PATCH: Update certain information
+*   DELETE: Delete information
+& And we tested the behavior of our routes and if they produce the correct status code and response according to our project flow .you will fine the main routes in app.js. and the sub ones in each parts routes folder in the backend. For example, you will find something  like this in the app.js “app.use('/patients', PatientRoutes);” and something like this in the routes file of patients” router.get('/', PatientController.getPatient);” so you test like this.      http://localhost:3000/patients/  using “get” in postman. In this way you can test almost all aspects of the project for example here patient registration by getting all patients.
 
 
 
@@ -395,3 +399,34 @@ http://localhost:3000/Order
  ### To run Frontend
  -cd frontend
  -npm start
+
+## Contribute
+ We welcome contributions via pull requests! To contribute code, follow these steps:
+
+1. Fork the repository to your GitHub account.
+2. Create a new branch for your feature or bug fix: git checkout -b feature-branch.
+3. Write tests for your changes if applicable.
+4. Commit your changes with a clear and descriptive commit message.
+5. Push your branch to your fork: git push origin feature-branch.
+6. Open a pull request on the [main repository](https://github.com/advanced-computer-lab-2023/The-Team-Clinic.git) with a clear title and description of your changes.
+
+ ## Credits
+ The main resources that helped us in our implementation:
+https://www.youtube.com/@NetNinja
+https://mui.com/
+https://react-bootstrap.github.io/getting-started/introduction/
+https://www.npmjs.com/            MERN Stack Crash Course Tutorial
+• MERN stack authentication + profile                         MERN Auth Tutorial
+
+ ## Lisence
+- [Stripe](https://stripe.com): Payment processing library (License: Apache 2.0)
+- [Axios](https://axios-http.com): HTTP client for making requests (License: MIT)
+- [FontAwesome](https://fontawesome.com): Icons used in the project (License: [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/))
+- [React](https://reactjs.org): JavaScript library for building user interfaces (License: MIT)
+- [Node.js](https://nodejs.org): A JavaScript runtime (License: MIT)
+- [MongoDB](https://www.mongodb.com): A NoSQL database (License: Server Side Public License (SSPL))
+- [Socket.IO](https://socket.io): A library for real-time web applications (License: MIT)
+- [Express (Node.js)](https://expressjs.com): A minimal and flexible web application framework (License: MIT)
+- [Bootstrap](https://react-bootstrap.github.io): CSS framework (License: MIT)
+- [Material-UI](https://material-ui.com): CSS framework (License: MIT)
+- [Git](https://git-scm.com): Distributed version control system (License: GNU General Public License (GPL))
