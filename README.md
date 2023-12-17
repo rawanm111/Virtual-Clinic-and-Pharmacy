@@ -2,6 +2,7 @@
 
 The Clinic Management System streamlines patient registration, doctor requests, and administrative tasks. Patients can manage records, appointments, prescriptions, and health packages, while doctors gain a comprehensive view of patient data. The system enhances communication through video calls, making healthcare accessible.
 
+
 ## Build Status 🔨
 [![Build Status](Your_CI_Service_Build_Badge_Link)](Your_CI_Service_Build_Link)
 
@@ -9,9 +10,9 @@ The build status reflects the current state of continuous integration for this p
 
 Please note the following considerations:
 
-- **Styles:** Prefer using external styles (CSS files) over inline styles for better separation of concerns. This practice promotes maintainability and readability in the long run.
+- *Styles:* Prefer using external styles (CSS files) over inline styles for better separation of concerns. This practice promotes maintainability and readability in the long run.
 
-- **Reusable Components:** Encourage the use of reusable components, such as AppBars, to enhance code modularity and maintainability. The project encourages encapsulating common functionalities in separate components for easier maintenance and future enhancements.
+- *Reusable Components:* Encourage the use of reusable components, such as AppBars, to enhance code modularity and maintainability. The project encourages encapsulating common functionalities in separate components for easier maintenance and future enhancements.
 
 Addressing these considerations will contribute to a more robust and maintainable codebase.
 
@@ -21,7 +22,7 @@ The project follows a consistent coding style to ensure readability and maintain
 
  ### 1. File Organization
 
-- **Import Statements:** Keep import statements organized at the top of each file.
+- *Import Statements:* Keep import statements organized at the top of each file.
 
  ### 2. Component Structure
 
@@ -29,11 +30,11 @@ The project follows a consistent coding style to ensure readability and maintain
 
  ### 3. React Hooks
 
-- Leverage React Hooks (`useState`, `useEffect`, etc.) for managing state and side effects in functional components.
+- Leverage React Hooks (useState, useEffect, etc.) for managing state and side effects in functional components.
 
  ### 4. Axios Requests
 
-- Make asynchronous requests using Axios within the `useEffect` hook.
+- Make asynchronous requests using Axios within the useEffect hook.
 
  ### 5. Conditional Rendering
 
@@ -51,8 +52,9 @@ Feel free to refer to the existing codebase for examples of these conventions.
 ## Screenshots 🖵
 here is the Patient's main page
 ![Patient_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/bb39b842-2318-4120-a117-fadf8d97f942)
-Health Packages
+Don't miss our discounts on the Health Packages
 ![Health_Packages](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/9e867f58-e7b7-42d0-af85-d5b7a7ad8aab)
+
 ![Change_Password](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/cdbd7943-6121-46d8-b79c-d0fcd51f1147)
 ![Admin_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e71380a6-b9e1-4987-aafc-6c9ff5756cd9)
 ![User_Management](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/e6b48f4f-48a0-4086-b9ba-40f9b82eeba3)
@@ -167,6 +169,7 @@ exports.createPatient = async (req, res) => {
     username,
   } = req.body;
   try {
+ 
       const salt = await bcrypt.genSalt(); 
       const hashedPassword = await bcrypt.hash(password, salt);
       const newPatient= new patientModel({
@@ -181,6 +184,7 @@ exports.createPatient = async (req, res) => {
         emergencyContactRelationToPatient,
         password: hashedPassword,
       });
+
       const newWallet = new walletModel({
         patient: newPatient._id, // Assuming patientModel has an _id field
         balance: 0, // You can set an initial balance if needed
@@ -201,25 +205,31 @@ exports.createPatient = async (req, res) => {
   exports.addToCart = async (req, res) => {
   try {
     const { patientId, medicationId, quantity } = req.body;
- // Find the patient's cart or create one if it doesn't exist
+
+    // Find the patient's cart or create one if it doesn't exist
     let cart = await Cart.findOne({ patientId });
+
     if (!cart) {
       cart = new Cart({patientId, medications: [] });
     }
-// Check if the medication is already in the cart
+
+    // Check if the medication is already in the cart
     const existingMedication = cart.medications.find(
       (item) => item.medicationId.toString() === medicationId
     );
- if (existingMedication) {
+
+    if (existingMedication) {
       // If the medication is already in the cart, update its quantity
       existingMedication.quantity += quantity;
     } else {
       // If not, add the medication to the cart
       cart.medications.push({ medicationId, quantity });
     }
- // Save the cart
+
+    // Save the cart
     const updatedCart = await cart.save();
-  res.status(200).json(updatedCart);
+
+    res.status(200).json(updatedCart);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -232,7 +242,7 @@ import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 const isValidPassword = (password) => {
-  const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
+  const regex = /^(?=.[A-Z])(?=.\d).{4,}$/;
   return regex.test(password);
 };
 const handleCloseChangePassword = () => {
@@ -252,7 +262,8 @@ const updatePassword = async (newPassword) => {
     setAlertOpen(true);
   }
 };
-const handleOpenChangePassword = () => {
+
+  const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
   };
 
@@ -313,57 +324,57 @@ Visit http://localhost:3001 in your web browser to view the application.
 
 ## API Reference 📚
 ### Base URL
-The base URL for all API endpoints is `http://localhost:3000/`.
+The base URL for all API endpoints is http://localhost:3000/.
 ### medsRoutes
-`http://localhost:3000/meds/`
+http://localhost:3000/meds/
 
 ### DoctorsRouts
-`http://localhost:3000/doctors`
+http://localhost:3000/doctors
 
 ### PatientsRoutes
-`http://localhost:3000/patients`
+http://localhost:3000/patients
 
 ### AppsRoutes 
-`http://localhost:3000/apps`
+http://localhost:3000/apps
 
 ### Health-PackagesRoutes
-`http://localhost:3000/health-packages`
+http://localhost:3000/health-packages
 
 ### Doctors-RequestsRouts
-`http://localhost:3000/api/drReq`
+http://localhost:3000/api/drReq
 
 ### Health-RecordsRoutes
-`http://localhost:3000/HealthRecords`
+http://localhost:3000/HealthRecords
 
 ### PrescriptionRoutes
-`http://localhost:3000/Prescription`
+http://localhost:3000/Prescription
 
 ### AdminRoutes
-`http://localhost:3000/admin`
+http://localhost:3000/admin
 
 ### LoginRoutes
-`http://localhost:3000/login`
+http://localhost:3000/login
 
 ### WalletRoutes
-`http://localhost:3000/wallet`
+http://localhost:3000/wallet
 
 ### WalletdocRoutes
-`http://localhost:3000/walletDoc`
+http://localhost:3000/walletDoc
 
 ### Cart
-`http://localhost:3000/cart`
+http://localhost:3000/cart
 
 ### AddressRoutes
-`http://localhost:3000/address`
+http://localhost:3000/address
 
 ### MedhistoryRoutes
-`http://localhost:3000/medHistory`
+http://localhost:3000/medHistory
 
 ### EmploymentContract
-`http://localhost:3000/employmentContract`
+http://localhost:3000/employmentContract
 
 ### OrderRoutes
-`http://localhost:3000/Order`
+http://localhost:3000/Order
 
 
 
