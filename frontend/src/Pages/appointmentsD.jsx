@@ -60,6 +60,8 @@ const [alertType2, setAlertType2] = useState(null);
 const [isAlertOpen2, setAlertOpen2] = useState(false);
 const [alertType3, setAlertType3] = useState(null);
 const [isAlertOpen3, setAlertOpen3] = useState(false);
+const [alertType4, setAlertType4] = useState(null);
+const [isAlertOpen4, setAlertOpen4] = useState(false);
 
 const handleAlertClose = () => {
   setAlertOpen(false);
@@ -77,6 +79,10 @@ const handleAlertClose2 = () => {
 const handleAlertClose3 = () => {
   setAlertOpen3(false);
   setAlertType3(null);
+};
+const handleAlertClose4 = () => {
+  setAlertOpen4(false);
+  setAlertType4(null);
 };
 
 useEffect(() => {
@@ -122,6 +128,17 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }
 }, [isAlertOpen3]);
+
+useEffect(() => {
+  if (isAlertOpen4) {
+    const timer = setTimeout(() => {
+      setAlertOpen4(false);  // Use the state updater function
+      setAlertType4(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen4]);
   
  const openModal =(selectedapp) => {
   setApp(selectedapp);
@@ -438,15 +455,19 @@ useEffect(() => {
       setAlertOpen(true);
     }
   };
-  const handleSubmitt = () => {
+  const handleSubmit = () => {
     axios
       .put(`http://localhost:3000/doctors/${username}`, formData)
       .then((response) => {
+        setAlertType4('success');
+        setAlertOpen4(true);
         console.log('Updated doctor:', response.data);
         handleCloseUpdateModal(); // Close the update modal after updating
       })
       .catch((error) => {
         console.error('Error updating doctor:', error);
+        setAlertType4('error');
+        setAlertOpen4(true);
       });
   };
 
@@ -493,7 +514,7 @@ useEffect(() => {
     dateOfBirth: '',
   });
 
-  const handleSubmit = (event) => {
+  const handleSubmitt = (event) => {
     event.preventDefault();
     
     setSuccess(false);
@@ -700,6 +721,40 @@ useEffect(() => {
           {alertType3 === 'error' && (
             <Alert severity="warning" onClose={handleAlertClose3}>
           Selected date is before the current date
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen4}
+        onClose={handleAlertClose4}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType4 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose4}>
+            Your info updated successfully
+            </Alert>
+          )}
+          {alertType4 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose4}>
+           Failed to update your Info
             </Alert>
           )}
         </div>
