@@ -1,6 +1,8 @@
 const pharmacistModel = require('../Models/pharmacists');
 const Wallet = require('../Models/Wallet');
 const { default: mongoose } = require('mongoose');
+
+const EmploymentContract = require('../Models/EmploymentContract'); 
 const e = require('express');
 const bcrypt = require('bcrypt');
 
@@ -32,6 +34,8 @@ exports.createPharmacist = async (req, res) => {
       educationalBackground,
       password: hashedPassword 
     });
+    // Create an employment contract for the doctor
+ 
 
     console.log('New Pharmacist:', newPharmacist); 
 

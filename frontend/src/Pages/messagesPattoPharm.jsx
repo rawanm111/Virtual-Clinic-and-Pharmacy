@@ -248,7 +248,7 @@ function Messages() {
                 </a>
               </li>
               <li
-                className="nav-item   dropdown"
+                className="nav-item dropdown "
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -288,19 +288,13 @@ function Messages() {
              
               
               {/* Profile dropdown */}
-
-              <li className="nav-item active " style={{marginLeft:"800px"}} >
-                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/messagesPattoPharm/${id}`)}>
-                <FaMessage style={{ fontSize: '20px'}} />
-                </a>
-              </li>         
+              
     
-
 <li
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  // style={{marginLeft:"850px"}}
+  style={{marginLeft:"800px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -343,12 +337,17 @@ function Messages() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item  active"  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/messagesPattoPharm/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>      
 
             </ul>
           </div>
         </div>
       </nav>
+
 
   <Grid container spacing={2} style={{ height: '80vh',backgroundColor:"" }}>
   {/* Doctor List Column */}

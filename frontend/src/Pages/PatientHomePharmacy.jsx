@@ -22,7 +22,7 @@ import I3 from "../images/bg_2.jpg";
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
 import WalletModal from './walletModal';
 import { FaUser, FaWallet, FaShoppingBasket  } from 'react-icons/fa';
-
+import { FaMessage } from 'react-icons/fa6';
 
  export default function() {
   
@@ -164,7 +164,7 @@ const updatePassword = async (newPassword) => {
           )}
         </div>
       </Modal>
-   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+      <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -248,7 +248,7 @@ const updatePassword = async (newPassword) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"850px"}}
+  style={{marginLeft:"800px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -291,7 +291,11 @@ const updatePassword = async (newPassword) => {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item  "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/messagesPattoPharm/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>      
 
             </ul>
           </div>

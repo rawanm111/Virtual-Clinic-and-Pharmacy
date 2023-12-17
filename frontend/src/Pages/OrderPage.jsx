@@ -30,7 +30,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
-
+import { FaMessage } from 'react-icons/fa6';
 function OrderPage() {
   const [orderDetails, setOrderDetails] = useState(null);
   const [medicationNames, setMedicationNames] = useState([]);
@@ -184,7 +184,7 @@ function OrderPage() {
                 </a>
               </li>
               <li
-                className="nav-item  active dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -230,7 +230,7 @@ function OrderPage() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"850px"}}
+  style={{marginLeft:"800px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -273,7 +273,11 @@ function OrderPage() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item  "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" } } onClick={() => navigate(`/messagesPattoPharm/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>      
 
             </ul>
           </div>

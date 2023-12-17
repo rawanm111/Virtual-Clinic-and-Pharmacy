@@ -246,6 +246,7 @@ const updatePassword = async (newPassword) => {
     availableQuantity: 0,
     medicalUse: '',
     picture: '',
+    activeIngredient:'',
   });
 
   const [open, setOpen] = useState(false);
@@ -374,11 +375,20 @@ const updatePassword = async (newPassword) => {
 </IconButton>
 
                     </p>
+                    <h3 className="text-dark" style={{ height: '50px' }}>
+                      <a>Active Ingredients:</a>
+                     
+                    </h3>
+                    <p>
+                      {medication.activeIngredient}
+                     
+                    </p>
                 
                     <h3 className="text-dark" style={{ height: '50px' }}>
                     <a>Price</a>
                    
                   </h3>
+                  
                   <p>
                     {medication.discountedPrice ? (
                       <>
@@ -841,6 +851,17 @@ const updatePassword = async (newPassword) => {
               <div style={{ marginBottom: '1rem' }}>
                 <TextField
                   fullWidth
+                  label="Active Ingredients"
+                  variant="outlined"
+                  type="String"
+                  name="activeIngredient"
+                  value={formData.activeIngredient}
+                  onChange={handleInputChange}
+                />
+              </div>
+              <div style={{ marginBottom: '1rem' }}>
+                <TextField
+                  fullWidth
                   label="Picture"
                   variant="outlined"
                   type="String"
@@ -849,6 +870,7 @@ const updatePassword = async (newPassword) => {
                   onChange={handleInputChange}
                 />
               </div>
+              
               <Button  onClick={handleSubmitt}>
                 Create Medication
               </Button>

@@ -103,11 +103,22 @@ exports.cancelOrder = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: 'Order not found' });
     }
-  }catch (err) {
+
+    if (order.status !== 'pending') {
+      return res.status(400).json({ message: 'Order cannot be canceled' });
+    }
+
+    // Update the order status to "canceled"
+    order.status = 'canceled';
+
+    // Save the updated order
+    const updatedOrder = await order.save();
+
+    res.status(200).json(updatedOrder);
+  } catch (err) {
     res.status(500).json(err);
   }
 };
-
 exports.getAllOrders = async (req, res) => {
   try {
     // Find all orders

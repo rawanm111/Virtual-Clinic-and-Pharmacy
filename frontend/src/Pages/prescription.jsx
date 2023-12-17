@@ -36,7 +36,7 @@ import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Notif from "./notifModal";
-
+import { FaMessage} from 'react-icons/fa6';
 console.log('Prescription component is rendering.');
 
   
@@ -589,7 +589,11 @@ const updatePassword = async (newPassword) => {
 </li>
 <li className="nav-item ">
 <Notif/>
-</li>
+</li><li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
             </ul>
           </div>
         </div>

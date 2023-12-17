@@ -4,8 +4,10 @@ exports.createmeds = async (req, res) => {
   try {
     const newmed = new meds(req.body);
     const savedmed = await newmed.save();
+    console.log("hey");
     res.status(201).json(savedmed);
   } catch (err) {
+    console.error(err);
     res.status(500).json(err);
   }
 };

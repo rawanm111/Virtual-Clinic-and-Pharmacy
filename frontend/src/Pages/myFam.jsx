@@ -23,9 +23,9 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
 import AddIcon from '@mui/icons-material/Add';
-
-
-
+import { FaMessage} from 'react-icons/fa6';
+import WalletModal from './walletModal';
+import Notif from "./notifModal";
 const style = {
   position: 'absolute',
   top: '50%',
@@ -342,7 +342,13 @@ aria-labelledby="profileDropdown"
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li><li className="nav-item "  >
+                <a  className="nav-link pl-0"  style={{cursor:"pointer" ,marginLeft:'5px'} } onClick={() => navigate(`/messages/${id}`)}>
+                <FaMessage style={{ fontSize: '20px'}} />
+                </a>
+              </li>  
         </ul>
       </div>
     </div>

@@ -757,7 +757,7 @@ const handleDosageChangee = (index, event) => {
             <Typography variant="h4" component="div" sx={{ color: '#007bff' , fontWeight: 'bold', textAlign: 'center'}}>
               Change Password
             </Typography>
-            <Box component="form" onSubmit={handleSubmitt} sx={{ mt: 3 }}>
+            <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3 }}>
               <TextField
                 variant="outlined"
                 margin="normal"
@@ -906,7 +906,7 @@ const handleDosageChangee = (index, event) => {
           />
         </div>
           <div style={{ marginBottom: '1rem',  display: 'flex', justifyContent: 'center'}}>
-            <Button  onClick={handleSubmit}>
+            <Button  onClick={handleSubmitt}>
               Update
             </Button>
           </div>

@@ -342,14 +342,9 @@ const LoginPage = () => {
             navigate(`/pharm-patient-home/${userId}`);
             break;
           case 'pharmacist':
-            const contractStatusResponse = await axios.get(`http://localhost:3000/employmentContract/status/${userId}`);
-            const contractStatus = contractStatusResponse.data.status;
-  
-            if (contractStatus === 'Inactive') {
-              navigate(`/EmploymentContract/${userId}`);
-            } else {
+            
               navigate(`/pharm-home/${userId}`);
-            }
+            
             break;
           default:
             
