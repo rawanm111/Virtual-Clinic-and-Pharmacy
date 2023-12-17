@@ -49,7 +49,7 @@ The project follows a consistent coding style to ensure readability and maintain
 Feel free to refer to the existing codebase for examples of these conventions.
 
 ## Screenshots 🖵
-Patient Home
+here is the Patient's main page
 ![Patient_Home](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/bb39b842-2318-4120-a117-fadf8d97f942)
 Health Packages
 ![Health_Packages](https://github.com/advanced-computer-lab-2023/The-Team-Clinic/assets/128983223/9e867f58-e7b7-42d0-af85-d5b7a7ad8aab)
