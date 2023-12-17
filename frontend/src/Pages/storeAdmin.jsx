@@ -22,6 +22,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import InputBase from '@mui/material/InputBase';
 import { TextField, Button, Container, Typography, Box ,Modal,  Backdrop,
   Fade,} from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -48,6 +49,9 @@ const [passwords, setPasswords] = useState({
   newPassword: '',
   confirmNewPassword: '',
 });
+
+const [loading, setLoading] = useState(true);
+
 const handleSaveChanges = async (medicationId) => {
   if (!editData || !editData.field || !editData.value) {
     console.error('Invalid editData:', editData);
@@ -84,6 +88,7 @@ useEffect(() => {
   
   const fetchMedicationData = async () => {
     try {
+      setLoading(true);
       const response = await axios.get('http://localhost:3000/meds/', {
         params: queryParameters,
       });
@@ -108,6 +113,9 @@ row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
       setUniqueMedicalUses(uniqueUses);
     } catch (error) {
       console.error('Error fetching medication data:', error);
+    }finally {
+      // Set loading to false after successfully fetching the data or in case of an error
+      setLoading(false);
     }
   };
 
@@ -636,7 +644,13 @@ const updatePassword = async (newPassword) => {
       </div>
     </div>
     </div>
-    <Medications medications={filteredRows} />
+    {loading ? (
+  <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start', height: '100vh' }}>
+    <CircularProgress />
+  </div>
+) : (
+  <Medications medications={filteredRows} />
+)}
     {/* Change Password pop-up */}
    <Modal
         open={isChangePasswordOpen}

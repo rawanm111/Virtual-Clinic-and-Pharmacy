@@ -3,6 +3,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -59,6 +60,44 @@ export default function HealthPackagesView() {
     const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
     return regex.test(password);
   };
+
+
+  const [alertType, setAlertType] = useState(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const [alertType1, setAlertType1] = useState(null);
+  const [isAlertOpen1, setAlertOpen1] = useState(false);
+  
+  
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+  const handleAlertClose1 = () => {
+    setAlertOpen1(false);
+    setAlertType1(null);
+  };
+
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        handleAlertClose();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen, handleAlertClose]);
+
+  useEffect(() => {
+    if (isAlertOpen1) {
+      const timer = setTimeout(() => {
+        handleAlertClose1();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen1, handleAlertClose1]);
+
+
   const handleSubmitt= (event) => {
     event.preventDefault();
     
@@ -83,7 +122,7 @@ export default function HealthPackagesView() {
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
 
 
@@ -105,10 +144,12 @@ export default function HealthPackagesView() {
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType1('success');
+      setAlertOpen1(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType1('error');
+    setAlertOpen1(true);
     }
   };
   const [selectedPackageId, setSelectedPackageId] = useState('');
@@ -219,13 +260,19 @@ export default function HealthPackagesView() {
             const individualPackages = await axios.get(`http://localhost:3000/PatientPackages/${id}`);
             const individualData = individualPackages.data.map((row, index) => ({ ...row, id: `individual-${index}` }));
             setFilteredPackages(individualData);
+            setAlertType('success');
+            setAlertOpen(true);
           } else {
             const familyPackages = await axios.get(`http://localhost:3000/PatientPackages/${selectedFamilyMember}`);
             const packagesData = familyPackages.data.map((row, index) => ({ ...row, id: `individual-${index}` }));
             setFilteredPackages(packagesData);
+            setAlertType('success');
+            setAlertOpen(true);
           }
         } catch (error) {
           console.error('Error fetching packages:', error);
+          setAlertType('error');
+          setAlertOpen(true);
         } finally {
           
         }
@@ -337,6 +384,74 @@ export default function HealthPackagesView() {
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+             Subscription cancelled successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+             Failed to cancel Subscription
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

@@ -3,6 +3,8 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -78,7 +80,7 @@ export default function HealthPackagesView() {
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
 
 
@@ -100,10 +102,12 @@ export default function HealthPackagesView() {
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType1('success');
+    setAlertOpen1(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+      setAlertType1('error');
+      setAlertOpen1(true);
     }
   };
   const [selectedHealthPackage, setSelectedHealthPackage] = useState('');
@@ -122,6 +126,42 @@ export default function HealthPackagesView() {
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
+  const [alertType, setAlertType] = useState(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const [alertType1, setAlertType1] = useState(null);
+  const [isAlertOpen1, setAlertOpen1] = useState(false);
+  const [loading, setLoading] = useState(true);
+  
+
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+  const handleAlertClose1 = () => {
+    setAlertOpen1(false);
+    setAlertType1(null);
+  };
+
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        handleAlertClose();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen, handleAlertClose]);
+
+  useEffect(() => {
+    if (isAlertOpen1) {
+      const timer = setTimeout(() => {
+        handleAlertClose1();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen1, handleAlertClose1]);
 
   const handleSelectPackage = (event) => {
     const selectedPackage = event.target.value;
@@ -134,6 +174,7 @@ export default function HealthPackagesView() {
     setSelectedHealthPackage(selectedPackage);
     setSelectedPackageId(selectedPackage.id); 
     setIsOpen(true);
+   
   };
   const handleConfirmSubscription = () => {
     setIsOpen(false);
@@ -171,9 +212,11 @@ export default function HealthPackagesView() {
           id: pkg._id,
         }));
         setHealthPackages(packagesWithId);
+        setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching health packages:', error);
+        setLoading(false);
       });
   }, []);
 
@@ -231,8 +274,12 @@ export default function HealthPackagesView() {
     try {
       const response = await axios.post('http://localhost:3000/PatientPackages', packageData);
       console.log('Package created:', response.data);
+      setAlertType('success');
+      setAlertOpen(true);
     } catch (error) {
       console.error('Error creating package:', error.response ? error.response.data : error.message);
+      setAlertType('error');
+      setAlertOpen(true);
     }
   };
 
@@ -322,6 +369,74 @@ export default function HealthPackagesView() {
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+            Subscription is done successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="warning" onClose={handleAlertClose}>
+           Already Subscribed
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+            Password changed successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+           Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
    <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
@@ -567,7 +682,11 @@ export default function HealthPackagesView() {
         </div>
       </div>
     </section>
-
+    {loading ? (
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <CircularProgress /> {/* Display loading circle */}
+        </div>
+      ) : (
     <section className="ftco-section ftco-departments bg-light">
       <div className="container" style={{ marginTop: '-100px'}}>
         <div className="row">
@@ -622,6 +741,7 @@ export default function HealthPackagesView() {
         </div>
       </div>
     </section>
+    )}
      {/* Family and Payment Modal */}
      <Dialog
         open={isOpen}

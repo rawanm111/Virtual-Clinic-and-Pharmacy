@@ -5,6 +5,8 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/system';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -60,10 +62,12 @@ export default function MedHistoryPatient() {
       // Replace '/api/reset-password' with your actual API endpoint
       const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
       console.log(response.data);
-      alert('Password successfully updated');
+      setAlertType1('success');
+      setAlertOpen1(true);
     } catch (error) {
       console.error('Error updating password:', error);
-      alert('Error updating password');
+     setAlertType1('error');
+     setAlertOpen1(true);
     }
   };const handleSubmit = (event) => {
     event.preventDefault();
@@ -89,7 +93,7 @@ export default function MedHistoryPatient() {
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
 
   const modalStyle = {
@@ -192,8 +196,18 @@ export default function MedHistoryPatient() {
     setSelectedFile(e.target.files[0]);
   };
 
+  const [alertType, setAlertType] = useState(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+  const [alertType1, setAlertType1] = useState(null);
+  const [isAlertOpen1, setAlertOpen1] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [deleteAlertType, setDeleteAlertType] = useState(null);
+  const [isDeleteAlertOpen, setDeleteAlertOpen] = useState(false);
+
+
   const handleUploadFile = () => {
     if (selectedFile) {
+      setIsLoading(true);
       const formData = new FormData();
       formData.append('file', selectedFile);
 
@@ -201,13 +215,30 @@ export default function MedHistoryPatient() {
         .then((response) => {
           console.log('File uploaded successfully');
           fetchMedicalHistories(); // Trigger refetch after upload
+          setAlertType('success');
+        setAlertOpen(true);
         })
         .catch((error) => {
           console.error('Error uploading file:', error);
+          setAlertType('error');
+          setAlertOpen(true);
+        })
+        .finally(() => {
+          setIsLoading(false); // Set loading back to false after upload completion (either success or failure)
         });
     } else {
       console.error('No file selected');
     }
+  };
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+
+  const handleAlertClose1 = () => {
+    setAlertOpen1(false);
+    setAlertType1(null);
   };
 
   const handleDownloadFile = (documentName, contentType, data) => {
@@ -220,7 +251,29 @@ export default function MedHistoryPatient() {
     a.click();
   };
 
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        handleAlertClose();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen, handleAlertClose]);
+
+  useEffect(() => {
+    if (isAlertOpen1) {
+      const timer = setTimeout(() => {
+        handleAlertClose1();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen1, handleAlertClose1]);
+
+
   const handleDeleteFile = (documentId) => {
+    setIsLoading(true);
     axios.delete(`http://localhost:3000/medHistory/delete/${id}/${documentId}`)
       .then((response) => {
         console.log('File deleted successfully');
@@ -228,7 +281,12 @@ export default function MedHistoryPatient() {
       })
       .catch((error) => {
         console.error('Error deleting file:', error);
-      });
+        setDeleteAlertType('error');
+        setDeleteAlertOpen(true);
+      })
+      .finally(() => {
+          setIsLoading(false); // Set loading back to false after upload completion (either success or failure)
+        });
   };
   
 
@@ -266,6 +324,116 @@ export default function MedHistoryPatient() {
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            zIndex: 9999, // Ensure it's above other elements
+          }}
+        >
+          <CircularProgress />
+        </div>
+      )}
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+              File uploaded successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+             Failed to upload file
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      
+      <Modal
+        open={isDeleteAlertOpen}
+        onClose={() => setDeleteAlertOpen(false)}
+        aria-labelledby="delete-alert-title"
+        aria-describedby="delete-alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {deleteAlertType === 'error' && (
+            <Alert severity="error" onClose={() => setDeleteAlertOpen(false)}>
+              Failed to delete file
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+             Password changed successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+             Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

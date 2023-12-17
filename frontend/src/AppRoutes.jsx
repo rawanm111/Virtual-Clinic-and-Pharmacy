@@ -66,6 +66,7 @@ export default function Paths() {
         <Route path="/" element={<StartPage />} />
         <Route path="/clinic" element={<LoginPageclinic />} />
         <Route path="/pharm" element={<LoginPagepharmacy />} />
+        <Route path="/admin-home" element={<AdminHome />} /> 
         <Route path="/patientreg" element={<PatientRegistrationHome />} />
         <Route path="/pharmreg" element={<PharmRegistrationHome />} />
         <Route path="/patientregpharm" element={<PatientRegistrationHomePharm />} />
@@ -78,13 +79,13 @@ export default function Paths() {
         <Route path="/pharm-profile" element={<PharmacistProfile />} />
         <Route path="/doctorsTable/:id" element={<DoctorsTable />} />
         <Route path="/patientsTable/:id" element={<PatientsTable />} />
-        <Route path="/userManagement" element={<UserManagement />} />
-        <Route path="/health-packages" element={<HealthPackagesMain />} />
+        <Route path="/userManagement" element={<UserManagement />} />  
+        <Route path="/health-packages" element={<HealthPackagesMain />} /> 
         <Route path="/add-family-member/:id" element={<Form />} />
         <Route path="/new-package" element={<NewPackage />} />
         <Route path="/my-fam/:id" element={<FamilyMember />} /> 
-        <Route path="/pharmacist-requests" element={<AdminRequestsP />} /> 
-        <Route path="/doctor-requests" element={<AdminRequestsD />} /> 
+        <Route path="/pharmacist-requests" element={<AdminRequestsP />} />
+        <Route path="/doctor-requests" element={<AdminRequestsD />} />  
         <Route path="/appPageDoc/:id" element={<AppTable />} /> 
         <Route path="/appPagePatient/:id" element={<AppTableP/>} /> 
         <Route path="/appPagePatientt/:id" element={<AppTablePP/>} /> 
@@ -105,7 +106,7 @@ export default function Paths() {
         <Route path="/otp/:username" element={<Otp/>} />
         <Route path="/patient-meds/:id"element={<Store/>} />
         <Route path="/pharm-meds/:id"element={<StorePharm/>} />
-        <Route path="/admin-meds"element={<StoreAdmin/>} />
+        <Route path="/admin-meds"element={<StoreAdmin/>} />  
         <Route path="/med/:idmed/:id"element={<StoreMed/>}  />
         <Route path="/ThankYou/:id"element={<ThankYou/>}  />
         <Route path="/admin-home"element={<AdminHome/>}  />

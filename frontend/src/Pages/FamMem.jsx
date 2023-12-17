@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import axios from 'axios';
+import Alert from '@mui/material/Alert';
 import { useNavigate, useParams } from 'react-router-dom';
 import PersonAddIcon from '@mui/icons-material/PersonAdd';
 import S1 from '../css/open-iconic-bootstrap.min.css';
@@ -65,7 +66,7 @@ const handleChange = (prop) => (event) => {
   setSuccess(false); 
 };
 const handleOpenChangePassword = () => {
-  setChangePasswordOpen(true);
+  setChangePasswordOpen(true);  
 };
 const isValidPassword = (password) => {
   const regex = /^(?=.*[A-Z])(?=.*\d).{4,}$/;
@@ -79,10 +80,12 @@ const updatePassword = async (newPassword) => {
     // Replace '/api/reset-password' with your actual API endpoint
     const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
     console.log(response.data);
-    alert('Password successfully updated');
+    setAlertType1('success');
+    setAlertOpen1(true);
   } catch (error) {
     console.error('Error updating password:', error);
-    alert('Error updating password');
+    setAlertType1('error');
+    setAlertOpen1(true);
   }
 };
 
@@ -111,7 +114,7 @@ const updatePassword = async (newPassword) => {
 
    
     updatePassword(passwords.newPassword)
-    alert("Password changed successfully");
+    setChangePasswordOpen(false);
   };
 
   const [open, setOpen] = React.useState(false);
@@ -147,6 +150,13 @@ const updatePassword = async (newPassword) => {
   const handleSearchInputChange = (event) => {
     setSearchQuery(event.target.value);
   };
+ 
+  const [alertType, setAlertType] = useState(null);
+  const [isAlertOpen, setAlertOpen] = useState(false);
+
+  
+  const [alertType1, setAlertType1] = useState(null);
+  const [isAlertOpen1, setAlertOpen1] = useState(false);
 
   useEffect(() => {
     const temp = familyMembers
@@ -182,12 +192,30 @@ const updatePassword = async (newPassword) => {
     .post(`http://localhost:3000/patients/api/addFamilyMember/${id}`, formData)
     .then((response) => {
         console.log('Response:', response.data);
+        handleClose();
+        setAlertType('success');
+        setAlertOpen(true);
       })
       .catch((error) => {
         console.log(formData)
         console.error('Error:', error);
+        handleClose();
+        setAlertType('error');
+        setAlertOpen(true);
       });
   };
+
+
+  const handleAlertClose = () => {
+    setAlertOpen(false);
+    setAlertType(null);
+  };
+
+  const handleAlertClose1 = () => {
+    setAlertOpen1(false);
+    setAlertType1(null);
+  };
+ 
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -254,6 +282,26 @@ const updatePassword = async (newPassword) => {
 
 
 
+  useEffect(() => {
+    if (isAlertOpen) {
+      const timer = setTimeout(() => {
+        handleAlertClose();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen, handleAlertClose]);
+
+
+  useEffect(() => {
+    if (isAlertOpen1) {
+      const timer = setTimeout(() => {
+        handleAlertClose1();
+      }, 5000); // Adjust the time as needed (in milliseconds)
+
+      return () => clearTimeout(timer);
+    }
+  }, [isAlertOpen1, handleAlertClose1]);
 
 
 
@@ -262,6 +310,74 @@ return (
 
   <div style={{ backgroundColor: "white" }}>
 <title>MetaCare </title>
+<Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '5px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+              Family member added successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+             Invalid Email or Phone number
+            </Alert>
+          )}
+        </div>
+      </Modal>
+      <Modal
+        open={isAlertOpen1}
+        onClose={handleAlertClose1}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '2px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType1 === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose1}>
+             Password changed successfully
+            </Alert>
+          )}
+          {alertType1 === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose1}>
+             Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
 <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">

@@ -19,7 +19,8 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import InputBase from '@mui/material/InputBase';
-import { TextField, Button, Container, Typography, Box ,Modal} from '@mui/material';
+import { TextField, Button, Container, Typography, Box ,Modal,CircularProgress} from '@mui/material';
+import Alert from '@mui/material/Alert';
 import MenuItem from '@mui/material/MenuItem';
 import Select from '@mui/material/Select';
 import InputLabel from '@mui/material/InputLabel';
@@ -30,6 +31,7 @@ export default function StoreView() {
   const [selectedMedication, setSelectedMedication] = useState(null);
   const [selectedMedicalUse, setSelectedMedicalUse] = useState('All');
   const [uniqueMedicalUses, setUniqueMedicalUses] = useState([]);
+  const [loading, setLoading] = useState(true); 
   const navigate = useNavigate();
   const {id,idmed} = useParams();
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
@@ -44,6 +46,24 @@ const [passwords, setPasswords] = useState({
 const [quantity, setQuantity] = useState(1);
 
 
+const [alertType, setAlertType] = useState(null);
+const [isAlertOpen, setAlertOpen] = useState(false);
+
+const handleAlertClose = () => {
+  setAlertOpen(false);
+  setAlertType(null);
+};
+
+useEffect(() => {
+  if (isAlertOpen) {
+    const timer = setTimeout(() => {
+      setAlertOpen(false);  // Use the state updater function
+      setAlertType(null);
+    }, 5000); // Adjust the time as needed (in milliseconds)
+
+    return () => clearTimeout(timer);
+  }
+}, [isAlertOpen]);
 const [openAlternativesModal, setOpenAlternativesModal] = useState(false);
 const [alternativeMedicines, setAlternativeMedicines] = useState([]);
 
@@ -78,30 +98,37 @@ const [alternativeMedicines, setAlternativeMedicines] = useState([]);
       console.error('Error adding medication to cart:', error);
     });
   };
-useEffect(() => {
-  const fetchMedicationData = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/meds/');
-      const responseData = response.data;
-      console.log('Fetched data:', responseData);
-      setMedicationData(responseData);
+  
+  useEffect(() => {
+    const fetchMedicationData = async () => {
+      try {
+        setLoading(true); // Set loading to true before fetching data
 
-      // Find the medication with the matching _id
-      const foundMedication = responseData.find((med) => med._id === idmed);
-      
-      if (foundMedication) {
-        console.log('Selected Medication:', foundMedication);
-        setSelectedMedication(foundMedication);
-      } else {
-        console.log('Medication not found with id:', idmed);
+        const response = await axios.get('http://localhost:3000/meds/');
+        const responseData = response.data;
+
+        setMedicationData(responseData);
+
+        const foundMedication = responseData.find((med) => med._id === idmed);
+
+        if (foundMedication) {
+          setSelectedMedication(foundMedication);
+        } else {
+          console.log('Medication not found with id:', idmed);
+        }
+      } catch (error) {
+        console.error('Error fetching medication data:', error);
+      } finally {
+        // Set loading to false after a minimum delay (e.g., 500 milliseconds)
+        setTimeout(() => {
+          setLoading(false);
+        }, 500);
       }
-    } catch (error) {
-      console.error('Error fetching medication data:', error);
-    }
-  };
+    };
 
-  fetchMedicationData();
-}, [idmed]);
+    fetchMedicationData();
+  }, [idmed]);
+
 
 useEffect(() => {
   if (openAlternativesModal) {
@@ -145,7 +172,7 @@ const handleSubmit = (event) => {
 
  
   updatePassword(passwords.newPassword)
-  alert("Password changed successfully");
+  setChangePasswordOpen(false);
 };
 
 const isValidPassword = (password) => {
@@ -161,10 +188,12 @@ const updatePassword = async (newPassword) => {
     // Replace '/api/reset-password' with your actual API endpoint
     const response = await axios.put('http://localhost:3000/changepassword', { id, newPassword });
     console.log(response.data);
-    alert('Password successfully updated');
+    setAlertType('success');
+    setAlertOpen(true);
   } catch (error) {
     console.error('Error updating password:', error);
-    alert('Error updating password');
+    setAlertType('error');
+    setAlertOpen(true);
   }
 };
 
@@ -213,6 +242,40 @@ const updatePassword = async (newPassword) => {
   return (
     <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
+  <Modal
+        open={isAlertOpen}
+        onClose={handleAlertClose}
+        aria-labelledby="alert-title"
+        aria-describedby="alert-description"
+      >
+        <div
+          style={{
+            position: 'fixed',
+            top: '10px',
+            right: '10px',
+            // width: '300px',
+            backgroundColor: '#fff',
+            padding: '5px',
+            borderRadius: '8px',
+            boxShadow: '0px 4px 16px rgba(0, 0, 0, 0.1)',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          {alertType === 'success' && (
+            <Alert severity="success" onClose={handleAlertClose}>
+             Password changed successfully
+            </Alert>
+          )}
+          {alertType === 'error' && (
+            <Alert severity="error" onClose={handleAlertClose}>
+             Failed to change password
+            </Alert>
+          )}
+        </div>
+      </Modal>
   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
@@ -371,6 +434,18 @@ const updatePassword = async (newPassword) => {
    
     <div className="site-section">
       <div className="container">
+      {loading && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+              }}
+            >
+              <CircularProgress />
+            </div>
+          )}
       {selectedMedication && (
         <div className="row">
           <div className="col-md-5 mr-auto">
@@ -485,7 +560,9 @@ const updatePassword = async (newPassword) => {
               </div>
             </div>
           </div>
-        </div> )}
+        </div> 
+        
+       )}
       </div> 
     </div>
     {/* Change Password pop-up */}
