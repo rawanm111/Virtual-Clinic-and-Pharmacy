@@ -23,7 +23,7 @@ import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
-
+import Notif from "./notifdoc";
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
 
@@ -334,6 +334,18 @@ useEffect(() => {
                    onClick={() => navigate(`/healthRecs/${id}`)}>
                      Patients Health Record
                      </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/Prescriptions/${id}`)}>
+                     Patients Prescriptions
+                     </a>
+                     <a className="dropdown-item" 
+                  onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
+                  onMouseLeave={(e) => e.target.style.backgroundColor = ''}
+                   onClick={() => navigate(`/follow-ups/${id}`)}>
+                    Follow-up Requests
+                     </a>
                  
                 </div>
               </li>
@@ -352,7 +364,7 @@ useEffect(() => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"700px"}}
+  style={{marginLeft:"650px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -663,7 +675,9 @@ useEffect(() => {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>

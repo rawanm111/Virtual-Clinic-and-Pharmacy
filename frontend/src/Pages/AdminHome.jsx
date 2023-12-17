@@ -139,6 +139,11 @@ import { FaUser, FaWallet } from 'react-icons/fa';
                   Health Packages
                 </a>
               </li>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/sales`)} style={{cursor:"pointer" } }>
+                  Sales Report
+                </a>
+              </li>
            
               
     
@@ -146,7 +151,7 @@ import { FaUser, FaWallet } from 'react-icons/fa';
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"500px"}}
 >
   <a
     className="nav-link dropdown-toggle"

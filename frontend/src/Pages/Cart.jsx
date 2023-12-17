@@ -217,7 +217,7 @@ const calculateItemTotal = (medicationId) => {
   const medicationDetail = medicationDetails.find(
     (detail) => detail._id === medicationId
   );
-  console.log(medicationDetail);
+  // console.log(medicationDetail);
   if (medicationDetail) {
     return medicationDetail.price * cartData.find((item) => item.medicationId === medicationId).quantity;
   }
@@ -571,7 +571,7 @@ function AddressStep({ selectedAddress, onAddressChange, onAddAddress }) {
     const medicationDetail = medicationDetails.find(
       (detail) => detail._id === medicationId
     );
-    console.log(medicationDetail);
+    // console.log(medicationDetail);
     if (medicationDetail) {
       return medicationDetail.price * cartData.find((item) => item.medicationId === medicationId).quantity;
     }
@@ -596,48 +596,56 @@ const [paymentOption, setPaymentOption] = useState('wallet');
 const [totalAmount, setTotalAmount] = useState(0); // State to store the total amount
 const navigate = useNavigate();
 
-const handleFinish = () => {
-  // Make an API call to add the cart to orders
-  axios.post('http://localhost:3000/Order/place-order', {
-    patientId: id, // Assuming patient ID is available in the component
-    // Add other necessary data for the order
-  })
-  .then((response) => {
-    // If the order is successfully placed, delete the cart
-    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
-    .then(() => {
-      // Redirect to a confirmation or thank-you page
-      navigate(`/Thankyou/${id}`);
+const handleFinish = async () => {
+  try {
+    // Make an API call to add the cart to orders
+    const orderResponse = await axios.post('http://localhost:3000/Order/place-order', {
+      patientId: id, // Assuming patient ID is available in the component
+      // Add other necessary data for the order
+    });
 
-      // Change '/confirmation' to the desired route
-    })
-    .catch((error) => {
-      console.error('Error deleting cart:', error);
-    });
-  })
-  .catch((error) => {
-    console.error('Error placing order:', error);
-  });
-};
-const handleFinishVisa = () => {
-  // Make an API call to add the cart to orders
-  axios.post('http://localhost:3000/Order/place-order', {
-    patientId: id, // Assuming patient ID is available in the component
-    // Add other necessary data for the order
-  })
-  .then((response) => {
     // If the order is successfully placed, delete the cart
-    axios.delete(`http://localhost:3000/Cart/delete/${id}`)
-    .then(() => {
-      
-    })
-    .catch((error) => {
-      console.error('Error deleting cart:', error);
+    await axios.delete(`http://localhost:3000/Cart/delete/${id}`);
+
+    // Deduct medication quantities from inventory
+    const orderItems = orderResponse.data.items;
+    orderItems.forEach(async (item) => {
+      await axios.put(`http://localhost:3000/meds/deduct-quantity/${item.medicationId}`, {
+        quantity: item.quantity,
+      });
     });
-  })
-  .catch((error) => {
-    console.error('Error placing order:', error);
-  });
+
+    // Redirect to a confirmation or thank-you page
+    navigate(`/Thankyou/${id}`);
+  } catch (error) {
+    console.error('Error handling finish:', error);
+  }
+};
+
+const handleFinishVisa = async () => {
+  try {
+    // Make an API call to add the cart to orders
+    const orderResponse = await axios.post('http://localhost:3000/Order/place-order', {
+      patientId: id, // Assuming patient ID is available in the component
+      // Add other necessary data for the order
+    });
+
+    // If the order is successfully placed, delete the cart
+    await axios.delete(`http://localhost:3000/Cart/delete/${id}`);
+
+    // Deduct medication quantities from inventory
+    const orderItems = orderResponse.data.items;
+    orderItems.forEach(async (item) => {
+      await axios.put(`http://localhost:3000/meds/deduct-quantity/${item.medicationId}`, {
+        quantity: item.quantity,
+      });
+    });
+
+    // Redirect to a confirmation or thank-you page
+    navigate(`/Thankyou/${id}`);
+  } catch (error) {
+    console.error('Error handling finish:', error);
+  }
 };
 
 
@@ -693,7 +701,7 @@ const calculateTotalAmount = (medications) => {
   setTotalAmount(total);
 };
 
-{console.log(totalAmount)}
+// {console.log(totalAmount)}
 
 
   const getCartItems = async () => {
@@ -719,6 +727,24 @@ const calculateTotalAmount = (medications) => {
       console.error('Error:', error);
     }
   };
+  const [discount, setDiscount] = useState(0); 
+  useEffect(() => {
+    // Fetch discount for the patient
+    
+    
+    axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`)
+
+      .then((response) => {
+        // Handle the response and set the discount in state
+        const discount = response.data;
+        console.log(discount);
+        setDiscount(discount);
+      })
+      .catch((error) => {
+        console.error('Error fetching discount:', error);
+      });
+  }, [id]);
+
   const handlePayment = async (cartData) => {
     try {
       const items = cartData.medications;
@@ -728,16 +754,18 @@ const calculateTotalAmount = (medications) => {
         console.error('No medications found in the cart data.');
         return;
       }
-  
+      
       const response = await axios.post('http://localhost:3000/paymentCart', {
         cartId: cartId,
         patientId: id,
+        discount: discount,
         items: items.map((item) => ({
           id: item.medicationId,
           quantity: item.quantity,
+          
         })),
       });
-      console.log(response.data);
+      console.log(response.data,"this");
       
       if (response.status === 200) {
         window.location = response.data.url;
@@ -754,32 +782,34 @@ const calculateTotalAmount = (medications) => {
 
   const handleWallet = async () => {
     try {
+      //get the discount of the patient on the medication
+      const dresponse = await axios.get(`http://localhost:3000/patients/discountOnMedicine/${id}`);
+      const discount = dresponse.data;
+      // console.log(discount,"here youb ho");
       if (paymentOption === 'wallet') {
         // Make a request to your backend to process wallet payment
         
-        const response = await axios.get(`http://localhost:3000/wallet/${id}`, {
-          
-        });
+        const response = await axios.get(`http://localhost:3000/wallet/${id}`, {});
         // const prev= response.data.balance - 200;
         console.log(response.data)
-
-        if (response.data.balance < totalAmount) {
+        if (response.data.balance < totalAmount*discount) {
           console.error("Insufficient balance");
           
         }
         else{
         if (response && response.status === 200) {
-          console.log('Wallet payment successful!');
+          console.log('Wallet payment successful! ');
           // Optionally, you c baan handle any additional logic after a successful wallet payment
           
           // Update the user's wallet balance (assuming you have a state for wallet balance)
           // setWalletBalance(prev);
           // console.log(walletBalance)
           
+          
           const response1 = await axios.put(`http://localhost:3000/wallet/${id}/update-balance`, {
             
             patientId: id,
-            balance: response.data.balance - totalAmount,
+            balance: response.data.balance - totalAmount * discount,
           });
 
           

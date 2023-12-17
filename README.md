@@ -323,10 +323,6 @@ Visit http://localhost:3001 in your web browser to view the application.
 The base URL for all API endpoints is `http://localhost:3000/`.
 ### medsRoutes
 `http://localhost:3000/meds/`
-`http://localhost:3000/meds/:id`
-`http://localhost:3000/meds/updateDescription/:id`
-`http://localhost:3000/meds/updatePrice/:id`
-`http://localhost:3000/meds/:medicationId`
 
 ### DoctorsRouts
 `http://localhost:3000/doctors`
@@ -349,6 +345,32 @@ The base URL for all API endpoints is `http://localhost:3000/`.
 ### PrescriptionRoutes
 `http://localhost:3000/Prescription`
 
+### AdminRoutes
+`http://localhost:3000/admin`
+
+### LoginRoutes
+`http://localhost:3000/login`
+
+### WalletRoutes
+`http://localhost:3000/wallet`
+
+### WalletdocRoutes
+`http://localhost:3000/walletDoc`
+
+### Cart
+`http://localhost:3000/cart`
+
+### AddressRoutes
+`http://localhost:3000/address`
+
+### MedhistoryRoutes
+`http://localhost:3000/medHistory`
+
+### EmploymentContract
+`http://localhost:3000/employmentContract`
+
+### OrderRoutes
+`http://localhost:3000/Order`
 
 
 

@@ -26,18 +26,19 @@ exports.createPatientPackages = async (req, res) => {
 exports.getAllPatientPackages = async (req, res) => {
   try {
     const patientId = req.params.id; // Assuming the patient ID is passed in the request params
-
+    
     const patientPackages = await PatientPackages.find({ patient: patientId })
       .populate('package')
       .select('package status startdate enddate');
-
+      console.log(patientPackages);
     // Extracting the required fields from the populated 'package' field
-    const simplifiedPackages = patientPackages.map((package) => ({
+    const simplifiedPackages = patientPackages.map((packages) => ({
+      
       patient:patientId,
-      package: package.package.name, 
-      status: package.status,
-      startdate: package.startdate,
-      enddate: package.enddate,
+      package: packages.package.name, 
+      status: packages.status,
+      startdate: packages.startdate,
+      enddate: packages.enddate,
     }));
 
     res.status(200).json(simplifiedPackages);

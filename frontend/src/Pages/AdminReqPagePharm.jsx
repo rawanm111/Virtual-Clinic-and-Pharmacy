@@ -259,6 +259,11 @@ function AdminRequests() {
                       Health Packages
                     </a>
                   </li>
+                  <li className="nav-item  " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/sales`)} style={{cursor:"pointer" } }>
+                  Sales Report
+                </a>
+              </li>
                
                   
         
@@ -266,7 +271,7 @@ function AdminRequests() {
       className="nav-item dropdown "
       onMouseEnter={() => setShowProfileDropdown(true)}
       onMouseLeave={() => setShowProfileDropdown(false)}
-      style={{marginLeft:"590px"}}
+      style={{marginLeft:"500px"}}
     >
       <a
         className="nav-link dropdown-toggle"
@@ -391,7 +396,7 @@ function AdminRequests() {
                   className="img-fluid mb-4"
                   style={{ borderRadius: '50%', width: '100px', height: '100px' }}
                 />
-                <h3 className="mb-4">Dr. {adminRequests[currentRequestIndex].fullName}</h3>
+                <h3 className="mb-4"> {adminRequests[currentRequestIndex].fullName}</h3>
                 <p>Email: {adminRequests[currentRequestIndex].email}</p>
                 <p>Date of Birth: {adminRequests[currentRequestIndex].dateOfBirth}</p>
                 <p>Hourly Rate: {adminRequests[currentRequestIndex].hourlyRate}</p>

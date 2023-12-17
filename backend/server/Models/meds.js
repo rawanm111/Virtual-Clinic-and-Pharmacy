@@ -29,6 +29,10 @@ const medsSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  activeIngredient: {
+    type: String,
+    required: true,
+  },
   
 });
 

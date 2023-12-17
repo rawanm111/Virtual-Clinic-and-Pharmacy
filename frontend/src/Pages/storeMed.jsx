@@ -64,6 +64,10 @@ useEffect(() => {
     return () => clearTimeout(timer);
   }
 }, [isAlertOpen]);
+const [openAlternativesModal, setOpenAlternativesModal] = useState(false);
+const [alternativeMedicines, setAlternativeMedicines] = useState([]);
+
+
 
 
   const handleDecrease = () => {
@@ -125,6 +129,18 @@ useEffect(() => {
     fetchMedicationData();
   }, [idmed]);
 
+
+useEffect(() => {
+  if (openAlternativesModal) {
+    axios.get(`http://localhost:3000/meds/getMedAlternatives/${idmed}`)
+      .then(response => {
+        setAlternativeMedicines(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching alternative medicines:', error);
+      });
+  }
+}, [openAlternativesModal, selectedMedication]);
 
 
 const [success, setSuccess] = useState(false); 
@@ -495,15 +511,15 @@ const updatePassword = async (newPassword) => {
       </div>
   </div>
 </div>
-
-
-            <p>
-              <a
-                className="buy-now btn btn-sm height-auto px-4 py-3 btn-primary"  onClick={() => addToCart()}
-              >
+<p>
+              <a className="buy-now btn btn-sm height-auto px-4 py-3 btn-primary" onClick={() => addToCart()}>
                 Add To Cart
               </a>
+              <a className="view-alternatives btn btn-sm height-auto px-4 py-3 btn-secondary ml-2" onClick={() => setOpenAlternativesModal(true)}>
+                View Alternatives
+              </a>
             </p>
+
             <div className="mt-5">
               
               <div className="tab-content" id="pills-tabContent">
@@ -550,6 +566,38 @@ const updatePassword = async (newPassword) => {
       </div> 
     </div>
     {/* Change Password pop-up */}
+    <Modal
+      open={openAlternativesModal}
+      onClose={() => setOpenAlternativesModal(false)}
+      aria-labelledby="alternatives-modal-title"
+    >
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: 400,
+          bgcolor: 'background.paper',
+          boxShadow: 24,
+          p: 4,
+        }}
+      >
+        <Typography id="alternatives-modal-title" variant="h6" component="h2">
+          Medicine Alternatives
+        </Typography>
+        <ul>
+          {alternativeMedicines.length > 0 ? (
+            alternativeMedicines.map((medicine, index) => (
+              <li key={index}>{medicine.name}</li>
+            ))
+          ) : (
+            <li>No alternative medicines available</li>
+          )}
+        </ul>
+      </Box>
+    </Modal>
+
    <Modal
         open={isChangePasswordOpen}
         onClose={handleCloseChangePassword}

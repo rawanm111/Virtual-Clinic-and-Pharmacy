@@ -279,6 +279,11 @@ function AdminRequests() {
                       Health Packages
                     </a>
                   </li>
+                  <li className="nav-item  " style={{marginRight:"10px"} }>
+                <a  className="nav-link pl-0"  onClick={() => navigate(`/sales`)} style={{cursor:"pointer" } }>
+                  Sales Report
+                </a>
+              </li>
                
                   
         
@@ -286,7 +291,7 @@ function AdminRequests() {
       className="nav-item dropdown "
       onMouseEnter={() => setShowProfileDropdown(true)}
       onMouseLeave={() => setShowProfileDropdown(false)}
-      style={{marginLeft:"590px"}}
+      style={{marginLeft:"500px"}}
     >
       <a
         className="nav-link dropdown-toggle"

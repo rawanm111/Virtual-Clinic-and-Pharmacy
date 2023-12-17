@@ -1,4 +1,7 @@
 const Prescription = require('../Models/Prescription');
+const Patient = require('../Models/patients');
+const Appointments = require('../Models/appointements');
+
 
 // Create a new Prescription
 exports.createPrescription = async (req, res) => {
@@ -19,6 +22,8 @@ exports.createPrescription = async (req, res) => {
     res.status(500).json(err);
   }
 };
+
+
 
 // Get all Prescriptions with populated Doctor and Patient details
 exports.getAllPrescriptions = async (req, res) => {
@@ -80,10 +85,9 @@ exports.getPrescriptionsForDoctor = async (req, res) => {
   }
 };
 
-
 exports.getPrescriptionsForPatient = async (req, res) => {
   try {
-    const patientId = req.params.patientId;
+    const patientId = req.params.id;
 
     // Check if the patient exists
     const patientExists = await Patient.findById(patientId);

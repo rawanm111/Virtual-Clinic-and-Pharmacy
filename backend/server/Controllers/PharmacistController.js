@@ -1,4 +1,5 @@
 const pharmacistModel = require('../Models/pharmacists');
+const Wallet = require('../Models/Wallet');
 const { default: mongoose } = require('mongoose');
 const e = require('express');
 const bcrypt = require('bcrypt');
@@ -114,7 +115,49 @@ exports.updatePharmacistByUsername = async (req, res) => {
   }
 };
 
+exports.transferRandomSalariesToWallets = async () => {
+  try {
+    // Step 1: Retrieve all pharmacists
+    const pharmacists = await Pharmacist.find();
 
+    // Step 2 and 3: Calculate random salary and update wallet balance for each pharmacist
+    for (const pharmacist of pharmacists) {
+      const randomSalary = generateRandomSalary(); // Generate a random salary
+      await updateWalletBalance(pharmacist._id, randomSalary);
+    }
+
+    console.log('Monthly random salary transfer completed.');
+  } catch (error) {
+    console.error('Error transferring monthly random salaries:', error);
+  }
+};
+
+// Function to generate a random salary (customize as needed)
+const generateRandomSalary = () => {
+  // Implement your random salary generation logic here
+  // For example, generate a random number within a range
+  const minSalary = 2000; // Minimum salary
+  const maxSalary = 5000; // Maximum salary
+  return Math.floor(Math.random() * (maxSalary - minSalary + 1)) + minSalary;
+};
+
+// Function to update wallet balance for a pharmacist
+const updateWalletBalance = async (pharmacistId, salary) => {
+  try {
+    // Retrieve the wallet for the pharmacist
+    const wallet = await Wallet.findOne({ patient: pharmacistId });
+
+    if (wallet) {
+      // Update the wallet balance by adding the generated random salary
+      wallet.balance += salary;
+
+      // Save the updated wallet
+      await wallet.save();
+    }
+  } catch (error) {
+    console.error('Error updating wallet balance:', error);
+  }
+};
 
 
 

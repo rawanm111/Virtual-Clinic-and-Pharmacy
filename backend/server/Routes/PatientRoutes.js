@@ -11,6 +11,11 @@ router.delete('/:userid', PatientController.deletePatient);
 router.get('/:username', PatientController.getPatientByUsername);
 router.post('/api/addFamilyMember/:userid', PatientController.addFamilyMemberLinkedToPatient);
 router.get('/family_members/user/:id', PatientController.getFamilyMembersForUser);
+router.get('/patientPrescriptions/:id', PatientController.getPatientPrescriptions);
+router.get('/getPrescription/:id', PatientController.getPrescriptionById);
+router.get('/discountOnDrSession/:id', PatientController.getDrSessionDiscount);
+router.get('/discountOnMedicine/:id', PatientController.getMedicineDiscount);
+router.get('/discountOnFamilyMemberSubscription/:id', PatientController.getFamilyMemberSubscriptionDiscount);
 
 module.exports = router;
 

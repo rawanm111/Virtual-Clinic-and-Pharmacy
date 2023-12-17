@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const walletController = require('../Controllers/walletController');
+const CancelOrderController = require('../Controllers/CancelOrderController');
+;
 
 // Create a wallet for a patient
 router.post('/:patientId/create', walletController.createWallet);
@@ -10,5 +12,7 @@ router.get('/:patientId', walletController.getWallet);
 
 // Update the wallet balance for a patient
 router.put('/:patientId/update-balance', walletController.updateWalletBalance);
+router.put('/:appointmentId/patient-refund', walletController.refundPatient);
+
 
 module.exports = router;

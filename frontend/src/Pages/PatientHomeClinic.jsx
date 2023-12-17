@@ -22,6 +22,7 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import axios from 'axios';
 import WalletModal from './walletModal';
+import Notif from "./notifModal";
 
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
@@ -332,7 +333,7 @@ const updatePassword = async (newPassword) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -370,6 +371,10 @@ const updatePassword = async (newPassword) => {
 <li className="nav-item ">
 <WalletModal/>
 </li>
+<li className="nav-item ">
+<Notif/>
+</li>
+
 
             </ul>
           </div>

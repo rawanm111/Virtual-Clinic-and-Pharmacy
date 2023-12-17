@@ -23,6 +23,7 @@ import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal'
 import AddIcon from '@mui/icons-material/Add';
+import Notif from "./notifModal";
 import { TextField, Button, Container, Typography} from '@mui/material';
 const style = {
   position: 'absolute',
@@ -546,7 +547,7 @@ return (
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -584,7 +585,9 @@ return (
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>

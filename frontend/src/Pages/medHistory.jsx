@@ -36,7 +36,7 @@ import CardActions from '@mui/material/CardActions';
 import Modal from '@mui/material/Modal';
 import { TextField} from '@mui/material';
 import WalletModal from './walletModal';
-
+import Notif from "./notifModal";
 export default function MedHistoryPatient() {
   const [medicalHistory, setMedicalHistory] = useState([]);
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -602,7 +602,7 @@ export default function MedHistoryPatient() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a style={{cursor:"pointer" } }
     className="nav-link dropdown-toggle"
@@ -640,7 +640,9 @@ export default function MedHistoryPatient() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>

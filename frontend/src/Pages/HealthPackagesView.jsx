@@ -32,7 +32,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import {Radio, RadioGroup, Dialog, DialogTitle, DialogContent, DialogActions} from '@mui/material';
 import Modal from '@mui/material/Modal';
 import { TextField, Button, Container, Typography, Box } from '@mui/material';
-
+import Notif from "./notifModal";
 export default function HealthPackagesView() {
   const [healthPackages, setHealthPackages] = useState([]);
   const [isChangePasswordOpen, setChangePasswordOpen] = useState(false);
@@ -169,8 +169,9 @@ export default function HealthPackagesView() {
     setSelectedPackageName(selectedPackage.name); // Update the selected package name
   };
   
-  const handleSubscribeButtonClick = (selectedPackageId) => {
-    setSelectedPackageId(selectedPackageId); 
+  const handleSubscribeButtonClick = (selectedPackage) => {
+    setSelectedHealthPackage(selectedPackage);
+    setSelectedPackageId(selectedPackage.id); 
     setIsOpen(true);
    
   };
@@ -331,14 +332,18 @@ export default function HealthPackagesView() {
       healthPackages.map((healthPackage) => (
         healthPackage.name === packageType ? setSelectedHealthPackage(healthPackage) : null
       ));
+      console.log("pack")
+      console.log(selectedHealthPackage)
       const response = await axios.get(`http://localhost:3000/wallet/${id}`);
       const price=selectedHealthPackage.annualPrice;
+      console.log("price")
       console.log(price)
       if (response.data.balance < price ) {
         console.error("Insufficient balance");
       } else {
         handleSubmit();
-        
+        console.log("balance")
+        console.log(response.data.balance);
         const updatedBalance = response.data.balance - price;
         setWalletBalance(updatedBalance);
         console.log(walletBalance);
@@ -599,7 +604,7 @@ export default function HealthPackagesView() {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a 
     className="nav-link dropdown-toggle"
@@ -636,7 +641,9 @@ export default function HealthPackagesView() {
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>
@@ -675,11 +682,11 @@ export default function HealthPackagesView() {
         </div>
       ) : (
     <section className="ftco-section ftco-departments bg-light">
-      <div className="container" style={{ marginTop: '-100px' }}>
+      <div className="container" style={{ marginTop: '-100px'}}>
         <div className="row">
           {healthPackages.map((pack) => (
             <div className="col-md-4" key={pack.id}>
-              <div className="pricing-entry pb-5 text-center" style={{borderRadius:'8px'}}>
+              <div className="pricing-entry pb-5 text-center" style={{borderRadius:'8px',  marginBottom:'100px'}}>
                 <div>
                   <h3 className="mb-4">{pack.name}</h3>
                   <p>
@@ -716,7 +723,7 @@ export default function HealthPackagesView() {
                 variant="contained"
                 color="primary"
                 className="btn btn-primary px-4 py-3"
-                onClick={() => handleSubscribeButtonClick(pack.id)}  
+                onClick={() => handleSubscribeButtonClick(pack)}  
               >
                 Subscribe
               </Button>

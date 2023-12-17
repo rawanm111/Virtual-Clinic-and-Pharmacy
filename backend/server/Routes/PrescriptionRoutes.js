@@ -6,10 +6,11 @@ const PrescriptionController = require('../Controllers/PrescriptionController');
 //router.post('/patients', PrescriptionController.getPrescriptionsForPatients);
 router.get('/:doctorId', PrescriptionController.getPrescriptionsForDoctor);
 router.get('/', PrescriptionController.getAllPrescriptions);
-router.put('/:id', PrescriptionController.updatePrescription);
+router.put('/update/:id', PrescriptionController.updatePrescription);
 router.delete('/:id', PrescriptionController.deletePrescription);
-router.get('/:patientId', PrescriptionController.getPrescriptionsForPatient);
-router.get('/create', PrescriptionController.createPrescription);
+router.get('/pat/:patientId', PrescriptionController.getPrescriptionsForPatient);
+router.get('/patientPrescription/:id', PrescriptionController.getPrescriptionsForPatient);
+router.post('/create', PrescriptionController.createPrescription);
 
 
 module.exports = router;

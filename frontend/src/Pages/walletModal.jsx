@@ -25,7 +25,7 @@ const style = {
 
 
 export default function WalletModal() {
-    const [walletBalance, setWalletBalance] = useState(0);
+    const [walletBalance, setWalletBalance] = useState(3000);
     const [transactions, setTransactions] = useState([]);
     const { id } = useParams();
     const [open, setOpen] = React.useState(false);
@@ -54,7 +54,7 @@ export default function WalletModal() {
   
     return (
       <>
-        <Button onClick={handleOpen} style={{marginTop:"20%"}}>
+        <Button onClick={handleOpen} style={{marginTop:"20%",marginRight: '10px'}}>
         <FaWallet style={{ fontSize: '20px', marginRight: '5px' ,color:"black"}} />
         </Button>
         

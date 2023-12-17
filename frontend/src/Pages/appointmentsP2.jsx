@@ -19,6 +19,7 @@ import I1 from "../images/about.jpg";
 import I2 from "../images/bg_1.jpg";
 import I3 from "../images/bg_2.jpg";
 import { FaUser, FaWallet } from 'react-icons/fa';
+import Notif from "./notifModal";
 import {
   Dialog,
   DialogTitle,
@@ -317,8 +318,9 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
     );
     if (healthPackage) {
       const discountPercentage = healthPackage.discountOnDoctorSessionPrice || 0;
-      const discount = (discountPercentage / 100) * sessionPrice;
-      // console.log(discount, "healthPackage");
+      const discount = Math.floor((discountPercentage / 100) * sessionPrice);
+       console.log(discount, "discount");
+       console.log(sessionPrice, "price");
       setDiscountedPrice(sessionPrice-discount);
       return sessionPrice - discount;
     }
@@ -419,11 +421,13 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   
 
   const [discountedPrice, setDiscountedPrice] = useState(0);
-  const handleBookAppointment = (appointmentId,discountedPrice) => {
+  const handleBookAppointment = async (appointmentId, discountedPrice) => {
     setSelectedAppointmentId(appointmentId);
     setDiscountedPrice(discountedPrice);
     console.log(discountedPrice, "discountedPrice");
     setIsPaymentDialogOpen(true);
+  
+   
   };
 
   const closePaymentDialog = () => {
@@ -481,7 +485,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               date: new Date(item.date),
             }))
             .filter((item) => item.date >= currentDate);
-
+          console.log(response);
           setAvailableApps(availableData);
         } else {
           console.error(
@@ -508,6 +512,16 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
         } else {
           console.error('No data received from the API');
         }
+        try {
+          // Make the additional request to http://localhost:3000/apps/lastAppointment
+          const response = await axios.post('http://localhost:3000/apps/lastAppointment', {
+            id: id,
+          });
+          // Process the response as needed
+          console.log('Last Appointment:', response.data);
+        } catch (error) {
+          console.error('Error fetching last appointment:', error);
+        }
       } catch (error) {
         console.error('Error booking appointment:', error);
       }
@@ -533,7 +547,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
       console.error('Error fetching available appointments:', error);
     }
   };
-
+  
 
   const handlePayment = async (cartData, selectedAppointmentId,discountedPrice) => {
     try {
@@ -858,13 +872,13 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
           </button>
       <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item active" style={{marginRight:"10px"} }>
+              <li className="nav-item " style={{marginRight:"10px"} }>
                 <a  className="nav-link pl-0"  onClick={() => navigate(`/clinic-patient-home/${id}`)}>
                   Home
                 </a>
               </li>
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown "
                 onMouseEnter={() => setShowPersonalDropdown(true)}
                 onMouseLeave={() => setShowPersonalDropdown(false)}
               >
@@ -908,7 +922,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
               </li>
               {/* New dropdown for Doctors */}
               <li
-                className="nav-item dropdown"
+                className="nav-item dropdown active"
                 onMouseEnter={() => setShowDoctorsDropdown(true)}
                 onMouseLeave={() => setShowDoctorsDropdown(false)}
               >
@@ -995,7 +1009,7 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"640px"}}
+  style={{marginLeft:"550px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -1033,7 +1047,9 @@ import { TextField, Button, Container, Typography, Box } from '@mui/material';
 <li className="nav-item ">
 <WalletModal/>
 </li>
-
+<li className="nav-item ">
+<Notif/>
+</li>
             </ul>
           </div>
         </div>

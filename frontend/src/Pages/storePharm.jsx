@@ -32,6 +32,7 @@ import { FaPencilAlt } from 'react-icons/fa';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import WalletModal from './walletModal'
+import NotifModel from './NotifModel'
 
 export default function StoreView() {
   const [medicationData, setMedicationData] = useState([]);
@@ -526,6 +527,11 @@ const updatePassword = async (newPassword) => {
                   Store
                 </a>
               </li>
+              <li className="nav-item " style={{marginRight:"10px"} }>
+                <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
+                  Sales report 
+                </a>
+              </li>
               
              
               
@@ -536,7 +542,7 @@ const updatePassword = async (newPassword) => {
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"800px"}}
+  style={{marginLeft:"700px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -574,6 +580,10 @@ const updatePassword = async (newPassword) => {
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
 <WalletModal/>
+</li>
+<li className="nav-item ">
+<NotifModel/>
+
 </li>
 
             </ul>
