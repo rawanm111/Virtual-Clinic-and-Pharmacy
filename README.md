@@ -1,6 +1,6 @@
 # MetaCare
 
-MetaCare is a virtual clinic  where you can schedule and attend  appointments, chat with your doctor ,and prescribe to health packages by the click of a button.
+The Clinic Management System streamlines patient registration, doctor requests, and administrative tasks. Patients can manage records, appointments, prescriptions, and health packages, while doctors gain a comprehensive view of patient data. The system enhances communication through video calls, making healthcare accessible.
 
 ## Build Status 🔨
 [![Build Status](Your_CI_Service_Build_Badge_Link)](Your_CI_Service_Build_Link)
@@ -167,7 +167,6 @@ exports.createPatient = async (req, res) => {
     username,
   } = req.body;
   try {
- 
       const salt = await bcrypt.genSalt(); 
       const hashedPassword = await bcrypt.hash(password, salt);
       const newPatient= new patientModel({
@@ -182,7 +181,6 @@ exports.createPatient = async (req, res) => {
         emergencyContactRelationToPatient,
         password: hashedPassword,
       });
-
       const newWallet = new walletModel({
         patient: newPatient._id, // Assuming patientModel has an _id field
         balance: 0, // You can set an initial balance if needed
@@ -203,31 +201,25 @@ exports.createPatient = async (req, res) => {
   exports.addToCart = async (req, res) => {
   try {
     const { patientId, medicationId, quantity } = req.body;
-
-    // Find the patient's cart or create one if it doesn't exist
+ // Find the patient's cart or create one if it doesn't exist
     let cart = await Cart.findOne({ patientId });
-
     if (!cart) {
       cart = new Cart({patientId, medications: [] });
     }
-
-    // Check if the medication is already in the cart
+// Check if the medication is already in the cart
     const existingMedication = cart.medications.find(
       (item) => item.medicationId.toString() === medicationId
     );
-
-    if (existingMedication) {
+ if (existingMedication) {
       // If the medication is already in the cart, update its quantity
       existingMedication.quantity += quantity;
     } else {
       // If not, add the medication to the cart
       cart.medications.push({ medicationId, quantity });
     }
-
-    // Save the cart
+ // Save the cart
     const updatedCart = await cart.save();
-
-    res.status(200).json(updatedCart);
+  res.status(200).json(updatedCart);
   } catch (err) {
     res.status(500).json(err);
   }
@@ -260,8 +252,7 @@ const updatePassword = async (newPassword) => {
     setAlertOpen(true);
   }
 };
-
-  const handleOpenChangePassword = () => {
+const handleOpenChangePassword = () => {
     setChangePasswordOpen(true);
   };
 
