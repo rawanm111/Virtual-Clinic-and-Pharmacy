@@ -28,6 +28,7 @@ import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import WalletModal from './walletModal';
 import IconButton from '@mui/material/IconButton';
+import EditIcon from '@mui/icons-material/Edit';
 
 export default function StoreView() {
   const [medicationData, setMedicationData] = useState([]);
@@ -254,7 +255,7 @@ const updatePassword = async (newPassword) => {
                     color="primary"
                     className="btn btn-primary px-4 py-3"
                     style={{ borderRadius: '40px' }}
-                    onClick={() => navigate('/med/${medication._id}/${id}')}
+                    onClick={() => navigate(`/med/${medication._id}/${id}`)}
                   >
                     Select
                   </Button>
@@ -267,6 +268,7 @@ const updatePassword = async (newPassword) => {
       </div>
     );
   };
+     
   
   useEffect(() => {
     const queryParameters = {

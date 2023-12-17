@@ -81,35 +81,54 @@ const [alternativeMedicines, setAlternativeMedicines] = useState([]);
   };
   const addToCart = () => {
     const patientId = id.toString();
-    const medicationId= idmed;
-
+    const medicationId = idmed;
+  
+    // Check if the medication is available
+    const selectedMedication = medicationData.find((med) => med._id === idmed);
+    if (!selectedMedication) {
+      // Medication not found
+      console.error('Selected medication not found.');
+      return;
+    }
+  
+    if (selectedMedication.availableQuantity < quantity) {
+      // Medication quantity is less than the requested quantity
+      alert('Not enough quantity available.');
+      return;
+    }
+  
+    if (selectedMedication.availableQuantity === 0) {
+      // Medication is out of stock
+      alert('This medication is out of stock.');
+      return;
+    }
+  
     // Send a request to your backend to add the medication to the patient's cart
-    axios.post('http://localhost:3000/Cart/add', {
-      patientId,
-      medicationId: idmed ,
-      quantity: quantity,
-       // You can specify the quantity to add
-    })
-    .then((response) => {
-      console.log('Medication added to cart:', response.data);
-      navigate(`/patient-meds/${id}`)
-    })
-    .catch((error) => {
-      console.error('Error adding medication to cart:', error);
-    });
+    axios
+      .post('http://localhost:3000/Cart/add', {
+        patientId,
+        medicationId: idmed,
+        quantity: quantity,
+      })
+      .then((response) => {
+        console.log('Medication added to cart:', response.data);
+        navigate(`/patient-meds/${id}`);
+      })
+      .catch((error) => {
+        console.error('Error adding medication to cart:', error);
+      });
   };
   
-  useEffect(() => {
-    const fetchMedicationData = async () => {
-      try {
-        setLoading(true); // Set loading to true before fetching data
 
-        const response = await axios.get('http://localhost:3000/meds/');
-        const responseData = response.data;
-
-        setMedicationData(responseData);
-
-        const foundMedication = responseData.find((med) => med._id === idmed);
+useEffect(() => {
+  const fetchMedicationData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/meds/');
+      const responseData = response.data;
+      console.log('Fetched data:', responseData);
+      setLoading(true); 
+      setMedicationData(responseData);
+          const foundMedication = responseData.find((med) => med._id === idmed);
 
         if (foundMedication) {
           setSelectedMedication(foundMedication);
