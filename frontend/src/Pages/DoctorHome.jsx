@@ -104,7 +104,7 @@ useEffect(() => {
     setAlertOpen(true);
     }
   };
-  const handleSubmit = () => {
+  const handleSubmitt = () => {
     axios
       .put(`http://localhost:3000/doctors/${username}`, formData)
       .then((response) => {
@@ -163,7 +163,7 @@ useEffect(() => {
     dateOfBirth: '',
   });
 
-  const handleSubmitt = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
     
     setSuccess(false);
