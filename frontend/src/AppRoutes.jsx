@@ -121,7 +121,7 @@ export default function Paths() {
         <Route path="/admin-home" element={<AdminHome />} />
         <Route path="/notification" element={<Notification />} />
         <Route path="/sales"element={<SalesRepo/>}  />
-        <Route path="/salespharm"element={<SalesRepoPharm/>}  />
+        <Route path="/salespharm/:id"element={<SalesRepoPharm/>}  />
         <Route path="/Vid/:roomId"element={<Video/>}  />
         <Route path="/messages/:id"element={<Messages/>}  />
         <Route path="/messagesDoc/:id"element={<MessagesDoc/>}  />

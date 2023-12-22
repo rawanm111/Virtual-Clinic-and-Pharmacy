@@ -31,14 +31,13 @@ import WalletModal from './walletModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import NotifModel from './NotifModel'
-import PharmacistWallet from "./walletModalPharmacist";
-import { FaMessage } from "react-icons/fa6";
+
 
  export default function() {
     const [currentImage, setCurrentImage] = useState(I2);
     const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
     const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-    const [showProfileDropdown, setShowProfileDropdown] = useState(false);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
+    const [showProfileDropdown, setShowProfileDropdown] = useState(false);
     const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
     const navigate = useNavigate();
     const { id } = useParams();
@@ -166,7 +165,7 @@ import { FaMessage } from "react-icons/fa6";
   const fetchAllOrders = async () => {
     try {
       // Adjust the API endpoint and parameters based on your server implementation
-      const response = await axios.get('http://localhost:3000/Order/orders', {
+      const response = await axios.get('http://localhost:3000/Order/orders2', {
         params: {
           year: selectedDate.getFullYear(),
           month: selectedDate.getMonth() + 1, // Months are zero-based in JavaScript
@@ -184,10 +183,11 @@ import { FaMessage } from "react-icons/fa6";
 
   const generateTableColumns = () => {
     const flexValue = 1 / (uniqueMedicalUses.length + 2);
+    const minWidth= 100;
     const columns = [];
   
     // Push the 'Date' column
-    columns.push({ field: 'date', headerName: 'Date', flex: flexValue });
+    columns.push({ field: 'date', headerName: 'Date', flex: flexValue,minWidth });
   
     if (!selectedMedication) {
       // Include columns for all medications
@@ -196,6 +196,7 @@ import { FaMessage } from "react-icons/fa6";
           field: medicalUse,
           headerName: medicalUse,
           flex: flexValue,
+          minWidth,
         });
       });
     }
@@ -206,11 +207,12 @@ import { FaMessage } from "react-icons/fa6";
         field: selectedMedication,
         headerName: selectedMedication,
         flex: flexValue,
+        minWidth,
       });
     }
   
     // Push the 'Total Money' column
-    columns.push({ field: 'totalMoney', headerName: 'Total Money', flex: flexValue });
+    columns.push({ field: 'totalMoney', headerName: 'Total Money', flex: flexValue ,minWidth});
   
     return columns;
   };
@@ -306,7 +308,7 @@ import { FaMessage } from "react-icons/fa6";
     return (
 <div style={{ backgroundColor: "white" }}>
   <title>MetaCare </title>
-  <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
+   <nav className="navbar py-4 navbar-expand-lg ftco_navbar navbar-light bg-light flex-row">
         <div className="container"  >
           <div className="row no-gutters d-flex align-items-start align-items-center px-3 px-md-0">
             <div className="col-lg-2 pr-4 align-items-center">
@@ -348,7 +350,7 @@ import { FaMessage } from "react-icons/fa6";
                   Store
                 </a>
               </li>
-              <li className="nav-item active " style={{marginRight:"10px"} }>
+              <li className="nav-item active" style={{marginRight:"10px"} }>
                 <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
                   Sales report 
                 </a>
@@ -363,7 +365,7 @@ import { FaMessage } from "react-icons/fa6";
   className="nav-item dropdown "
   onMouseEnter={() => setShowProfileDropdown(true)}
   onMouseLeave={() => setShowProfileDropdown(false)}
-  style={{marginLeft:"730px"}}
+  style={{marginLeft:"700px"}}
 >
   <a
     className="nav-link dropdown-toggle"
@@ -400,63 +402,17 @@ import { FaMessage } from "react-icons/fa6";
 
 {/* Wallet icon without dropdown */}
 <li className="nav-item ">
-<PharmacistWallet/>
-
+<WalletModal/>
 </li>
 <li className="nav-item ">
 <NotifModel/>
 
-
-
-</li>
-<li 
-  className="nav-item dropdown active"
-  onMouseEnter={() => setShowMessagesDropdown(true)}
-  onMouseLeave={() => setShowMessagesDropdown(false)}
-  
->
-  <a
-    className="nav-link dropdown-toggle"
-    style={{cursor:"pointer" } } 
-    id="profileDropdown"
-    role="button"
-    data-toggle="dropdown"
-    aria-haspopup="true"
-    aria-expanded={showMessagesDropdown}
-    
-  >
-    <FaMessage style={{ fontSize: '20px', marginRight: '5px' }} />
-    
-  </a>
-  <div
-    className={`dropdown-menu ${showMessagesDropdown ? 'show' : ''}`}
-    aria-labelledby="profileDropdown"
-  >
-   <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesPharmtoDoc/${id}`)}
-  >
-    Chat with Doctor
-  </a>
-  <a
-    className="dropdown-item" style={{cursor:"pointer" } } 
-    onMouseEnter={(e) => e.target.style.backgroundColor = '#2f89fc'}
-    onMouseLeave={(e) => e.target.style.backgroundColor = ''}
-    onClick={() => navigate(`/messagesPharmtoPat/${id}`)}
-  >
-    Chat with Patient
-  </a>
-  </div>
 </li>
 
             </ul>
           </div>
         </div>
       </nav>
-
-
 
       <section
       className="hero-wrap hero-wrap-2"

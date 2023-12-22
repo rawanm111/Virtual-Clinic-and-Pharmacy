@@ -29,15 +29,13 @@ import { FaUser, FaWallet } from 'react-icons/fa';
 import WalletModal from './walletModal';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import NotifModel from './NotifModel'
-import PharmacistWallet from "./walletModalPharmacist";
-import { FaMessage } from "react-icons/fa6";
+
 
  export default function() {
   const [currentImage, setCurrentImage] = useState(I2);
   const [showDoctorsDropdown, setShowDoctorsDropdown] = useState(false);
   const [showHealthPackagesDropdown, setShowHealthPackagesDropdown] = useState(false);
-  const [showProfileDropdown, setShowProfileDropdown] = useState(false);const [showMessagesDropdown, setShowMessagesDropdown] = useState(false);
+  const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPersonalDropdown, setShowPersonalDropdown] = useState(false);
   const navigate = useNavigate();
   const { id } = useParams();
@@ -86,7 +84,7 @@ import { FaMessage } from "react-icons/fa6";
   const fetchAllOrders = async () => {
     try {
       // Adjust the API endpoint and parameters based on your server implementation
-      const response = await axios.get('http://localhost:3000/Order/orders', {
+      const response = await axios.get('http://localhost:3000/Order/orders2', {
         params: {
           year: selectedDate.getFullYear(),
           month: selectedDate.getMonth() + 1, // Months are zero-based in JavaScript
@@ -103,18 +101,19 @@ import { FaMessage } from "react-icons/fa6";
 
   const generateTableColumns = () => {
     const numMedicalUses = uniqueMedicalUses.length;
-
+    const minWidth=100;
     // Calculate the flex value for each column
     const flexValue = 1 / (numMedicalUses + 2); 
     return [
      
-      { field: 'date', headerName: 'Date', flex: flexValue  },
+      { field: 'date', headerName: 'Date', flex: flexValue ,minWidth },
       ...uniqueMedicalUses.map((medicalUse) => ({
         field: medicalUse,
         headerName: medicalUse,
         flex: flexValue, // Set the width as needed
+        minWidth,
       })),
-      { field: 'totalMoney', headerName: 'Total Money', flex: flexValue },
+      { field: 'totalMoney', headerName: 'Total Money', flex: flexValue,minWidth },
     ];
   };
 

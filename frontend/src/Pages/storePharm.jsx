@@ -539,7 +539,7 @@ const updatePassword = async (newPassword) => {
                 </a>
               </li>
               <li className="nav-item " style={{marginRight:"10px"} }>
-                <a className="nav-link pl-0"  onClick={() => navigate(`/salespharm`)} style={{cursor:"pointer" } } >
+                <a className="nav-link pl-0" onClick={() => navigate(`/salespharm/${id}`)} style={{cursor:"pointer" } } >
                   Sales report 
                 </a>
               </li>
