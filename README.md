@@ -6,7 +6,7 @@ The Clinic Management System streamlines patient registration, doctor requests, 
 ## Build Status 🔨
 
 * The project is currently in development.
-*   The admin need some imbrovements
+*   The admin need some imbrovements.
 *   Course Page and API' needs Pagagination.
 *   The Unit tests needs modifications.
 *   A CI/CD pipeline needs to be migrated to Jenkins.
